@@ -1,0 +1,49 @@
+{
+  "name": "@rnoh/react-native-harmony-screens",
+  "harmony": {
+    "alias": "react-native-screens"
+  },
+  "version": "3.25.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "prepack": "npm run build",
+    "build": "tsc"
+  },
+  "peerDependencies": {
+    "react-native": "*",
+    "react-native-harmony": "*"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "react-native-screens": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/invariant": "^2.2.35",
+    "@types/react": "^18.2.15",
+    "react": "^18.2.0",
+    "react-native": "0.72.0",
+    "react-native-harmony": "npm:@rnoh/react-native-harmony@^0.72.5",
+    "typescript": "^5.1.6"
+  },
+  "files": [
+    "lib",
+    "harmony"
+  ],
+  "@react-native-community/bob": {
+    "source": "src",
+    "output": "lib",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.build.json"
+        }
+      ]
+    ]
+  }
+}

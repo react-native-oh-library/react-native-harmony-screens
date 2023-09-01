@@ -1,0 +1,12 @@
+{
+  module: {
+    name: 'rnoh_screens',
+    type: 'entry',
+    description: '$string:module_desc',
+    deviceTypes: ['phone'],
+    deliveryWithInstall: true,
+    installationFree: false,
+    pages: '$profile:main_pages',
+    requestPermissions: [{name: 'ohos.permission.INTERNET'}],
+  },
+}

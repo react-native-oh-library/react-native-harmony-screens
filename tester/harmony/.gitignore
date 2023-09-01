@@ -1,0 +1,16 @@
+package-lock.json
+react_native_modules/rnoh
+oh_modules/
+/config
+
+# ---
+
+/node_modules
+/local.properties
+/.idea
+**/build
+/.hvigor
+.cxx
+/.clangd
+/.clang-tidy
+/build-profile.json5
