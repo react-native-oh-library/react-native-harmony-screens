@@ -6,7 +6,8 @@
     "start": "react-native start",
     "pack:pkg": "cd ../react-native-harmony-screens && npm pack && cd ../tester",
     "install:pkg": "npm uninstall react-native-harmony-web-view && npm run pack:pkg && npm i react-native-harmony-screens@file:../react-native-harmony-screens/rnoh-react-native-harmony-screens-3.25.0.tgz",
-    "dev": "npm run install:pkg && react-native bundle-harmony",
+    "dev": "react-native bundle-harmony",
+    "_dev": "npm run install:pkg && react-native bundle-harmony",
     "android": "react-native run-android",
     "postinstall": "react-native unpack-harmony"
   },
@@ -22,7 +23,7 @@
     "@babel/runtime": "^7.20.0",
     "@react-native-community/eslint-config": "^3.2.0",
     "@react-native/metro-config": "^0.72.11",
-    "@rnoh/testerino": "^0.0.1",
+    "@rnoh/testerino": "^0.0.5",
     "@tsconfig/react-native": "^2.0.2",
     "@types/jest": "^29.2.1",
     "@types/react": "^18.2.15",
