@@ -2,10 +2,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Screen, enableScreens} from 'react-native-screens';
+import {Screen} from 'react-native-screens';
 import {Tester, TestSuite, TestCase} from '@rnoh/testerino';
-
-enableScreens(false);
 
 enum ActivityState {
   DETACH = 0,
@@ -25,6 +23,7 @@ function App({}): JSX.Element {
               arrange={({setState}) => {
                 return (
                   <Screen
+                    enabled={false}
                     style={{backgroundColor: 'gray', width: '100%'}}
                     activityState={ActivityState.ATTACHED}>
                     <TouchableOpacity
@@ -42,6 +41,7 @@ function App({}): JSX.Element {
             />
             <TestCase itShould="show nothing (DETACH)">
               <Screen
+                enabled={false}
                 style={{backgroundColor: 'gray', width: '100%'}}
                 activityState={ActivityState.DETACH}>
                 <View
@@ -55,6 +55,7 @@ function App({}): JSX.Element {
               arrange={({setState}) => {
                 return (
                   <Screen
+                    enabled={false}
                     style={{backgroundColor: 'gray', width: '100%'}}
                     activityState={ActivityState.IN_TRANSITION}>
                     <TouchableOpacity
