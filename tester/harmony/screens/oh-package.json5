@@ -1,0 +1,10 @@
+{
+  license: '',
+  devDependencies: {},
+  author: '',
+  name: "screens",
+  description: '',
+  type: 'module',
+  version: '4.0.0',
+  dependencies: {},
+}

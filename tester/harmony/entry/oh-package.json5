@@ -3,10 +3,8 @@
   "devDependencies": {},
   "name": "entry",
   "description": "example description",
-  "repository": {},
   "version": "1.0.0",
   "dependencies": {
-    "rnoh": "file:../react_native_modules/rnoh",
-    "rnoh-screens": "file:../react_native_modules/rnoh_screens"
+    "@rnoh/react-native-openharmony-screens": "file:../screens"
   }
 }

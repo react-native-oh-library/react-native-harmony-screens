@@ -1,7 +1,6 @@
-package-lock.json
-react_native_modules/rnoh
+# react_native_modules/
 oh_modules/
-/config
+rnoh_modules/
 
 # ---
 

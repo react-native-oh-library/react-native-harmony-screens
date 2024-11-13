@@ -1,3 +1,10 @@
 {
-  "extends": "./tsconfig",
+  "extends": "./tsconfig.json",
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.test.tsx"
+  ],
+  "compilerOptions": {
+    "strict": false
+  }
 }

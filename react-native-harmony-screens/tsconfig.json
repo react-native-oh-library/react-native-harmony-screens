@@ -1,38 +1,31 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "paths": {
-      "react-native-screens": [
-        "./src"
-      ],
-      "react-native-screens/native-stack": [
-        "./src/native-stack/index.tsx"
-      ],
-      "react-native-screens/reanimated": [
-        "src/reanimated/index.tsx"
-      ]
-    },
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react",
+    "jsx": "react-native",
     "lib": [
-      "esnext"
+      "esnext",
+      "dom"
     ],
     "module": "esnext",
     "moduleResolution": "node",
-    "noImplicitUseStrict": false,
-    "noStrictGenericChecks": false,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "esnext"
+    "target": "esnext",
+    "declaration": true,
+    "declarationMap": false,
+    "outDir": "lib/typescript",
+    "noStrictGenericChecks": false,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitUseStrict": false,
+    "noUnusedParameters": true,
+    "noUnusedLocals": true,
+    "types": [],
   },
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx"
-  ]
+    "src/**/*.tsx",
+    "jestSetup.js"
+  ],
 }

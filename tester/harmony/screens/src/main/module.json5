@@ -1,0 +1,9 @@
+{
+  "module": {
+    "name": "screens",
+    "type": "har",
+    "deviceTypes": [
+      "default"
+    ],
+  }
+}

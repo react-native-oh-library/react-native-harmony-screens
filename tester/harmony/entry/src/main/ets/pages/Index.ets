@@ -1,25 +1,54 @@
-import { RNApp, ComponentBuilderContext, RNOHContext } from 'rnoh'
+import {
+  RNApp,
+  RNOHErrorDialog,
+  MetroJSBundleProvider,
+  TraceJSBundleProviderDecorator,
+  RNOHCoreContext,
+  RNOHLogger
+} from "@rnoh/react-native-openharmony";
+import { getRNOHPackages } from '../PackageProvider'
 
 
-let storage = LocalStorage.GetShared()
-
-@Entry(storage)
+@Entry
 @Component
 struct Index {
-  @LocalStorageLink('RNOHContext') rnohContext: RNOHContext | undefined = undefined
+  @StorageLink('RNOHCoreContext') rnohCoreContext: RNOHCoreContext | undefined = undefined
+  @State shouldShow: boolean = false
+  private logger!: RNOHLogger
 
-  @Builder
-  buildCustomComponent(ctx: ComponentBuilderContext) {
+  aboutToAppear() {
+    this.logger = this.rnohCoreContext!.logger.clone("Index")
+    const stopTracing = this.logger.clone("aboutToAppear").startTracing()
+    this.shouldShow = true
+    stopTracing()
+  }
 
+  onBackPress(): boolean | undefined {
+    // NOTE: this is required since `Ability`'s `onBackPressed` function always
+    // terminates or puts the app in the background, but we want Ark to ignore it completely
+    // when handled by RN
+    this.rnohCoreContext!.dispatchBackPress()
+    return true
   }
 
   build() {
     Column() {
-      RNApp({
-        rnohContext: this.rnohContext!,
-        appName: "app_name",
-        buildCustomComponent: this.buildCustomComponent.bind(this)
-      })
+      if (this.rnohCoreContext && this.shouldShow) {
+        if (this.rnohCoreContext?.isDebugModeEnabled) {
+          RNOHErrorDialog({ ctx: this.rnohCoreContext })
+        }
+        RNApp({
+          rnInstanceConfig: {
+            name: "app_name",
+            createRNPackages: getRNOHPackages,
+            enableCAPIArchitecture: true,
+          },
+          appKey: "app_name",
+          jsBundleProvider: new TraceJSBundleProviderDecorator(
+            new MetroJSBundleProvider(),
+            this.rnohCoreContext.logger),
+        })
+      }
     }
     .height('100%')
     .width('100%')

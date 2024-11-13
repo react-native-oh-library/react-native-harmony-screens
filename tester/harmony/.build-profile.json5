@@ -1,13 +1,24 @@
 {
   app: {
-    compileSdkVersion: 9,
-    compatibleSdkVersion: 9,
     products: [
       {
         name: 'default',
         signingConfig: 'default',
+        compatibleSdkVersion: '5.0.0(12)',
+        runtimeOS: 'HarmonyOS',
       },
     ],
+    buildModeSet: [
+      {
+        name: 'debug',
+      },
+      {
+        name: 'release',
+      },
+    ],
+    "signingConfigs": [
+        // provide your own configs here
+    ]
   },
   modules: [
     {
@@ -16,17 +27,15 @@
       targets: [
         {
           name: 'default',
-          applyToProducts: ['default'],
+          applyToProducts: [
+            'default'
+          ],
         },
       ],
     },
     {
-      name: 'rnoh_screens',
-      srcPath: './react_native_modules/rnoh_screens',
-    },
-    {
-      name: 'rnoh',
-      srcPath: './react_native_modules/rnoh',
-    },
+      name: 'screens',
+      srcPath: "./screens"
+    }
   ],
 }

@@ -1,7 +1,10 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json",
+  "extends": "@react-native/typescript-config/tsconfig.json",
   "compilerOptions": {
     "baseUrl": "./",
-    "skipLibCheck": true
+    "paths": {}
   },
+  "exclude": [
+    "./harmony/**"
+  ]
 }

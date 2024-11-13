@@ -1,22 +1,13 @@
-const {mergeConfig, getDefaultConfig} = require('@react-native/metro-config');
-const harmonyMetroConfig = require('react-native-harmony/metro.config');
+const {createHarmonyMetroConfig} = require('react-native-harmony/metro.config');
+const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
 
 /**
- * @type {import("metro-config").ConfigT}
+ * @type {import("@types/metro-config").ConfigT}
  */
-const config = {
-  transformer: {
-    getTransformOptions: async () => ({
-      transform: {
-        experimentalImportSupport: false,
-        inlineRequires: true,
-      },
-    }),
-  },
-};
+const config = {};
 
 module.exports = mergeConfig(
   getDefaultConfig(__dirname),
-  harmonyMetroConfig,
+  createHarmonyMetroConfig({}),
   config,
 );
