@@ -1,86 +1,40 @@
 import React from 'react';
-import {ScrollView, StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Screen} from 'react-native-screens';
-import {Tester, TestSuite, TestCase} from '@rnoh/testerino';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {View, Text, Button} from 'react-native';
 
-enum ActivityState {
-  DETACH = 0,
-  IN_TRANSITION = 1,
-  ATTACHED = 2,
-}
+// Create the stack navigator
+const Stack = createNativeStackNavigator();
 
-function App({}): JSX.Element {
+// Screen components
+function HomeScreen({navigation}: any) {
   return (
-    <ScrollView style={styles.container}>
-      <Tester>
-        <TestSuite name="Screen">
-          <TestSuite name="activityState">
-            <TestCase
-              itShould="show rectangle on gray background and be clickable (ATTACHED)"
-              initialState={false}
-              arrange={({setState}) => {
-                return (
-                  <Screen
-                    enabled={false}
-                    style={{backgroundColor: 'gray', width: '100%'}}
-                    activityState={ActivityState.ATTACHED}>
-                    <TouchableOpacity
-                      style={{backgroundColor: 'red', width: 100, height: 100}}
-                      onPress={() => {
-                        setState(true);
-                      }}
-                    />
-                  </Screen>
-                );
-              }}
-              assert={({expect, state}) => {
-                expect(state).to.be.true;
-              }}
-            />
-            <TestCase itShould="show nothing (DETACH)">
-              <Screen
-                enabled={false}
-                style={{backgroundColor: 'gray', width: '100%'}}
-                activityState={ActivityState.DETACH}>
-                <View
-                  style={{backgroundColor: 'red', width: 100, height: 100}}
-                />
-              </Screen>
-            </TestCase>
-            <TestCase
-              itShould="show rectangle on gray background and be clickable (IN_TRANSITION)"
-              initialState={false}
-              arrange={({setState}) => {
-                return (
-                  <Screen
-                    enabled={false}
-                    style={{backgroundColor: 'gray', width: '100%'}}
-                    activityState={ActivityState.IN_TRANSITION}>
-                    <TouchableOpacity
-                      style={{backgroundColor: 'red', width: 100, height: 100}}
-                      onPress={() => {
-                        setState(true);
-                      }}
-                    />
-                  </Screen>
-                );
-              }}
-              assert={({expect, state}) => {
-                expect(state).to.be.true;
-              }}
-            />
-          </TestSuite>
-        </TestSuite>
-      </Tester>
-    </ScrollView>
+    <View>
+      <Text>Home Screen</Text>
+      <Button
+        title="Go to Details"
+        onPress={() => navigation.navigate('Details')}
+      />
+    </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-  },
-});
+function DetailsScreen() {
+  return (
+    <View>
+      <Text>Details Screen</Text>
+    </View>
+  );
+}
 
-export default App;
+// App component with navigation container
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}

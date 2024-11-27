@@ -1,5 +1,78 @@
-import { RNOHPackage, RNPackageContext } from "@rnoh/react-native-openharmony";
+import { ComponentBuilderContext, RNOHPackage, RNPackageContext } from "@rnoh/react-native-openharmony";
 import type { UITurboModule, UITurboModuleContext } from "@rnoh/react-native-openharmony/ts";
+import { RNSScreen } from './components/RNSScreen';
+import { RNSFullWindowOverlay } from './components/RNSFullWindowOverlay';
+import { RNSModalScreen } from './components/RNSModalScreen';
+import { RNSScreenContainer } from './components/RNSScreenContainer';
+import { RNSScreenContentWrapper } from './components/RNSScreenContentWrapper';
+import { RNSScreenFooter } from './components/RNSScreenFooter';
+import { RNSScreenNavigationContainer } from './components/RNSScreenNavigationContainer';
+import { RNSScreenStack } from './components/RNSScreenStack';
+import { RNSScreenStackHeaderSubview } from './components/RNSScreenStackHeaderSubview';
+import { RNSScreenStackHeaderConfig } from './components/RNSScreenStackHeaderConfig'
+import { RNSSearchBar } from './components/RNSSearchBar';
+
+import { RNSModule } from './modules/RNSModule'
+
+@Builder
+export function componentBuilder(ctx: ComponentBuilderContext) {
+  if (ctx.componentName == RNSScreen.NAME) {
+    RNSScreen({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSFullWindowOverlay.NAME) {
+    RNSFullWindowOverlay({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSModalScreen.NAME) {
+    RNSModalScreen({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenContainer.NAME) {
+    RNSScreenContainer({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenContentWrapper.NAME) {
+    RNSScreenContentWrapper({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenFooter.NAME) {
+    RNSScreenFooter({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenNavigationContainer.NAME) {
+    RNSScreenNavigationContainer({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenStack.NAME) {
+    RNSScreenStack({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenStackHeaderSubview.NAME) {
+    RNSScreenStackHeaderSubview({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSSearchBar.NAME) {
+    RNSSearchBar({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenStackHeaderConfig.NAME) {
+    RNSScreenStackHeaderConfig({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  }
+}
 
 export class RNOHScreensPackage extends RNOHPackage {
   private isRNScreensDevModeEnabled: boolean
@@ -10,6 +83,21 @@ export class RNOHScreensPackage extends RNOHPackage {
   }
 
   getUITurboModuleFactoryByNameMap(): Map<string, (ctx: UITurboModuleContext) => UITurboModule | null> {
-    return new Map();
+    return new Map().set(RNSModule.NAME, (ctx: UITurboModuleContext) => new RNSModule(ctx))
+  }
+
+  createWrappedCustomRNComponentBuilderByComponentNameMap(): Map<string, WrappedBuilder<[ComponentBuilderContext]>> {
+    return new Map()
+      .set(RNSScreen.NAME, wrapBuilder(componentBuilder))
+      .set(RNSFullWindowOverlay.NAME, wrapBuilder(componentBuilder))
+      .set(RNSModalScreen.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenContainer.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenContentWrapper.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenFooter.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenNavigationContainer.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenStack.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenStackHeaderSubview.NAME, wrapBuilder(componentBuilder))
+      .set(RNSScreenStackHeaderConfig.NAME, wrapBuilder(componentBuilder))
+      .set(RNSSearchBar.NAME, wrapBuilder(componentBuilder))
   }
 }

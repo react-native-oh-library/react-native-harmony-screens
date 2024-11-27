@@ -3,8 +3,10 @@
  * DO NOT modify it manually, your changes WILL be overwritten.
  */
 import type { RNPackageContext, RNOHPackage } from '@rnoh/react-native-openharmony';
+import RnohReactNativeHarmonySafeAreaContextPackage from '@rnoh/react-native-openharmony-safe-area-context';
 
 export function createRNOHPackages(ctx: RNPackageContext): RNOHPackage[] {
   return [
+    new RnohReactNativeHarmonySafeAreaContextPackage(ctx),
   ];
 }

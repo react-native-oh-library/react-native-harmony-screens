@@ -1,0 +1,37 @@
+import { Descriptor, ViewBaseProps, RNComponentContext, } from '@rnoh/react-native-openharmony';
+import { RNC } from "@rnoh/react-native-openharmony/generated"
+
+
+interface RNSFullWindowOverlayProps extends ViewBaseProps {
+  size: number
+}
+
+export type RNSFullWindowOverlayDescriptor = Descriptor<"RNSFullWindowOverlay", RNSFullWindowOverlayProps>
+
+@Component
+export struct RNSFullWindowOverlay {
+  public static readonly NAME = RNC.RNSFullWindowOverlay.NAME
+  public ctx!: RNComponentContext
+  public tag: number = 0
+  @State descriptor: RNSFullWindowOverlayDescriptor = {} as RNSFullWindowOverlayDescriptor
+  private cleanUpCallbacks: (() => void)[] = []
+
+  aboutToAppear() {
+    this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSFullWindowOverlayDescriptor>(this.tag)
+    this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
+      (newDescriptor) => {
+        this.descriptor = (newDescriptor as RNSFullWindowOverlayDescriptor)
+      }
+    ))
+  }
+
+  aboutToDisappear() {
+    this.cleanUpCallbacks.forEach(cb => cb())
+  }
+
+  build() {
+    Stack() {
+      ContentSlot(this.ctx.getContentForTag(this.tag))
+    }
+  }
+}
