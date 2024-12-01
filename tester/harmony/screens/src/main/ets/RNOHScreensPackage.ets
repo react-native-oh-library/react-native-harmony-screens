@@ -76,7 +76,7 @@ export class RNOHScreensPackage extends RNOHPackage {
 
   createWrappedCustomRNComponentBuilderByComponentNameMap(): Map<string, WrappedBuilder<[ComponentBuilderContext]>> {
     return new Map()
-      .set(RNSScreen.NAME, wrapBuilder(componentBuilder))
+      // .set(RNSScreen.NAME, wrapBuilder(componentBuilder)) TODO: don't create this when the parent is a ScreenContainer
       .set(RNSFullWindowOverlay.NAME, wrapBuilder(componentBuilder))
       .set(RNSModalScreen.NAME, wrapBuilder(componentBuilder))
       .set(RNSScreenContainer.NAME, wrapBuilder(componentBuilder))
