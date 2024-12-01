@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "NativeNavigationExampleAbility_desc",
+      "value": "description"
+    },
+    {
+      "name": "NativeNavigationExampleAbility_label",
+      "value": "label"
+    }
+  ]
+}
