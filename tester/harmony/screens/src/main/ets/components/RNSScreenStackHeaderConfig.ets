@@ -1,12 +1,7 @@
-import { Descriptor, ViewBaseProps, RNComponentContext, } from '@rnoh/react-native-openharmony';
+import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 
-
-interface RNSScreenStackHeaderConfigProps extends ViewBaseProps {
-  size: number
-}
-
-export type RNSScreenStackHeaderConfigDescriptor = Descriptor<"RNSScreenStackHeaderConfig", RNSScreenStackHeaderConfigProps>
+export type RNSScreenStackHeaderConfigDescriptor = Descriptor<"RNSScreenStackHeaderConfig", RNC.RNSScreenStackHeaderConfig.Props>
 
 @Component
 export struct RNSScreenStackHeaderConfig {
@@ -30,8 +25,6 @@ export struct RNSScreenStackHeaderConfig {
   }
 
   build() {
-    Stack() {
-      ContentSlot(this.ctx.getContentForTag(this.tag))
-    }
+    ContentSlot(this.ctx.getContentForTag(this.tag))
   }
 }

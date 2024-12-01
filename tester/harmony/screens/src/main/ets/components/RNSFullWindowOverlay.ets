@@ -1,12 +1,7 @@
-import { Descriptor, ViewBaseProps, RNComponentContext, } from '@rnoh/react-native-openharmony';
+import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 
-
-interface RNSFullWindowOverlayProps extends ViewBaseProps {
-  size: number
-}
-
-export type RNSFullWindowOverlayDescriptor = Descriptor<"RNSFullWindowOverlay", RNSFullWindowOverlayProps>
+export type RNSFullWindowOverlayDescriptor = Descriptor<"RNSFullWindowOverlay", RNC.RNSFullWindowOverlay.Props>
 
 @Component
 export struct RNSFullWindowOverlay {
@@ -30,8 +25,6 @@ export struct RNSFullWindowOverlay {
   }
 
   build() {
-    Stack() {
-      ContentSlot(this.ctx.getContentForTag(this.tag))
-    }
+    ContentSlot(this.ctx.getContentForTag(this.tag))
   }
 }

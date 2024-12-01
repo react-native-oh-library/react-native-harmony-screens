@@ -1,12 +1,7 @@
-import { Descriptor, ViewBaseProps, RNComponentContext, } from '@rnoh/react-native-openharmony';
+import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 
-
-interface RNSScreenFooterProps extends ViewBaseProps {
-  size: number
-}
-
-export type RNSScreenFooterDescriptor = Descriptor<"RNSScreenFooter", RNSScreenFooterProps>
+export type RNSScreenFooterDescriptor = Descriptor<"RNSScreenFooter", RNC.RNSScreenFooter.Props>
 
 @Component
 export struct RNSScreenFooter {
@@ -30,8 +25,6 @@ export struct RNSScreenFooter {
   }
 
   build() {
-    Stack() {
-      ContentSlot(this.ctx.getContentForTag(this.tag))
-    }
+    ContentSlot(this.ctx.getContentForTag(this.tag))
   }
 }

@@ -1,12 +1,7 @@
-import { Descriptor, ViewBaseProps, RNComponentContext, } from '@rnoh/react-native-openharmony';
+import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 
-
-interface RNSScreenProps extends ViewBaseProps {
-  size: number
-}
-
-export type RNSScreenDescriptor = Descriptor<"RNSScreen", RNSScreenProps>
+export type RNSScreenDescriptor = Descriptor<"RNSScreen", RNC.RNSScreen.Props>
 
 @Component
 export struct RNSScreen {
@@ -16,7 +11,6 @@ export struct RNSScreen {
   @State descriptor: RNSScreenDescriptor = {} as RNSScreenDescriptor
   private eventEmitter: RNC.RNSScreen.EventEmitter | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
-  private dismissCount: number = 0;
 
   aboutToAppear() {
     this.eventEmitter = new RNC.RNSScreen.EventEmitter(this.ctx.rnInstance, this.tag)
@@ -32,8 +26,6 @@ export struct RNSScreen {
   aboutToDisappear() {
     this.eventEmitter!.emit("willDisappear", {})
     this.cleanUpCallbacks.forEach(cb => cb())
-    // TODO: check for possible bugs
-    this.dismissCount = 1;
   }
 
   build() {
@@ -42,8 +34,5 @@ export struct RNSScreen {
     }
     .onAppear(() => this.eventEmitter!.emit("appear", {}))
     .onDisAppear(() => this.eventEmitter!.emit("disappear", {}))
-    .onDetach(() => this.eventEmitter!.emit("dismissed", {
-      dismissCount: this.dismissCount
-    }))
   }
 }
