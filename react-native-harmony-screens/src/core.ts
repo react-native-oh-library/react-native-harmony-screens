@@ -1,12 +1,13 @@
-"use client";
-
 import { Platform, UIManager } from "react-native";
+
+// const that tells if the library should use new implementation, will be undefined for older versions
+export const shouldUseActivityState = true;
 
 export const isNativePlatformSupported =
   Platform.OS === "ios" ||
   Platform.OS === "android" ||
   Platform.OS === "windows" ||
-  // @ts-ignore RNOH Patch
+  // @ts-ignore RNOH patch
   Platform.OS === "harmony";
 
 let ENABLE_SCREENS = isNativePlatformSupported;

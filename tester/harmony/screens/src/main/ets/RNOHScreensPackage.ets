@@ -4,8 +4,6 @@ import { RNSScreen } from './components/RNSScreen';
 import { RNSFullWindowOverlay } from './components/RNSFullWindowOverlay';
 import { RNSModalScreen } from './components/RNSModalScreen';
 import { RNSScreenContainer } from './components/RNSScreenContainer';
-import { RNSScreenContentWrapper } from './components/RNSScreenContentWrapper';
-import { RNSScreenFooter } from './components/RNSScreenFooter';
 import { RNSScreenNavigationContainer } from './components/RNSScreenNavigationContainer';
 import { RNSScreenStack } from './components/RNSScreenStack';
 import { RNSScreenStackHeaderSubview } from './components/RNSScreenStackHeaderSubview';
@@ -33,16 +31,6 @@ export function componentBuilder(ctx: ComponentBuilderContext) {
     })
   } else if (ctx.componentName == RNSScreenContainer.NAME) {
     RNSScreenContainer({
-      ctx: ctx.rnComponentContext,
-      tag: ctx.tag,
-    })
-  } else if (ctx.componentName == RNSScreenContentWrapper.NAME) {
-    RNSScreenContentWrapper({
-      ctx: ctx.rnComponentContext,
-      tag: ctx.tag,
-    })
-  } else if (ctx.componentName == RNSScreenFooter.NAME) {
-    RNSScreenFooter({
       ctx: ctx.rnComponentContext,
       tag: ctx.tag,
     })
@@ -92,8 +80,6 @@ export class RNOHScreensPackage extends RNOHPackage {
       .set(RNSFullWindowOverlay.NAME, wrapBuilder(componentBuilder))
       .set(RNSModalScreen.NAME, wrapBuilder(componentBuilder))
       .set(RNSScreenContainer.NAME, wrapBuilder(componentBuilder))
-      .set(RNSScreenContentWrapper.NAME, wrapBuilder(componentBuilder))
-      .set(RNSScreenFooter.NAME, wrapBuilder(componentBuilder))
       .set(RNSScreenNavigationContainer.NAME, wrapBuilder(componentBuilder))
       .set(RNSScreenStack.NAME, wrapBuilder(componentBuilder))
       .set(RNSScreenStackHeaderSubview.NAME, wrapBuilder(componentBuilder))

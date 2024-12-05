@@ -1,10 +1,6 @@
-// Side effects import declaration to ensure our TurboModule
-// is loaded.
-import "./specs/NativeScreensModule";
-
 export * from "react-native-screens/src/types";
 
-/**
+/*
  * Core
  */
 export {
@@ -12,16 +8,26 @@ export {
   enableFreeze,
   screensEnabled,
   freezeEnabled,
+  shouldUseActivityState,
 } from "react-native-screens/src/core";
 
-/**
+/*
  * RNS Components
  */
 export {
   default as Screen,
+  NativeScreen,
   InnerScreen,
   ScreenContext,
 } from "./components/Screen";
+
+export {
+  default as ScreenContainer,
+  NativeScreenContainer,
+  NativeScreenNavigationContainer,
+} from "react-native-screens/src/components/ScreenContainer";
+
+export { default as ScreenStack } from "react-native-screens/src/components/ScreenStack";
 
 export {
   ScreenStackHeaderConfig,
@@ -33,24 +39,34 @@ export {
   ScreenStackHeaderSearchBarView,
 } from "react-native-screens/src/components/ScreenStackHeaderConfig";
 
-export { default as SearchBar } from "react-native-screens/src/components/SearchBar";
-export { default as ScreenContainer } from "react-native-screens/src/components/ScreenContainer";
-export { default as ScreenStack } from "react-native-screens/src/components/ScreenStack";
-export { default as ScreenStackItem } from "react-native-screens/src/components/ScreenStackItem";
-export { default as FullWindowOverlay } from "react-native-screens/src/components/FullWindowOverlay";
-export { default as ScreenFooter } from "react-native-screens/src/components/ScreenFooter";
-export { default as ScreenContentWrapper } from "react-native-screens/src/components/ScreenContentWrapper";
+export {
+  default as SearchBar,
+  NativeSearchBar,
+  NativeSearchBarCommands,
+} from "react-native-screens/src/components/SearchBar";
 
-/**
+export { default as FullWindowOverlay } from "react-native-screens/src/components/FullWindowOverlay";
+
+/*
+ * Modules
+ */
+export { default as NativeScreensModule } from "react-native-screens/src/fabric/NativeScreensModule";
+
+/*
+ * Contexts
+ */
+export { GHContext } from "react-native-screens/src/native-stack/contexts/GHContext";
+
+/*
  * Utils
  */
 export {
   isSearchBarAvailableForCurrentPlatform,
-  compatibilityFlags,
+  isNewBackTitleImplementation,
   executeNativeBackPress,
 } from "react-native-screens/src/utils";
 
-/**
+/*
  * Hooks
  */
 export { default as useTransitionProgress } from "react-native-screens/src/useTransitionProgress";

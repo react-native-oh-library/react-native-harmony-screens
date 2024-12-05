@@ -1,5 +1,3 @@
-'use client';
-
 /* eslint-disable */
 import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
 import type { ViewProps, ColorValue, HostComponent } from 'react-native';
