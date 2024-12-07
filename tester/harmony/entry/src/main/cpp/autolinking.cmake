@@ -4,9 +4,11 @@ cmake_minimum_required(VERSION 3.5)
 
 # @api
 function(autolink_libraries target)
+    add_subdirectory("${OH_MODULES_DIR}/@rnoh/react-native-openharmony-gesture-handler/src/main/cpp" ./rnoh_gesture_handler)
     add_subdirectory("${OH_MODULES_DIR}/@rnoh/react-native-openharmony-safe-area-context/src/main/cpp" ./rnoh_safe_area_context)
 
     set(AUTOLINKED_LIBRARIES
+        rnoh_gesture_handler
         rnoh_safe_area_context
     )
 

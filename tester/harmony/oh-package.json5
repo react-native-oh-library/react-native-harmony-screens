@@ -10,6 +10,7 @@
   version: "1.0.0",
   dependencies: {
     "@rnoh/react-native-openharmony": "file:../node_modules/react-native-harmony/harmony/react_native_openharmony.har",
+    "@rnoh/react-native-openharmony-gesture-handler": "file:../node_modules/react-native-harmony-gesture-handler/harmony/gesture_handler.har",
     "@rnoh/react-native-openharmony-safe-area-context": "file:../node_modules/react-native-harmony-safe-area-context/harmony/safe_area_context.har",
   },
 }
