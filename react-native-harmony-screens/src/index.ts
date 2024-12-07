@@ -25,7 +25,7 @@ export {
   default as ScreenContainer,
   NativeScreenContainer,
   NativeScreenNavigationContainer,
-} from "react-native-screens/src/components/ScreenContainer";
+} from "./components/ScreenContainer";
 
 export { default as ScreenStack } from "react-native-screens/src/components/ScreenStack";
 

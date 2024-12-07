@@ -1,9 +1,12 @@
 import React from "react";
-import { Animated, View, Platform } from "react-native";
+import { Animated, View, Platform, NativeSyntheticEvent } from "react-native";
 
 import TransitionProgressContext from "react-native-screens/src/TransitionProgressContext";
 import DelayedFreeze from "react-native-screens/src/components/helpers/DelayedFreeze";
-import { ScreenProps } from "react-native-screens/src/types";
+import {
+  HeaderHeightChangeEventType,
+  ScreenProps,
+} from "react-native-screens/src/types";
 
 import {
   freezeEnabled,
@@ -93,6 +96,7 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         isNativeStack,
         gestureResponseDistance,
         onGestureCancel,
+        onHeaderHeightChange,
         ...props
       } = rest;
 
@@ -119,15 +123,35 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         }
       };
 
+      // RNOH patch: native header is not included into Yoga calculations,
+      // thus layoutMetrics are wrong. We should find other way to include
+      // header height into Yoga layout.
+      const [headerHeight, setHeaderHeight] = React.useState(0);
+      const onHeaderHeightChangeHandler = (
+        e: NativeSyntheticEvent<HeaderHeightChangeEventType>
+      ) => {
+        setHeaderHeight(e.nativeEvent.headerHeight);
+        if (typeof onHeaderHeightChange === "function") {
+          onHeaderHeightChange?.(e);
+        }
+      };
+
       return (
         <DelayedFreeze freeze={freezeOnBlur && activityState === 0}>
           <AnimatedScreen
             {...props}
+            style={[
+              props.style,
+              {
+                paddingTop: headerHeight,
+              },
+            ]}
             activityState={activityState}
             sheetAllowedDetents={sheetAllowedDetents}
             sheetLargestUndimmedDetent={sheetLargestUndimmedDetent}
             sheetGrabberVisible={sheetGrabberVisible}
             sheetCornerRadius={sheetCornerRadius}
+            onHeaderHeightChange={onHeaderHeightChangeHandler}
             sheetExpandsWhenScrolledToEdge={sheetExpandsWhenScrolledToEdge}
             gestureResponseDistance={{
               start: gestureResponseDistance?.start ?? -1,

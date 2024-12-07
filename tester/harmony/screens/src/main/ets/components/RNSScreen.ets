@@ -9,17 +9,15 @@ const TITLEBAR_HEIGHT = 56;
 export struct RNSScreen {
   public static readonly NAME = RNC.RNSScreen.NAME
   public ctx!: RNComponentContext
-  public pageInfos!: NavPathStack
-  public screens!: number[]
+  public isFirstScreenInStack!: boolean
   public tag: number = 0
-  @State descriptor: RNSScreenDescriptor = {} as RNSScreenDescriptor
   private eventEmitter: RNC.RNSScreen.EventEmitter | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
-  private index = 0;
+  private dismissCount: number = 1;
   @State public topInset: number = 0;
-  public dismissCount: number = 0;
+  @State descriptor: RNSScreenDescriptor = {} as RNSScreenDescriptor
 
-  async aboutToAppear() {
+  aboutToAppear() {
     this.eventEmitter = new RNC.RNSScreen.EventEmitter(this.ctx.rnInstance, this.tag)
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenDescriptor>(this.tag)
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
@@ -27,17 +25,13 @@ export struct RNSScreen {
         this.descriptor = (newDescriptor as RNSScreenDescriptor)
       }
     ))
-    this.index = this.screens.indexOf(this.tag);
     this.eventEmitter?.emit("headerHeightChange", {
-      headerHeight: this.topInset + (this.index > 0 ? TITLEBAR_HEIGHT : 0)
+      headerHeight: this.topInset + (this.isFirstScreenInStack ? 0: TITLEBAR_HEIGHT)
     })
   }
 
   aboutToDisappear() {
     this.cleanUpCallbacks.forEach(cb => cb())
-
-    // TODO: Component unmounted, initialize goBack animation if needed
-    this.pageInfos?.pop();
   }
 
   build() {
@@ -46,7 +40,7 @@ export struct RNSScreen {
         Stack() {
           ContentSlot(this.ctx.getContentForTag(this.tag))
         }.offset({
-          top: -this.topInset - (this.index > 0 ? TITLEBAR_HEIGHT : 0)
+          top: -this.topInset - (this.isFirstScreenInStack ? 0 : TITLEBAR_HEIGHT)
         })
       }
     }
@@ -58,10 +52,11 @@ export struct RNSScreen {
     .onDisAppear(() => {
       this.eventEmitter!.emit("disappear", {})
     })
-    .onDetach(() => {
+    .onBackPressed(() => {
       this.eventEmitter!.emit("dismissed", {
         dismissCount: this.dismissCount
       })
+      return false;
     })
   }
 }
