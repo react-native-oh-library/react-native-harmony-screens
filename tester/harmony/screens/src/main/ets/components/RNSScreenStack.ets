@@ -95,15 +95,15 @@ export struct RNSScreenStack {
         RNSScreen({
           ctx: this.ctx,
           tag: Number(this.stack[0]),
-          topInset: this.topInset,
           isFirstScreenInStack: true,
+          topInset: this.topInset,
         })
+        Navigation(this.stackController)
+          .mode(NavigationMode.Stack)
+          .navDestination(this.navDestinationBuilder)
+          .titleMode(NavigationTitleMode.Full)
+          .hitTestBehavior(HitTestMode.Transparent)
       }
-      Navigation(this.stackController)
-        .mode(NavigationMode.Stack)
-        .navDestination(this.navDestinationBuilder)
-        .hideToolBar(true)
-        .titleMode(NavigationTitleMode.Full)
     }.margin({
       top: this.topInset
     })
