@@ -20,7 +20,7 @@ export interface NativeProps extends ViewProps {
   onAttached?: DirectEventHandler<OnAttachedEvent>;
   onDetached?: DirectEventHandler<OnDetachedEvent>;
   backgroundColor?: ColorValue;
-  backTitle?: string;
+  backTitle?: string; // doesn't work on HarmonyOS
   backTitleFontFamily?: string;
   backTitleFontSize?: Int32;
   backTitleVisible?: WithDefault<boolean, "true">;
@@ -28,22 +28,22 @@ export interface NativeProps extends ViewProps {
   direction?: WithDefault<DirectionType, "ltr">;
   hidden?: boolean;
   hideShadow?: boolean;
-  largeTitle?: boolean;
-  largeTitleFontFamily?: string;
-  largeTitleFontSize?: Int32;
-  largeTitleFontWeight?: string;
-  largeTitleBackgroundColor?: ColorValue;
-  largeTitleHideShadow?: boolean;
-  largeTitleColor?: ColorValue;
+  largeTitle?: boolean; // iOS only
+  largeTitleFontFamily?: string; // iOS only
+  largeTitleFontSize?: Int32; // iOS only
+  largeTitleFontWeight?: string; // iOS only
+  largeTitleBackgroundColor?: ColorValue; // iOS only
+  largeTitleHideShadow?: boolean; // iOS only
+  largeTitleColor?: ColorValue; // iOS only
   translucent?: boolean;
   title?: string;
   titleFontFamily?: string;
   titleFontSize?: Int32;
   titleFontWeight?: string;
   titleColor?: ColorValue;
-  disableBackButtonMenu?: boolean;
+  disableBackButtonMenu?: boolean; // iOS only
   backButtonDisplayMode?: WithDefault<BackButtonDisplayMode, "default">;
-  hideBackButton?: boolean;
+  hideBackButton?: boolean; // doesn't work on HarmonyOS
   backButtonInCustomView?: boolean;
   // TODO: implement this props on iOS
   topInsetEnabled?: boolean;
