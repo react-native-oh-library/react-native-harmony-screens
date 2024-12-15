@@ -28,18 +28,16 @@ export struct RNSScreenStackHeaderSubview {
   horizontalAlignFromString(value: string): HorizontalAlign {
     switch (value) {
       case "right":
+      case "searchBar":
         return HorizontalAlign.End
       case "left":
+      case "back":
         return HorizontalAlign.Start
       case "title":
       case "center":
         return HorizontalAlign.Center
-      case "back":
-        return HorizontalAlign.Start
-      case "searchBar":
-        return HorizontalAlign.End
       default:
-        return HorizontalAlign.Center
+        return HorizontalAlign.End
     }
   }
 

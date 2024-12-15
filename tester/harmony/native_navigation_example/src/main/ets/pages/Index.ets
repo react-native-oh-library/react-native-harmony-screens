@@ -1,121 +1,96 @@
+// Index.ets
+import { CustomTransition, AnimateCallback } from './CustomNavigationUtils'
+
 @Entry
 @Component
-struct Index {
-  @State TooTmp: ToolbarItem = {
-    'value': "func",
-    // 'icon': "./image/ic_public_highlights.svg", 'action': () => {}
-  }
-  @Provide('pageInfos') pageInfos: NavPathStack = new NavPathStack()
-  private arr: number[] = [1, 2, 3];
+struct NavigationExample {
+  pageInfos: NavPathStack = new NavPathStack();
 
-  @Builder
-  PageMap(name: string) {
-    if (name === "NavDestinationTitle1") {
-      pageOneTmp()
-    } else if (name === "NavDestinationTitle2") {
-      pageTwoTmp()
-    } else if (name === "NavDestinationTitle3") {
-      pageThreeTmp()
+  aboutToAppear() {
+    if (this.pageInfos === undefined) {
+      this.pageInfos = new NavPathStack();
     }
+    this.pageInfos.pushPath({ name: 'pageOne' });
   }
 
   build() {
-    Column() {
-      Navigation(this.pageInfos) {
-        TextInput({ placeholder: 'search...' })
-          .width("90%")
-          .height(40)
-          .backgroundColor('#FFFFFF')
-
-        List({ space: 12 }) {
-          ForEach(this.arr, (item: string) => {
-            ListItem() {
-              Text("NavRouter" + item)
-                .width("100%")
-                .height(72)
-                .backgroundColor('#FFFFFF')
-                .borderRadius(24)
-                .fontSize(16)
-                .fontWeight(500)
-                .textAlign(TextAlign.Center)
-                .onClick(() => {
-                  this.pageInfos.pushPath({ name: "NavDestinationTitle" + item })
-                })
-            }
-          }, (item: string): string => item)
-        }
-        .width("90%")
-        .margin({ top: 12 })
+    Navigation(this.pageInfos) {
+    }
+    .title('NavIndex')
+    .hideNavBar(true)
+    .customNavContentTransition((from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) => {
+      if (from.mode == NavDestinationMode.DIALOG || to.mode == NavDestinationMode.DIALOG) {
+        return undefined;
       }
-      .title("Main Title")
-      .mode(NavigationMode.Stack)
-      .navDestination(this.PageMap)
-      // .menus([
-      //   {
-      //     value: "", icon: "./image/ic_public_search.svg", action: () => {}
-      //   },
-      // ])
-      .toolbarConfiguration([this.TooTmp, this.TooTmp, this.TooTmp])
-    }
-    .height('100%')
-    .width('100%')
-    .backgroundColor('#F1F3F5')
-  }
-}
 
-// PageOne.ets
-@Component
-export struct pageOneTmp {
-  @Consume('pageInfos') pageInfos: NavPathStack;
+      // No custom animation for the home page
+      if (from.index === -1 || to.index === -1) {
+        return undefined;
+      }
 
-  build() {
-    NavDestination() {
-      Column() {
-        Text("NavDestinationContent1")
-      }.width('100%').height('100%')
-    }.title("NavDestinationTitle1")
-    .onBackPressed(() => {
-      const popDestinationInfo = this.pageInfos.pop() // Pop the top element out of the navigation stack.
-      console.log('pop' + 'Return value' + JSON.stringify(popDestinationInfo))
-      return true
-    })
-  }
-}
-
-// PageTwo.ets
-@Component
-export struct pageTwoTmp {
-  @Consume('pageInfos') pageInfos: NavPathStack;
-
-  build() {
-    NavDestination() {
-      Column() {
-        Text("NavDestinationContent2")
-      }.width('100%').height('100%')
-    }.title("NavDestinationTitle2")
-    .onBackPressed(() => {
-      const popDestinationInfo = this.pageInfos.pop() // Pop the top element out of the navigation stack.
-      console.log('pop' + 'Return value' + JSON.stringify(popDestinationInfo))
-      return true
-    })
-  }
-}
-
-// PageThree.ets
-@Component
-export struct pageThreeTmp {
-  @Consume('pageInfos') pageInfos: NavPathStack;
-
-  build() {
-    NavDestination() {
-      Column() {
-        Text("NavDestinationContent3")
-      }.width('100%').height('100%')
-    }.title("NavDestinationTitle3")
-    .onBackPressed(() => {
-      const popDestinationInfo = this.pageInfos.pop() // Pop the top element out of the navigation stack.
-      console.log('pop' + 'Return value' + JSON.stringify(popDestinationInfo))
-      return true
+      CustomTransition.getInstance().operation = operation;
+      if (CustomTransition.getInstance().interactive) {
+        let customAnimation: NavigationAnimatedTransition = {
+          onTransitionEnd: (isSuccess: boolean) => {
+            console.log("===== current transition is " + isSuccess);
+            CustomTransition.getInstance().recoverState();
+            CustomTransition.getInstance().proxy = undefined;
+          },
+          transition: (transitionProxy: NavigationTransitionProxy) => {
+            CustomTransition.getInstance().proxy = transitionProxy;
+            let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
+              (to.navDestinationId) : (from.navDestinationId);
+            if (targetIndex) {
+              CustomTransition.getInstance().fireInteractiveAnimation(targetIndex, operation);
+            }
+          },
+          isInteractive: CustomTransition.getInstance().interactive
+        }
+        return customAnimation;
+      }
+      let customAnimation: NavigationAnimatedTransition = {
+        onTransitionEnd: (isSuccess: boolean)=>{
+          console.log(`current transition result is ${isSuccess}`)
+        },
+        timeout: 7000,
+        // When the transition starts, the system calls this method and passes in the transition context proxy object.
+        transition: (transitionProxy: NavigationTransitionProxy) => {
+          if (!from.navDestinationId || !to.navDestinationId) {
+            return;
+          }
+          // Obtain the corresponding transition animation callback from the CustomTransition class based on the sequence of subpages.
+          let fromParam: AnimateCallback = CustomTransition.getInstance().getAnimateParam(from.navDestinationId);
+          let toParam: AnimateCallback = CustomTransition.getInstance().getAnimateParam(to.navDestinationId);
+          if (operation == NavigationOperation.PUSH) {
+            if (toParam.start) {
+              toParam.start(true, false);
+            }
+            animateTo({
+              duration: 500, onFinish: () => {
+                transitionProxy.finishTransition();
+              }
+            }, () => {
+              if (toParam.finish) {
+                toParam.finish(true, false);
+              }
+            })
+          } else {
+            if (fromParam.start) {
+              fromParam.start(true, true);
+            }
+            animateTo({
+              duration: 500, onFinish: () => {
+                transitionProxy.finishTransition();
+              }
+            }, () => {
+              if (fromParam.finish) {
+                fromParam.finish(true, true);
+              }
+            })
+          }
+        }
+      };
+      return customAnimation;
     })
   }
 }

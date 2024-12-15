@@ -64,7 +64,7 @@ export {
   isSearchBarAvailableForCurrentPlatform,
   isNewBackTitleImplementation,
   executeNativeBackPress,
-} from "react-native-screens/src/utils";
+} from "./utils";
 
 /*
  * Hooks

@@ -81,12 +81,12 @@ export interface NativeProps extends ViewProps {
   homeIndicatorHidden?: boolean;
   preventNativeDismiss?: boolean;
   gestureEnabled?: WithDefault<boolean, true>;
-  statusBarColor?: ColorValue;
+  statusBarColor?: ColorValue; // not passed to native
   statusBarHidden?: boolean;
   screenOrientation?: string;
   statusBarAnimation?: string;
-  statusBarStyle?: string;
-  statusBarTranslucent?: boolean;
+  statusBarStyle?: string; // 
+  statusBarTranslucent?: boolean; // not supported
   gestureResponseDistance?: GestureResponseDistanceType;
   stackPresentation?: WithDefault<StackPresentation, 'push'>;
   stackAnimation?: WithDefault<StackAnimation, 'default'>;

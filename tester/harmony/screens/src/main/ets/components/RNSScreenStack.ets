@@ -1,5 +1,6 @@
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { AnimateCallback, AnimationDefinition, CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { SafeAreaInsets } from '../utils/SafeAreaInsets';
 import { RNSScreen } from './RNSScreen';
 
@@ -14,6 +15,7 @@ export struct RNSScreenStack {
   private safeAreaInsets!: SafeAreaInsets;
   private cleanUpCallbacks: (() => void)[] = []
   private stackController: NavPathStack = new NavPathStack()
+  private customTransitionCoordinator: CustomTransitionCoordinator = new CustomTransitionCoordinator()
   @State private stack: number[] = []
   @State public topInset: number = 0;
   @State private isFirstNavigator: boolean | undefined = undefined;
@@ -39,7 +41,7 @@ export struct RNSScreenStack {
     }
 
     if (newChildren.length < this.stack.length) {
-      this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 2 : differentElementIndex - 2)
+      this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
     }
 
     if (differentElementIndex !== -1) {
@@ -73,6 +75,7 @@ export struct RNSScreenStack {
       const insets = await this.safeAreaInsets.getSafeAreaInsets()
       this.topInset = insets.top
     }
+    this.stackController.pushPathByName(this.stack[0].toString(), null)
   }
 
   aboutToDisappear() {
@@ -85,24 +88,91 @@ export struct RNSScreenStack {
       ctx: this.ctx,
       tag: Number(tag),
       isFirstScreenInStack: false,
+      customTransitionCoordinator: this.customTransitionCoordinator,
       topInset: this.topInset,
     })
+  }
+
+  customNavContentTransitionHandler(from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) {
+    // No custom animation for the home page
+    if (from.index === -1 || to.index === -1) {
+      return undefined;
+    }
+
+    // Fallback to default animation
+    if (operation == NavigationOperation.PUSH && to.navDestinationId &&
+    ['default', 'simple_push', 'flip'].includes(this.customTransitionCoordinator.getAnimateParam(to.navDestinationId)
+      .getAnimationType())) {
+      return undefined;
+    } else if (operation != NavigationOperation.PUSH && from.navDestinationId &&
+    ['default', 'simple_push', 'flip'].includes(this.customTransitionCoordinator.getAnimateParam(from.navDestinationId)
+      .getAnimationType())) {
+      return undefined;
+    }
+
+    this.customTransitionCoordinator.operation = operation;
+    return {
+      timeout: 7000, // the limit duration of the transition animation
+      transition: (transitionProxy: NavigationTransitionProxy) => {
+        if (!from.navDestinationId || !to.navDestinationId) {
+          return;
+        }
+
+        // Obtain the corresponding transition animation callback from the customTransitionCoordinator class based on the sequence of subpages.
+        let fromParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(from.navDestinationId);
+        let toParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(to.navDestinationId);
+        let exitingScreenAnimation: AnimationDefinition;
+        let enteringScreenAnimation: AnimationDefinition;
+        let animationType: string
+
+        if (operation == NavigationOperation.PUSH) {
+          exitingScreenAnimation = fromParam.hideAnimation;
+          enteringScreenAnimation = toParam.attachAnimation;
+          animationType = toParam.getAnimationType();
+        } else {
+          exitingScreenAnimation = fromParam.detachAnimation;
+          enteringScreenAnimation = toParam.showAnimation;
+          animationType = fromParam.getAnimationType();
+        }
+
+        enteringScreenAnimation.start(animationType);
+        animateTo({
+          duration: enteringScreenAnimation.options.duration,
+          curve: enteringScreenAnimation.options.curve,
+          tempo: enteringScreenAnimation.options.tempo,
+          onFinish: () => {
+            transitionProxy.finishTransition();
+          }
+        }, () => {
+          enteringScreenAnimation.end(animationType);
+        })
+
+        exitingScreenAnimation.start(animationType);
+        animateTo({
+          duration: exitingScreenAnimation.options.duration,
+          curve: exitingScreenAnimation.options.curve,
+          tempo: exitingScreenAnimation.options.tempo,
+          onFinish: () => {
+            transitionProxy.finishTransition();
+          }
+        }, () => {
+          exitingScreenAnimation.end(animationType);
+        })
+      }
+    } as NavigationAnimatedTransition;
   }
 
   build() {
     Stack() {
       if (!this.isFirstNavigator || this.topInset !== 0) {
-        RNSScreen({
-          ctx: this.ctx,
-          tag: Number(this.stack[0]),
-          isFirstScreenInStack: true,
-          topInset: this.topInset,
-        })
         Navigation(this.stackController)
           .mode(NavigationMode.Stack)
           .navDestination(this.navDestinationBuilder)
           .titleMode(NavigationTitleMode.Full)
           .hitTestBehavior(HitTestMode.Transparent)
+          .hideNavBar(true)
+          .customNavContentTransition((from: NavContentInfo, to: NavContentInfo,
+            operation: NavigationOperation) => this.customNavContentTransitionHandler(from, to, operation))
       }
     }.margin({
       top: this.topInset
