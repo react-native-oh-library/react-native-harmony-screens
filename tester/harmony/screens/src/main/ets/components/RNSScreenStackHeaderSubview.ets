@@ -1,10 +1,9 @@
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 import { RNSSearchBar } from './RNSSearchBar';
+import { NATIVE_BUTTON_OFFSET } from '../Constants'
 
 export type RNSScreenStackHeaderSubviewDescriptor = Descriptor<"RNSScreenStackHeaderSubview", RNC.RNSScreenStackHeaderSubview.Props>
-
-const NATIVE_BUTTON_OFFSET = 52
 
 @Component
 export struct RNSScreenStackHeaderSubview {

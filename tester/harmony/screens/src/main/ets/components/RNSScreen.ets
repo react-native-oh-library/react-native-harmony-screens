@@ -1,4 +1,9 @@
-import { Descriptor, RNComponentContext, RNViewBase, } from '@rnoh/react-native-openharmony';
+import {
+  convertColorValueToHex,
+  Descriptor,
+  RNComponentContext,
+  RNViewBase,
+} from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 import { CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { RNSScreenStackHeaderConfigDescriptor } from './RNSScreenStackHeaderConfig';
@@ -13,6 +18,7 @@ interface StatusBarConfiguration {
   statusBarStyle: string;
   statusBarAnimation: boolean;
   statusBarHidden: boolean;
+  statusBarColor: string
 }
 
 @Component
@@ -44,6 +50,7 @@ export struct RNSScreen {
     statusBarStyle: "",
     statusBarAnimation: false,
     statusBarHidden: false,
+    statusBarColor: ''
   }
 
   aboutToAppear() {
@@ -105,30 +112,28 @@ export struct RNSScreen {
       statusBarStyle: this.descriptor.rawProps["statusBarStyle"],
       statusBarAnimation: this.descriptor.rawProps["statusBarAnimation"] !== "none",
       statusBarHidden: this.descriptor.rawProps["statusBarHidden"],
+      statusBarColor: convertColorValueToHex(this.descriptor.rawProps["statusBarColor"])
     }
 
-    if (JSON.stringify(newStatusBarConfiguration) !== JSON.stringify(this.statusBarConfiguration)) {
-      this.statusBarConfiguration = newStatusBarConfiguration
-      let statusBarContentColor = "#000000"
-      if (this.statusBarConfiguration.statusBarStyle === "light") {
-        statusBarContentColor = "#E5FFFFFF"
-      }
-      const windowInstance = await window.getLastWindow(this.ctx.uiAbilityContext);
-      await windowInstance.setSpecificSystemBarEnabled('status', !this.statusBarConfiguration.statusBarHidden);
-      windowInstance.setWindowSystemBarProperties({
-        statusBarContentColor: statusBarContentColor,
-        enableStatusBarAnimation: this.statusBarConfiguration.statusBarAnimation,
-      });
+    this.statusBarConfiguration = newStatusBarConfiguration
+    let statusBarContentColor = "#000000"
+    if (this.statusBarConfiguration.statusBarStyle === "light") {
+      statusBarContentColor = "#E5FFFFFF"
     }
+    const windowInstance = await window.getLastWindow(this.ctx.uiAbilityContext);
+    await windowInstance.setSpecificSystemBarEnabled('status', !this.statusBarConfiguration.statusBarHidden);
+    windowInstance.setWindowSystemBarProperties({
+      statusBarContentColor: statusBarContentColor,
+      statusBarColor: this.statusBarConfiguration.statusBarColor,
+      enableStatusBarAnimation: this.statusBarConfiguration.statusBarAnimation,
+    });
   }
 
   updateHeaderConfigState() {
     this.updateNativeHeaderHeight()
 
-    if (this.shouldHideTitleBar !== (this.screenStackHeaderConfigDescriptor.rawProps["hidden"] ||
-      this.presentationMode === NavDestinationMode.DIALOG)) {
-      this.shouldHideTitleBar = this.screenStackHeaderConfigDescriptor.rawProps["hidden"] ||
-        this.presentationMode === NavDestinationMode.DIALOG
+    if (this.shouldHideTitleBar !== (this.screenStackHeaderConfigDescriptor.rawProps["hidden"])) {
+      this.shouldHideTitleBar = this.screenStackHeaderConfigDescriptor.rawProps["hidden"]
     }
 
     if (this.titleBarBackgroundColor !== this.screenStackHeaderConfigDescriptor.rawProps["backgroundColor"]) {

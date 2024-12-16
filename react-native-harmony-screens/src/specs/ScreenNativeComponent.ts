@@ -83,7 +83,7 @@ export interface NativeProps extends ViewProps {
   gestureEnabled?: WithDefault<boolean, true>; // ios specific
   statusBarColor?: ColorValue;
   statusBarHidden?: boolean;
-  screenOrientation?: string; // TODO
+  screenOrientation?: string;
   statusBarAnimation?: string;
   statusBarStyle?: string;
   statusBarTranslucent?: boolean;

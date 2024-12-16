@@ -1,9 +1,9 @@
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { NATIVE_BUTTON_OFFSET, NATIVE_BUTTON_VERTICAL_EDGE_MARGIN } from '../Constants'
 
 export type RNSSearchBarDescriptor = Descriptor<"RNSSearchBar", RNC.RNSSearchBar.Props>
 
-const NATIVE_BUTTON_OFFSET = 52
 
 @Component
 export struct RNSSearchBar {
@@ -119,7 +119,8 @@ export struct RNSSearchBar {
     .justifyContent(FlexAlign.Center)
     .alignItems(HorizontalAlign.End)
     .offset({
-      left: this.isFirstScreenInStack ? NATIVE_BUTTON_OFFSET - 8 : -8,
+      left: this.isFirstScreenInStack ? NATIVE_BUTTON_OFFSET - NATIVE_BUTTON_VERTICAL_EDGE_MARGIN :
+        -NATIVE_BUTTON_VERTICAL_EDGE_MARGIN,
     })
   }
 }

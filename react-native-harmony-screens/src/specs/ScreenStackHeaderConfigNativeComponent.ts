@@ -42,9 +42,9 @@ export interface NativeProps extends ViewProps {
   titleFontWeight?: string;
   titleColor?: ColorValue;
   disableBackButtonMenu?: boolean; // iOS only
-  backButtonDisplayMode?: WithDefault<BackButtonDisplayMode, "default">;  // not supported on HarmonyOS
+  backButtonDisplayMode?: WithDefault<BackButtonDisplayMode, "default">; // not supported on HarmonyOS
   hideBackButton?: boolean; // doesn't work on HarmonyOS
-  backButtonInCustomView?: boolean; // TODO
+  backButtonInCustomView?: boolean;
   // TODO: implement this props on iOS
   topInsetEnabled?: boolean;
 }

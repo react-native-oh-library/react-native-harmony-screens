@@ -1,8 +1,7 @@
 import { RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNSScreenStackHeaderConfigDescriptor } from './RNSScreenStackHeaderConfig';
 import { RNSScreenStackHeaderSubview, RNSScreenStackHeaderSubviewDescriptor } from './RNSScreenStackHeaderSubview';
-
-const TITLEBAR_HEIGHT = 56;
+import { TITLEBAR_HEIGHT, NATIVE_BUTTON_VERTICAL_EDGE_MARGIN } from '../Constants';
 
 @Component
 export struct RNSScreenTitleHeader {
@@ -72,7 +71,7 @@ export struct RNSScreenTitleHeader {
         .width("100%")
         .height("100%")
         .offset({
-          left: TITLEBAR_HEIGHT + 8
+          left: TITLEBAR_HEIGHT + NATIVE_BUTTON_VERTICAL_EDGE_MARGIN
         })
         .fontFamily(this.fontFamilyValue)
         .fontSize(this.titleFontSizeValue)
