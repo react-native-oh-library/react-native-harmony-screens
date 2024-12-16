@@ -17,6 +17,7 @@ export struct RNSScreenStack {
   private cleanUpCallbacks: (() => void)[] = []
   private stackController: NavPathStack = new NavPathStack()
   private customTransitionCoordinator: CustomTransitionCoordinator = new CustomTransitionCoordinator()
+  private eventEmitter: RNC.RNSScreenStack.EventEmitter | undefined = undefined
   @State private stack: number[] = []
   @State public topInset: number = 0;
   @State private isFirstNavigator: boolean | undefined = undefined;
@@ -59,6 +60,7 @@ export struct RNSScreenStack {
   }
 
   async aboutToAppear() {
+    this.eventEmitter = new RNC.RNSScreenStack.EventEmitter(this.ctx.rnInstance, this.tag)
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackDescriptor>(this.tag)
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
@@ -94,6 +96,21 @@ export struct RNSScreenStack {
     })
   }
 
+  shouldFallbackToDefaultAnimation(operation: NavigationOperation, from: NavContentInfo, to: NavContentInfo) {
+    const defaultBehaviourAnimations = ['default', 'simple_push', 'flip']
+    if (operation == NavigationOperation.PUSH && to.navDestinationId &&
+    defaultBehaviourAnimations.includes(this.customTransitionCoordinator.getAnimateParam(to.navDestinationId)
+      .getAnimationType())) {
+      return true;
+    }
+    if (operation != NavigationOperation.PUSH && from.navDestinationId &&
+    defaultBehaviourAnimations.includes(this.customTransitionCoordinator.getAnimateParam(from.navDestinationId)
+      .getAnimationType())) {
+      return true;
+    }
+    return false;
+  }
+
   customNavContentTransitionHandler(from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) {
     // No custom animation for the home page
     if (from.index === -1 || to.index === -1) {
@@ -101,13 +118,7 @@ export struct RNSScreenStack {
     }
 
     // Fallback to default animation
-    if (operation == NavigationOperation.PUSH && to.navDestinationId &&
-    ['default', 'simple_push', 'flip'].includes(this.customTransitionCoordinator.getAnimateParam(to.navDestinationId)
-      .getAnimationType())) {
-      return undefined;
-    } else if (operation != NavigationOperation.PUSH && from.navDestinationId &&
-    ['default', 'simple_push', 'flip'].includes(this.customTransitionCoordinator.getAnimateParam(from.navDestinationId)
-      .getAnimationType())) {
+    if (this.shouldFallbackToDefaultAnimation(operation, from, to)) {
       return undefined;
     }
 
@@ -138,6 +149,9 @@ export struct RNSScreenStack {
 
         const animationOptions = getAnimationConfig(animationType);
 
+        console.log("xdxddxdx123", animationType)
+
+
         enteringScreenAnimation.start(animationType);
         animateTo({
           duration: animationOptions.duration,
@@ -145,6 +159,7 @@ export struct RNSScreenStack {
           tempo: animationOptions.tempo,
           onFinish: () => {
             transitionProxy.finishTransition();
+            this.eventEmitter!.emit("finishTransitioning", {})
           }
         }, () => {
           enteringScreenAnimation.end(animationType);

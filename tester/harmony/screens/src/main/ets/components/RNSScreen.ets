@@ -97,13 +97,13 @@ export struct RNSScreen {
 
   handleAnimation(animationType: string, animationEvent: AnimationHandlerEvent): void {
     const newState = getNewAnimationState(animationType, animationEvent)
-    if (newState.translateXValue) {
+    if (newState.translateXValue !== undefined) {
       this.translateXValue = newState.translateXValue;
     }
-    if (newState.translateYValue) {
+    if (newState.translateYValue !== undefined) {
       this.translateYValue = newState.translateYValue
     }
-    if (newState.opacityValue) {
+    if (newState.opacityValue !== undefined) {
       this.opacityValue = newState.opacityValue
     }
   }

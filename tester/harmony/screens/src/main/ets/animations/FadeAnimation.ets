@@ -2,7 +2,7 @@ import { AnimationConfiguration } from "./AnimationHandler";
 
 const fade: AnimationConfiguration = {
   animationConfiguration: {
-    duration: 400
+    duration: 150
   },
   attachAnimationStartState: {
     opacityValue: 0
