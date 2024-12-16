@@ -1,5 +1,6 @@
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { getAnimationConfig } from '../animations/AnimationHandler';
 import { AnimateCallback, AnimationDefinition, CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { SafeAreaInsets } from '../utils/SafeAreaInsets';
 import { RNSScreen } from './RNSScreen';
@@ -135,11 +136,13 @@ export struct RNSScreenStack {
           animationType = fromParam.getAnimationType();
         }
 
+        const animationOptions = getAnimationConfig(animationType);
+
         enteringScreenAnimation.start(animationType);
         animateTo({
-          duration: enteringScreenAnimation.options.duration,
-          curve: enteringScreenAnimation.options.curve,
-          tempo: enteringScreenAnimation.options.tempo,
+          duration: animationOptions.duration,
+          curve: animationOptions.curve,
+          tempo: animationOptions.tempo,
           onFinish: () => {
             transitionProxy.finishTransition();
           }
@@ -149,9 +152,9 @@ export struct RNSScreenStack {
 
         exitingScreenAnimation.start(animationType);
         animateTo({
-          duration: exitingScreenAnimation.options.duration,
-          curve: exitingScreenAnimation.options.curve,
-          tempo: exitingScreenAnimation.options.tempo,
+          duration: animationOptions.duration,
+          curve: animationOptions.curve,
+          tempo: animationOptions.tempo,
           onFinish: () => {
             transitionProxy.finishTransition();
           }

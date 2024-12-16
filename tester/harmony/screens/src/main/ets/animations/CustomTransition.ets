@@ -5,7 +5,6 @@ type AnimationCallback = (animationType: string) => void;
 export interface AnimationDefinition {
   start: AnimationCallback,
   end: AnimationCallback,
-  options: AnimateParam
 }
 
 export interface AnimateCallback {
@@ -26,38 +25,30 @@ export class CustomTransitionCoordinator {
     getAnimationType: () => string,
     attachAnimationStartCallback: AnimationCallback,
     attachAnimationEndCallback: AnimationCallback,
-    attachAnimationOptions: AnimateParam,
     detachAnimationStartCallback: AnimationCallback,
     detachAnimationEndCallback: AnimationCallback,
-    detachAnimationOptions: AnimateParam,
     showAnimationStartCallback: AnimationCallback,
     showAnimationEndCallback: AnimationCallback,
-    showAnimationOptions: AnimateParam,
     hideAnimationStartCallback: AnimationCallback,
     hideAnimationEndCallback: AnimationCallback,
-    hideAnimationOptions: AnimateParam,
   ): void {
     let paramToStore: AnimateCallback = {
       getAnimationType,
       attachAnimation: {
         start: attachAnimationStartCallback,
         end: attachAnimationEndCallback,
-        options: attachAnimationOptions
       },
       detachAnimation: {
         start: detachAnimationStartCallback,
         end: detachAnimationEndCallback,
-        options: detachAnimationOptions
       },
       showAnimation: {
         start: showAnimationStartCallback,
         end: showAnimationEndCallback,
-        options: showAnimationOptions
       },
       hideAnimation: {
         start: hideAnimationStartCallback,
         end: hideAnimationEndCallback,
-        options: hideAnimationOptions
       }
     }
     if (this.customTransitionMap.has(name)) {

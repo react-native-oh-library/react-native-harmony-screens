@@ -1,9 +1,10 @@
-import { ColorValue, Descriptor, RNComponentContext, RNViewBase, } from '@rnoh/react-native-openharmony';
+import { Descriptor, RNComponentContext, RNViewBase, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 import { CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { RNSScreenStackHeaderConfigDescriptor } from './RNSScreenStackHeaderConfig';
 import { RNSScreenStackHeaderSubview, RNSScreenStackHeaderSubviewDescriptor } from './RNSScreenStackHeaderSubview';
 import { window } from '@kit.ArkUI';
+import { AnimationHandlerEvent, getNewAnimationState } from '../animations/AnimationHandler';
 
 export type RNSScreenDescriptor = Descriptor<"RNSScreen", RNC.RNSScreen.Props>
 
@@ -79,19 +80,12 @@ export struct RNSScreen {
     {} as RNSScreenStackHeaderConfigDescriptor
   @State titleHeight: number = 0;
   @State presentationMode: NavDestinationMode = NavDestinationMode.STANDARD;
-  // Animation region
-  private stackAnimation: string = "";
-  private pageId: string = '';
+  @State private stackAnimation: string = "";
+  private pageId: string = 'default';
   @State backgroundColorValue: string | undefined = undefined
   @State translateXValue: string = '0';
   @State translateYValue: string = '0';
   @State opacityValue: number = 1;
-  attachAnimationOptions: AnimateParam = {};
-  detachAnimationOptions: AnimateParam = {};
-  showAnimationOptions: AnimateParam = {};
-  hideAnimationOptions: AnimateParam = {};
-
-  // Animation region end
 
   private isComponentOfType(childTag: number, componentType: string): boolean {
     const descriptor = this.ctx.descriptorRegistry.getDescriptor<Descriptor>(childTag)
@@ -101,246 +95,31 @@ export struct RNSScreen {
     return false;
   }
 
-  // Animation region
-  // TODO: extract those callbacks to a separate class, find a way to update the animation state from the nested class object.
-  attachAnimationStartCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-      case 'ios':
-        this.translateXValue = '100%';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '-100%';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "100%"
-      case 'fade_from_bottom':
-        this.translateYValue = "100%"
-        this.opacityValue = 0
-      case 'fade':
-        this.opacityValue = 0
+  handleAnimation(animationType: string, animationEvent: AnimationHandlerEvent): void {
+    const newState = getNewAnimationState(animationType, animationEvent)
+    if (newState.translateXValue) {
+      this.translateXValue = newState.translateXValue;
     }
-  }
-
-  attachAnimationEndCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-      case 'ios':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "0"
-      case 'fade_from_bottom':
-        this.translateYValue = "0"
-        this.opacityValue = 1
-      case 'fade':
-        this.opacityValue = 1
+    if (newState.translateYValue) {
+      this.translateYValue = newState.translateYValue
     }
-  }
-
-  detachAnimationStartCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-      case 'ios':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "0"
-      case 'fade_from_bottom':
-        this.translateYValue = "0"
-        this.opacityValue = 1
-      case 'fade':
-        this.opacityValue = 1
-    }
-  }
-
-  detachAnimationEndCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-      case 'ios':
-        this.translateXValue = '100%';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '-100%';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "100%"
-      case 'fade_from_bottom':
-        this.translateYValue = "100%"
-        this.opacityValue = 0
-      case 'fade':
-        this.opacityValue = 0
-    }
-  }
-
-  showAnimationStartCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-        this.translateXValue = '-100%';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '100%';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "0"
-      case 'fade_from_bottom':
-        this.translateYValue = "0"
-        this.opacityValue = 1
-      case 'ios':
-        this.translateXValue = '-30%';
-      case 'fade':
-        this.opacityValue = 1
-    }
-  }
-
-  showAnimationEndCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "0"
-      case 'fade_from_bottom':
-        this.translateYValue = "0"
-        this.opacityValue = 1
-      case 'ios':
-        this.translateXValue = '0%';
-      case 'fade':
-        this.opacityValue = 1
-    }
-  }
-
-  hideAnimationStartCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '0';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "0"
-      case 'fade_from_bottom':
-        this.translateYValue = "0"
-        this.opacityValue = 1
-      case 'ios':
-        this.translateXValue = '0';
-      case 'fade':
-        this.opacityValue = 1
-    }
-  }
-
-  hideAnimationEndCallback(animationType: string): void {
-    switch (animationType) {
-      case 'slide_from_right':
-        this.translateXValue = '-100%';
-        break;
-      case 'slide_from_left':
-        this.translateXValue = '100%';
-        break;
-      case 'slide_from_bottom':
-        this.translateYValue = "0"
-      case 'fade_from_bottom':
-        this.translateYValue = "0"
-        this.opacityValue = 1
-      case 'ios':
-        this.translateXValue = '-30%';
-      case 'fade':
-        this.opacityValue = 1
+    if (newState.opacityValue) {
+      this.opacityValue = newState.opacityValue
     }
   }
 
   registerAnimation() {
-    switch (this.stackAnimation) {
-      case 'slide_from_right':
-      case 'slide_from_left':
-      case 'slide_from_bottom':
-      case 'fade_from_bottom':
-        this.attachAnimationOptions = {
-          duration: 400
-        }
-        this.detachAnimationOptions = {
-          duration: 400
-        }
-        this.hideAnimationOptions = {
-          duration: 400
-        }
-        this.showAnimationOptions = {
-          duration: 400
-        }
-        break;
-      case 'ios':
-        this.attachAnimationOptions = {
-          duration: 200,
-          curve: Curve.Friction
-        }
-        this.detachAnimationOptions = {
-          duration: 200,
-          curve: Curve.Friction
-        }
-        this.hideAnimationOptions = {
-          duration: 200,
-          curve: Curve.Friction
-        }
-        this.showAnimationOptions = {
-          duration: 200,
-          curve: Curve.Friction
-        }
-        break;
-      case 'fade':
-        this.attachAnimationOptions = {
-          duration: 150,
-        }
-        this.detachAnimationOptions = {
-          duration: 150,
-        }
-        this.hideAnimationOptions = {
-          duration: 150,
-        }
-        this.showAnimationOptions = {
-          duration: 150,
-        }
-        break;
-      case 'none':
-        this.attachAnimationOptions = {
-          duration: 0,
-        }
-        this.detachAnimationOptions = {
-          duration: 0,
-        }
-        this.hideAnimationOptions = {
-          duration: 0,
-        }
-        this.showAnimationOptions = {
-          duration: 0,
-        }
-        break;
-    }
-
     // Passing the callbacks in the object breaks animateTo
     this.customTransitionCoordinator.registerNavParam(this.pageId,
       () => this.stackAnimation,
-      (animationType) => this.attachAnimationStartCallback(animationType),
-      (animationType) => this.attachAnimationEndCallback(animationType),
-      this.attachAnimationOptions,
-      (animationType) => this.detachAnimationStartCallback(animationType),
-      (animationType) => this.detachAnimationEndCallback(animationType),
-      this.detachAnimationOptions,
-      (animationType) => this.showAnimationStartCallback(animationType),
-      (animationType) => this.showAnimationEndCallback(animationType),
-      this.showAnimationOptions,
-      (animationType) => this.hideAnimationStartCallback(animationType),
-      (animationType) => this.hideAnimationEndCallback(animationType),
-      this.hideAnimationOptions,
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.ATTACH_START),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.ATTACH_END),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.DETACH_START),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.DETACH_END),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.SHOW_START),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.SHOW_END),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.HIDE_START),
+      (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.HIDE_END),
     )
   }
 
