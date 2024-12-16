@@ -1,6 +1,5 @@
 import window from '@ohos.window';
 import { RNComponentContext } from '@rnoh/react-native-openharmony';
-import { Frame } from '@kit.ArkUI';
 
 interface EdgeInsets {
   top: number,

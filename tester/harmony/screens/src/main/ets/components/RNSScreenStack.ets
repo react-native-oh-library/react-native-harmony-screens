@@ -90,7 +90,7 @@ export struct RNSScreenStack {
     RNSScreen({
       ctx: this.ctx,
       tag: Number(tag),
-      isFirstScreenInStack: false,
+      isFirstScreenInStack: this.stack.indexOf(Number(tag)) === 0,
       customTransitionCoordinator: this.customTransitionCoordinator,
       topInset: this.topInset,
     })

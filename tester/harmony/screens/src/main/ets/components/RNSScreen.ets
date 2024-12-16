@@ -2,67 +2,13 @@ import { Descriptor, RNComponentContext, RNViewBase, } from '@rnoh/react-native-
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 import { CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { RNSScreenStackHeaderConfigDescriptor } from './RNSScreenStackHeaderConfig';
-import { RNSScreenStackHeaderSubview, RNSScreenStackHeaderSubviewDescriptor } from './RNSScreenStackHeaderSubview';
 import { window } from '@kit.ArkUI';
 import { AnimationHandlerEvent, getNewAnimationState } from '../animations/AnimationHandler';
+import { RNSScreenHeader } from "./RNSScreenHeader"
 
 export type RNSScreenDescriptor = Descriptor<"RNSScreen", RNC.RNSScreen.Props>
 
 const TITLEBAR_HEIGHT = 56;
-
-@Component
-struct RNSScreenTitle {
-  public ctx!: RNComponentContext
-  @Watch('onDescriptorChange') @State screenStackHeaderConfigDescriptor: RNSScreenStackHeaderConfigDescriptor =
-    {} as RNSScreenStackHeaderConfigDescriptor
-  @State nativeTitleText: string = "";
-
-  aboutToAppear(): void {
-    this.onDescriptorChange()
-  }
-
-  onDescriptorChange() {
-    const shouldDisplayNativeTitle = this.screenStackHeaderConfigDescriptor.childrenTags.length > 0 ?
-    this.screenStackHeaderConfigDescriptor.childrenTags.map((e) => {
-      const tmpDesc = this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderSubviewDescriptor>(e)
-      if (tmpDesc.rawProps["type"] === "title" || tmpDesc.rawProps["type"] === "center" ||
-        tmpDesc.rawProps["type"] === "left") {
-        return false;
-      }
-      return true;
-    }).every((value) => value === true) : true;
-    this.nativeTitleText = shouldDisplayNativeTitle ? this.screenStackHeaderConfigDescriptor.rawProps["title"] : " ";
-  }
-
-  build() {
-    Stack() {
-      Text(this.nativeTitleText)
-        .width("100%")
-        .height("100%")
-        .offset({
-          left: TITLEBAR_HEIGHT + 8
-        })
-        .fontFamily(this.screenStackHeaderConfigDescriptor.rawProps["titleFontFamily"])
-        .fontSize(this.screenStackHeaderConfigDescriptor.rawProps["titleFontSize"])
-        .fontWeight(this.screenStackHeaderConfigDescriptor.rawProps["titleFontWeight"])
-        .fontColor(this.screenStackHeaderConfigDescriptor.rawProps["titleColor"])
-        .textAlign(TextAlign.Start)
-      ForEach(this.screenStackHeaderConfigDescriptor.childrenTags, (childTag: number) => {
-        RNSScreenStackHeaderSubview({
-          ctx: this.ctx,
-          tag: childTag
-        })
-      })
-    }
-    .width("100%")
-    .height("100%")
-    .hitTestBehavior(HitTestMode.Transparent)
-    .offset({
-      right: TITLEBAR_HEIGHT
-    })
-  }
-}
-
 
 @Component
 export struct RNSScreen {
@@ -205,9 +151,10 @@ export struct RNSScreen {
 
   @Builder
   screenTitleBuilder() {
-    RNSScreenTitle({
+    RNSScreenHeader({
       ctx: this.ctx,
-      screenStackHeaderConfigDescriptor: this.screenStackHeaderConfigDescriptor
+      screenStackHeaderConfigDescriptor: this.screenStackHeaderConfigDescriptor,
+      isFirstScreenInStack: this.isFirstScreenInStack
     })
   }
 
