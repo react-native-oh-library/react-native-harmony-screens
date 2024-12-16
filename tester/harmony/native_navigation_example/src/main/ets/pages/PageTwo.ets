@@ -16,14 +16,12 @@ export struct PageTwo {
 
   registerCallback() {
     CustomTransition.getInstance().registerNavParam(this.pageId, (isPush: boolean, isExit: boolean) => {
-      console.log("wtf", this.pageId, isPush, isExit);
       if (!isExit) {
         this.translateX = '100%'
       } else {
         this.translateX = '0';
       }
     }, (isPush: boolean, isExit: boolean) => {
-      console.log("kk123 rnscreen")
       if (!isExit) {
         this.translateX = '0';
       } else {

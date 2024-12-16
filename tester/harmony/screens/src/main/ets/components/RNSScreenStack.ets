@@ -149,9 +149,6 @@ export struct RNSScreenStack {
 
         const animationOptions = getAnimationConfig(animationType);
 
-        console.log("xdxddxdx123", animationType)
-
-
         enteringScreenAnimation.start(animationType);
         animateTo({
           duration: animationOptions.duration,
