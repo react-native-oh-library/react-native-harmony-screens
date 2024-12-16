@@ -117,14 +117,13 @@ export struct RNSScreenStack {
       return undefined;
     }
 
-    // Fallback to default animation
     if (this.shouldFallbackToDefaultAnimation(operation, from, to)) {
       return undefined;
     }
 
     this.customTransitionCoordinator.operation = operation;
     return {
-      timeout: 7000, // the limit duration of the transition animation
+      timeout: 7000, // The limit duration of the transition animation
       transition: (transitionProxy: NavigationTransitionProxy) => {
         if (!from.navDestinationId || !to.navDestinationId) {
           return;

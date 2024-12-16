@@ -17,6 +17,10 @@ export struct RNSSearchBar {
   private eventEmitter: RNC.RNSSearchBar.EventEmitter | undefined = undefined
   @State text: string = ''
   @State showTextInput: boolean = false;
+  @State placeholder: string | undefined = undefined;
+  @State backgroundColorValue: string | undefined = undefined;
+  @State fontColor: string | undefined = undefined
+  @State type: InputType | undefined = undefined
 
   aboutToAppear() {
     this.eventEmitter = new RNC.RNSSearchBar.EventEmitter(this.ctx.rnInstance, this.tag)
@@ -24,9 +28,26 @@ export struct RNSSearchBar {
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
         this.descriptor = (newDescriptor as RNSSearchBarDescriptor)
+        this.updateState()
       }
     ))
+    this.updateState()
     // TODO: event handlers, like cleanText
+  }
+
+  updateState() {
+    if (this.placeholder !== this.descriptor.rawProps["placeholder"]) {
+      this.placeholder = this.descriptor.rawProps["placeholder"];
+    }
+    if (this.backgroundColorValue !== (this.descriptor.rawProps["barTintColor"] || Color.Transparent)) {
+      this.backgroundColorValue = this.descriptor.rawProps["barTintColor"] || Color.Transparent
+    }
+    if (this.fontColor !== this.descriptor.rawProps["textColor"]) {
+      this.fontColor = this.descriptor.rawProps["textColor"];
+    }
+    if (this.type !== this.getInputType(this.descriptor.rawProps["inputType"])) {
+      this.type = this.getInputType(this.descriptor.rawProps["inputType"])
+    }
   }
 
   aboutToDisappear() {
@@ -61,7 +82,7 @@ export struct RNSSearchBar {
           TextInput({
             text: this.text,
             controller: this.controller,
-            placeholder: this.descriptor.rawProps["placeholder"],
+            placeholder: this.placeholder,
           })
             .onChange((value: string) => {
               this.text = value
@@ -79,9 +100,9 @@ export struct RNSSearchBar {
               })
             })
             .width(200)
-            .backgroundColor(this.descriptor.rawProps["barTintColor"] || Color.Transparent)
-            .fontColor(this.descriptor.rawProps["textColor"])
-            .type(this.getInputType(this.descriptor.rawProps["inputType"]))
+            .backgroundColor(this.backgroundColorValue)
+            .fontColor(this.fontColor)
+            .type(this.type)
           SymbolGlyph($r('sys.symbol.xmark')).fontSize(26).onClick(() => {
             this.cancelSearch()
           })
