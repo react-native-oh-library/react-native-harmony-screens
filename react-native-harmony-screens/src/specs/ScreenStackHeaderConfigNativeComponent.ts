@@ -20,30 +20,30 @@ export interface NativeProps extends ViewProps {
   onAttached?: DirectEventHandler<OnAttachedEvent>;
   onDetached?: DirectEventHandler<OnDetachedEvent>;
   backgroundColor?: ColorValue;
-  backTitle?: string;
-  backTitleFontFamily?: string;
-  backTitleFontSize?: Int32;
-  backTitleVisible?: WithDefault<boolean, "true">;
+  backTitle?: string; // doesn't work on HarmonyOS
+  backTitleFontFamily?: string; // doesn't work on HarmonyOS
+  backTitleFontSize?: Int32; // doesn't work on HarmonyOS
+  backTitleVisible?: WithDefault<boolean, "true">; // doesn't work on HarmonyOS
   color?: ColorValue;
   direction?: WithDefault<DirectionType, "ltr">;
   hidden?: boolean;
-  hideShadow?: boolean;
-  largeTitle?: boolean;
-  largeTitleFontFamily?: string;
-  largeTitleFontSize?: Int32;
-  largeTitleFontWeight?: string;
-  largeTitleBackgroundColor?: ColorValue;
-  largeTitleHideShadow?: boolean;
-  largeTitleColor?: ColorValue;
-  translucent?: boolean;
+  hideShadow?: boolean; // not supported on HarmonyOS
+  largeTitle?: boolean; // iOS only
+  largeTitleFontFamily?: string; // iOS only
+  largeTitleFontSize?: Int32; // iOS only
+  largeTitleFontWeight?: string; // iOS only
+  largeTitleBackgroundColor?: ColorValue; // iOS only
+  largeTitleHideShadow?: boolean; // iOS only
+  largeTitleColor?: ColorValue; // iOS only
+  translucent?: boolean; // TODO
   title?: string;
   titleFontFamily?: string;
   titleFontSize?: Int32;
   titleFontWeight?: string;
   titleColor?: ColorValue;
-  disableBackButtonMenu?: boolean;
-  backButtonDisplayMode?: WithDefault<BackButtonDisplayMode, "default">;
-  hideBackButton?: boolean;
+  disableBackButtonMenu?: boolean; // iOS only
+  backButtonDisplayMode?: WithDefault<BackButtonDisplayMode, "default">; // not supported on HarmonyOS
+  hideBackButton?: boolean; // doesn't work on HarmonyOS
   backButtonInCustomView?: boolean;
   // TODO: implement this props on iOS
   topInsetEnabled?: boolean;

@@ -62,7 +62,7 @@ export function componentBuilder(ctx: ComponentBuilderContext) {
   }
 }
 
-export class RNOHScreensPackage extends RNOHPackage {
+export default class RNOHScreensPackage extends RNOHPackage {
   private isRNScreensDevModeEnabled: boolean
 
   constructor(ctx: RNPackageContext, isRNScreensDevModeEnabled: boolean = false) {
@@ -76,7 +76,11 @@ export class RNOHScreensPackage extends RNOHPackage {
 
   createWrappedCustomRNComponentBuilderByComponentNameMap(): Map<string, WrappedBuilder<[ComponentBuilderContext]>> {
     return new Map()
-      .set(RNSScreen.NAME, wrapBuilder(componentBuilder))
+      // FIXME: react-native-screens will be used mostly with navigation libraries which will use RNSScreenContainer
+      // or RNSScreenStack, however there might be a need for using Screens component independently. Commenting that
+      // line out ensures, that only one RNSScreen instance is created, otherwise one would be created by ScreenContainer
+      // and another by the React mutation.
+      // .set(RNSScreen.NAME, wrapBuilder(componentBuilder))
       .set(RNSFullWindowOverlay.NAME, wrapBuilder(componentBuilder))
       .set(RNSModalScreen.NAME, wrapBuilder(componentBuilder))
       .set(RNSScreenContainer.NAME, wrapBuilder(componentBuilder))

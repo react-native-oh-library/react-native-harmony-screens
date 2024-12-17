@@ -5,10 +5,12 @@
 import type { RNPackageContext, RNOHPackage } from '@rnoh/react-native-openharmony';
 import RnohReactNativeHarmonyGestureHandlerPackage from '@rnoh/react-native-openharmony-gesture-handler';
 import RnohReactNativeHarmonySafeAreaContextPackage from '@rnoh/react-native-openharmony-safe-area-context';
+import RnohReactNativeHarmonyScreensPackage from '@rnoh/react-native-openharmony-screens';
 
 export function createRNOHPackages(ctx: RNPackageContext): RNOHPackage[] {
   return [
     new RnohReactNativeHarmonyGestureHandlerPackage(ctx),
     new RnohReactNativeHarmonySafeAreaContextPackage(ctx),
+    new RnohReactNativeHarmonyScreensPackage(ctx),
   ];
 }

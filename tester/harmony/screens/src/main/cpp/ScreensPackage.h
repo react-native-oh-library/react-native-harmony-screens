@@ -1,16 +1,9 @@
-#pragma once
-#include "RNOH/Package.h"
+#include "RnohReactNativeHarmonyScreensPackage.h"
 
-namespace rnoh {
-class ScreensPackage : public Package {
+using namespace rnoh;
+
+class ScreensPackage : public RnohReactNativeHarmonyScreensPackage {
 public:
-    ScreensPackage(Package::Context ctx) : Package(ctx) {}
-
-    EventEmitRequestHandlers createEventEmitRequestHandlers();
-
-    ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate();
-
-    std::vector<ArkTSMessageHandler::Shared> createArkTSMessageHandlers() override;
+    using Super = RnohReactNativeHarmonyScreensPackage;
+    using Super::Super;
 };
-} // namespace rnoh
-
