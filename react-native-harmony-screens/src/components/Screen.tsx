@@ -126,7 +126,7 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
       // RNOH patch: native header is not included into Yoga calculations,
       // thus layoutMetrics are wrong. We should find other way to include
       // header height into Yoga layout.
-      const [headerHeight, setHeaderHeight] = React.useState(0);
+      const [headerHeight, setHeaderHeight] = React.useState(93.85); // 93.85 is the default header height with top inset
       const onHeaderHeightChangeHandler = (
         e: NativeSyntheticEvent<HeaderHeightChangeEventType>
       ) => {
