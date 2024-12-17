@@ -86,7 +86,7 @@ export struct RNSScreen {
     this.cleanUpCallbacks.forEach(cb => cb())
   }
 
-  async updateState() {
+  async updateState(forceUpdate: boolean = false) {
     this.updateNativeHeaderHeight()
 
     if (this.stackAnimation !== this.descriptor.rawProps["stackAnimation"] || "default") {
@@ -114,19 +114,20 @@ export struct RNSScreen {
       statusBarHidden: this.descriptor.rawProps["statusBarHidden"],
       statusBarColor: convertColorValueToHex(this.descriptor.rawProps["statusBarColor"])
     }
-
-    this.statusBarConfiguration = newStatusBarConfiguration
     let statusBarContentColor = "#000000"
     if (this.statusBarConfiguration.statusBarStyle === "light") {
       statusBarContentColor = "#E5FFFFFF"
     }
-    const windowInstance = await window.getLastWindow(this.ctx.uiAbilityContext);
-    await windowInstance.setSpecificSystemBarEnabled('status', !this.statusBarConfiguration.statusBarHidden);
-    windowInstance.setWindowSystemBarProperties({
-      statusBarContentColor: statusBarContentColor,
-      statusBarColor: this.statusBarConfiguration.statusBarColor,
-      enableStatusBarAnimation: this.statusBarConfiguration.statusBarAnimation,
-    });
+    if (forceUpdate || JSON.stringify(this.statusBarConfiguration) !== JSON.stringify(newStatusBarConfiguration)) {
+      this.statusBarConfiguration = newStatusBarConfiguration
+      const windowInstance = await window.getLastWindow(this.ctx.uiAbilityContext);
+      await windowInstance.setSpecificSystemBarEnabled('status', !this.statusBarConfiguration.statusBarHidden);
+      windowInstance.setWindowSystemBarProperties({
+        statusBarContentColor: statusBarContentColor,
+        statusBarColor: this.statusBarConfiguration.statusBarColor,
+        enableStatusBarAnimation: this.statusBarConfiguration.statusBarAnimation,
+      });
+    }
   }
 
   updateHeaderConfigState() {
@@ -227,6 +228,10 @@ export struct RNSScreen {
     })
     .onAppear(() => {
       this.eventEmitter!.emit("appear", {})
+    })
+    .onShown(() => {
+      this.updateState(true)
+      this.updateHeaderConfigState()
     })
     .onWillDisappear(() => {
       this.eventEmitter!.emit("willDisappear", {})
