@@ -1,38 +1,38 @@
 //@ts-check
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
-const { execSync } = require('node:child_process');
-const JSON5 = require('json5');
+const fs = require("fs");
+const path = require("path");
+const readline = require("readline");
+const { execSync } = require("node:child_process");
+const JSON5 = require("json5");
 
-const PACKAGE_DIR_NAME = 'react-native-harmony-screens';
-const MODULE_NAME = 'screens';
+const PACKAGE_DIR_NAME = "react-native-harmony-screens";
+const MODULE_NAME = "screens";
 const PACKAGE_TGZ_STEM_NAME_WITHOUT_VERSION =
-  'rnoh-react-native-harmony-screens';
+  "rnoh-react-native-harmony-screens";
 
 (async function main() {
   const newVersionIndex = process.argv.findIndex(
-    (arg) => arg === '--new-version'
+    (arg) => arg === "--new-version"
   );
   let version;
 
   if (newVersionIndex !== -1 && process.argv[newVersionIndex + 1]) {
     version = process.argv[newVersionIndex + 1];
   } else {
-    const currentVersion = readPackage('.').version;
+    const currentVersion = readPackage(".").version;
     version = await askUserForVersion(currentVersion);
   }
 
-  updatePackageVersion('.', version);
+  updatePackageVersion(".", version);
   console.log(`Updated ${PACKAGE_DIR_NAME}/package.json`);
-  updatePackageScript('../tester', version);
-  console.log('Updated tester/package.json');
+  updatePackageScript("../tester", version);
+  console.log("Updated tester/package.json");
   updateOHPackageVersion(
     `../tester/harmony/${MODULE_NAME}/oh-package.json5`,
     version
   );
   console.log(`Updated ${MODULE_NAME}/oh-package.json5`);
-  execSync('npm i && cd ../tester', { stdio: 'inherit' });
+  execSync("npm i && cd ../tester", { stdio: "inherit" });
 })();
 
 /**
@@ -61,8 +61,8 @@ function askUserForVersion(currentVersion) {
  * @returns {{version: string, scripts?: Record<string, string>}} - parsed content of package.json
  */
 function readPackage(packageDir) {
-  const packageJsonPath = path.join(packageDir, 'package.json');
-  const packageContent = fs.readFileSync(packageJsonPath, 'utf-8');
+  const packageJsonPath = path.join(packageDir, "package.json");
+  const packageContent = fs.readFileSync(packageJsonPath, "utf-8");
   return JSON.parse(packageContent);
 }
 
@@ -74,11 +74,11 @@ function updatePackageVersion(packageDir, version) {
   const packageData = readPackage(packageDir);
   packageData.version = version;
 
-  const packageJsonPath = path.join(packageDir, 'package.json');
+  const packageJsonPath = path.join(packageDir, "package.json");
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(packageData, null, 2),
-    'utf-8'
+    "utf-8"
   );
 }
 
@@ -92,18 +92,18 @@ function updatePackageScript(packageDir, version) {
   for (let script in packageData.scripts) {
     const regex = new RegExp(
       `${PACKAGE_TGZ_STEM_NAME_WITHOUT_VERSION}-\\d*\\.\\d*\\.\\d*`,
-      'g'
+      "g"
     );
     packageData.scripts[script] = packageData.scripts[script].replace(
       regex,
       `${PACKAGE_TGZ_STEM_NAME_WITHOUT_VERSION}-${version}`
     );
   }
-  const packageJsonPath = path.join(packageDir, 'package.json');
+  const packageJsonPath = path.join(packageDir, "package.json");
   fs.writeFileSync(
     packageJsonPath,
     JSON.stringify(packageData, null, 2),
-    'utf-8'
+    "utf-8"
   );
 }
 /**
