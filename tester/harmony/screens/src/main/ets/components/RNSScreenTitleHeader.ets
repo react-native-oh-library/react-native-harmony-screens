@@ -8,7 +8,7 @@ export struct RNSScreenTitleHeader {
   public ctx!: RNComponentContext
   public isFirstScreenInStack!: boolean
   public screenStackHeaderConfigTag!: number
-  @State descriptor: RNSScreenStackHeaderConfigDescriptor = {} as RNSScreenStackHeaderConfigDescriptor
+  @State descriptor: RNSScreenStackHeaderConfigDescriptor | undefined = undefined
   @State nativeTitleText: string = "";
   @State fontFamilyValue: string | undefined = undefined;
   @State titleFontSizeValue: string | undefined = undefined;
@@ -19,25 +19,23 @@ export struct RNSScreenTitleHeader {
   aboutToAppear(): void {
     this.descriptor =
       this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderConfigDescriptor>(this.screenStackHeaderConfigTag)
-    if (this.descriptor === undefined) {
-      // The component will be unmounted in the next repaint
-      this.descriptor = {} as RNSScreenStackHeaderConfigDescriptor
-      return;
-    }
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.screenStackHeaderConfigTag,
       (newDescriptor) => {
         this.descriptor = (newDescriptor as RNSScreenStackHeaderConfigDescriptor)
-        this.onDescriptorChange()
+        this.updateState()
       }))
-    this.onDescriptorChange()
+    this.updateState()
   }
 
   aboutToDisappear() {
     this.cleanUpCallbacks.forEach(cb => cb())
   }
 
-  onDescriptorChange() {
-    const shouldDisplayNativeTitle = this.descriptor?.childrenTags.length > 0 ?
+  updateState() {
+    if (!this.descriptor) {
+      return
+    }
+    const shouldDisplayNativeTitle = this.descriptor.childrenTags.length > 0 ?
     this.descriptor.childrenTags.every((e) => {
       const tmpDesc = this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderSubviewDescriptor>(e)
       if (tmpDesc.rawProps["type"] === "title" || tmpDesc.rawProps["type"] === "center" ||
@@ -47,7 +45,7 @@ export struct RNSScreenTitleHeader {
       return true;
     }) : true;
 
-    const newNativeTitleText: string = shouldDisplayNativeTitle ? this.descriptor?.rawProps["title"] : " ";
+    const newNativeTitleText: string = shouldDisplayNativeTitle ? this.descriptor.rawProps["title"] : " ";
     if (this.nativeTitleText !== newNativeTitleText) {
       this.nativeTitleText = newNativeTitleText;
     }
@@ -78,13 +76,15 @@ export struct RNSScreenTitleHeader {
         .fontWeight(this.titleFontWeightValue)
         .fontColor(this.titleColorValue)
         .textAlign(TextAlign.Start)
-      ForEach(this.descriptor.childrenTags, (childTag: number) => {
-        RNSScreenStackHeaderSubview({
-          ctx: this.ctx,
-          tag: childTag,
-          isFirstScreenInStack: this.isFirstScreenInStack
+      if (this.descriptor) {
+        ForEach(this.descriptor.childrenTags, (childTag: number) => {
+          RNSScreenStackHeaderSubview({
+            ctx: this.ctx,
+            tag: childTag,
+            isFirstScreenInStack: this.isFirstScreenInStack
+          })
         })
-      })
+      }
     }
     .width("100%")
     .height("100%")

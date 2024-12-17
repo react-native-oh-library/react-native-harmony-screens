@@ -1,6 +1,6 @@
 import type { RNPackageContext, RNOHPackage } from '@rnoh/react-native-openharmony';
 import { createRNOHPackages as createRNOHPackagesAutolinking } from "./RNOHPackagesFactory"
-import { RNOHScreensPackage } from "@rnoh/react-native-openharmony-screens"
+import RNOHScreensPackage from "@rnoh/react-native-openharmony-screens"
 
 export function getRNOHPackages(ctx: RNPackageContext): RNOHPackage[] {
   return [

@@ -35,8 +35,7 @@ export struct RNSScreen {
   private screenStackHeaderConfigTag!: number | undefined
   @State public topInset: number = 0;
   @State descriptor: RNSScreenDescriptor = {} as RNSScreenDescriptor
-  @State screenStackHeaderConfigDescriptor: RNSScreenStackHeaderConfigDescriptor =
-    {} as RNSScreenStackHeaderConfigDescriptor
+  @State screenStackHeaderConfigDescriptor: RNSScreenStackHeaderConfigDescriptor | undefined = undefined
   @State titleHeight: number = 0;
   @State presentationMode: NavDestinationMode = NavDestinationMode.STANDARD;
   @State stackAnimation: string = "default";
@@ -131,6 +130,10 @@ export struct RNSScreen {
   }
 
   updateHeaderConfigState() {
+    if (!this.screenStackHeaderConfigDescriptor) {
+      return
+    }
+
     this.updateNativeHeaderHeight()
 
     if (this.shouldHideTitleBar !== (this.screenStackHeaderConfigDescriptor.rawProps["hidden"])) {
@@ -143,6 +146,10 @@ export struct RNSScreen {
   }
 
   updateNativeHeaderHeight() {
+    if (!this.screenStackHeaderConfigDescriptor) {
+      return
+    }
+
     let newTitleHeight: number = this.titleHeight;
     if (this.screenStackHeaderConfigDescriptor.rawProps["hidden"] ||
       this.presentationMode === NavDestinationMode.DIALOG) {
@@ -199,6 +206,9 @@ export struct RNSScreen {
 
   private isComponentOfType(childTag: number, componentType: string): boolean {
     const descriptor = this.ctx.descriptorRegistry.getDescriptor<Descriptor>(childTag)
+    if (!descriptor) {
+      return false;
+    }
     return descriptor.type === componentType;
   }
 

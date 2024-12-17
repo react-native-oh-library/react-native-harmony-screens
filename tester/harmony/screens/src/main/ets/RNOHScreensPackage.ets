@@ -62,7 +62,7 @@ export function componentBuilder(ctx: ComponentBuilderContext) {
   }
 }
 
-export class RNOHScreensPackage extends RNOHPackage {
+export default class RNOHScreensPackage extends RNOHPackage {
   private isRNScreensDevModeEnabled: boolean
 
   constructor(ctx: RNPackageContext, isRNScreensDevModeEnabled: boolean = false) {

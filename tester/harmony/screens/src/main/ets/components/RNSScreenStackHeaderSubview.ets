@@ -11,7 +11,7 @@ export struct RNSScreenStackHeaderSubview {
   public ctx!: RNComponentContext
   public tag!: number
   public isFirstScreenInStack!: boolean
-  @State descriptor: RNSScreenStackHeaderSubviewDescriptor = {} as RNSScreenStackHeaderSubviewDescriptor
+  @State descriptor: RNSScreenStackHeaderSubviewDescriptor | undefined = undefined
   private cleanUpCallbacks: (() => void)[] = []
   @State alignment: HorizontalAlign = HorizontalAlign.Center
   @State isSearchBar: boolean = false
@@ -19,22 +19,29 @@ export struct RNSScreenStackHeaderSubview {
 
   aboutToAppear() {
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderSubviewDescriptor>(this.tag)
+    this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
+      (newDescriptor) => {
+        this.descriptor = (newDescriptor as RNSScreenStackHeaderSubviewDescriptor)
+        this.updateState()
+      }
+    ))
+    this.updateState()
+  }
+
+  updateState() {
+    if (!this.descriptor) {
+      return;
+    }
+    this.alignment = this.horizontalAlignFromString(this.descriptor.rawProps["type"])
     this.isSearchBar = this.descriptor.childrenTags.some((childTag) => {
       const tmpDesc = this.ctx.descriptorRegistry.getDescriptor<Descriptor>(childTag)
-      if (tmpDesc.type === "RNSSearchBar") {
+      if (tmpDesc && tmpDesc.type === "RNSSearchBar") {
         this.searchBarTag = childTag
         this.alignment = HorizontalAlign.End
         return true
       }
       return false
     })
-    this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
-      (newDescriptor) => {
-        this.descriptor = (newDescriptor as RNSScreenStackHeaderSubviewDescriptor)
-        this.alignment = this.horizontalAlignFromString(this.descriptor.rawProps["type"])
-      }
-    ))
-    this.alignment = this.horizontalAlignFromString(this.descriptor.rawProps["type"])
   }
 
   horizontalAlignFromString(value: string): HorizontalAlign {
