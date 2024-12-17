@@ -25,6 +25,8 @@ export struct RNSFullWindowOverlay {
   }
 
   build() {
-    ContentSlot(this.ctx.getContentForTag(this.tag))
+    Stack() {
+      ContentSlot(this.ctx.getContentForTag(this.tag))
+    }.width("100%").height("100%").zIndex(999)
   }
 }

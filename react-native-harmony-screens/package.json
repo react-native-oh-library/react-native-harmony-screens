@@ -30,7 +30,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-harmony": "npm:@rnoh/react-native-harmony@>=0.72.39",
+    "react-native-harmony": "npm:@rnoh/react-native-harmony@>=0.72.41",
     "react-native-screens": "3.34.0"
   },
   "keywords": [],

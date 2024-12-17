@@ -1,1 +1,1 @@
-export { RNOHScreensPackage } from './src/main/ets/RNOHScreensPackage'
+export { default } from './src/main/ets/RNOHScreensPackage'

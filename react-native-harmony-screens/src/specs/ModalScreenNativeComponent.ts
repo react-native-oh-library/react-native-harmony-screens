@@ -1,12 +1,12 @@
-import codegenNativeComponent from 'react-native/Libraries/Utilities/codegenNativeComponent';
-import type { ViewProps, ColorValue } from 'react-native';
+import codegenNativeComponent from "react-native/Libraries/Utilities/codegenNativeComponent";
+import type { ViewProps, ColorValue } from "react-native";
 import type {
   DirectEventHandler,
   WithDefault,
   Int32,
   Float,
   Double,
-} from 'react-native/Libraries/Types/CodegenTypes';
+} from "react-native/Libraries/Types/CodegenTypes";
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type ScreenEvent = Readonly<{}>;
@@ -33,31 +33,31 @@ type GestureResponseDistanceType = Readonly<{
 }>;
 
 type StackPresentation =
-  | 'push'
-  | 'modal'
-  | 'transparentModal'
-  | 'fullScreenModal'
-  | 'formSheet'
-  | 'containedModal'
-  | 'containedTransparentModal';
+  | "push"
+  | "modal"
+  | "transparentModal"
+  | "fullScreenModal"
+  | "formSheet"
+  | "containedModal"
+  | "containedTransparentModal";
 
 type StackAnimation =
-  | 'default'
-  | 'flip'
-  | 'simple_push'
-  | 'none'
-  | 'fade'
-  | 'slide_from_right'
-  | 'slide_from_left'
-  | 'slide_from_bottom'
-  | 'fade_from_bottom'
-  | 'ios';
+  | "default"
+  | "flip"
+  | "simple_push"
+  | "none"
+  | "fade"
+  | "slide_from_right"
+  | "slide_from_left"
+  | "slide_from_bottom"
+  | "fade_from_bottom"
+  | "ios";
 
-type SwipeDirection = 'vertical' | 'horizontal';
+type SwipeDirection = "vertical" | "horizontal";
 
-type ReplaceAnimation = 'pop' | 'push';
+type ReplaceAnimation = "pop" | "push";
 
-type SheetDetentTypes = 'large' | 'medium' | 'all';
+type SheetDetentTypes = "large" | "medium" | "all";
 
 export interface NativeProps extends ViewProps {
   onAppear?: DirectEventHandler<ScreenEvent>;
@@ -70,8 +70,8 @@ export interface NativeProps extends ViewProps {
   onTransitionProgress?: DirectEventHandler<TransitionProgressEvent>;
   onGestureCancel?: DirectEventHandler<ScreenEvent>;
   onHeaderBackButtonClicked?: DirectEventHandler<ScreenEvent>;
-  sheetAllowedDetents?: WithDefault<SheetDetentTypes, 'large'>;
-  sheetLargestUndimmedDetent?: WithDefault<SheetDetentTypes, 'all'>;
+  sheetAllowedDetents?: WithDefault<SheetDetentTypes, "large">;
+  sheetLargestUndimmedDetent?: WithDefault<SheetDetentTypes, "all">;
   sheetGrabberVisible?: WithDefault<boolean, false>;
   sheetCornerRadius?: WithDefault<Float, -1.0>;
   sheetExpandsWhenScrolledToEdge?: WithDefault<boolean, false>;
@@ -85,14 +85,14 @@ export interface NativeProps extends ViewProps {
   statusBarHidden?: boolean;
   screenOrientation?: string;
   statusBarAnimation?: string;
-  statusBarStyle?: string;
+  statusBarStyle?: string; //
   statusBarTranslucent?: boolean;
   gestureResponseDistance?: GestureResponseDistanceType;
-  stackPresentation?: WithDefault<StackPresentation, 'push'>;
-  stackAnimation?: WithDefault<StackAnimation, 'default'>;
+  stackPresentation?: WithDefault<StackPresentation, "push">;
+  stackAnimation?: WithDefault<StackAnimation, "default">;
   transitionDuration?: WithDefault<Int32, 350>;
-  replaceAnimation?: WithDefault<ReplaceAnimation, 'pop'>;
-  swipeDirection?: WithDefault<SwipeDirection, 'horizontal'>;
+  replaceAnimation?: WithDefault<ReplaceAnimation, "pop">;
+  swipeDirection?: WithDefault<SwipeDirection, "horizontal">;
   hideKeyboardOnSwipe?: boolean;
   activityState?: WithDefault<Float, -1.0>;
   navigationBarColor?: ColorValue;
@@ -101,6 +101,6 @@ export interface NativeProps extends ViewProps {
   nativeBackButtonDismissalEnabled?: boolean;
 }
 
-export default codegenNativeComponent<NativeProps>('RNSModalScreen', {
+export default codegenNativeComponent<NativeProps>("RNSModalScreen", {
   interfaceOnly: true,
 });

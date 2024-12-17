@@ -1,0 +1,3 @@
+export const TITLEBAR_HEIGHT = 56;
+export const NATIVE_BUTTON_OFFSET = 52;
+export const NATIVE_BUTTON_VERTICAL_EDGE_MARGIN = 8;

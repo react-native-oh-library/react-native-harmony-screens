@@ -10,8 +10,10 @@ export struct RNSScreenStackHeaderConfig {
   public tag: number = 0
   @State descriptor: RNSScreenStackHeaderConfigDescriptor = {} as RNSScreenStackHeaderConfigDescriptor
   private cleanUpCallbacks: (() => void)[] = []
+  private eventEmitter: RNC.RNSScreenStackHeaderConfig.EventEmitter | undefined = undefined
 
   aboutToAppear() {
+    this.eventEmitter = new RNC.RNSScreenStackHeaderConfig.EventEmitter(this.ctx.rnInstance, this.tag)
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderConfigDescriptor>(this.tag)
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
@@ -25,6 +27,12 @@ export struct RNSScreenStackHeaderConfig {
   }
 
   build() {
-    ContentSlot(this.ctx.getContentForTag(this.tag))
+    Stack() {
+      ContentSlot(this.ctx.getContentForTag(this.tag))
+    }.onAttach(() => {
+      this.eventEmitter!.emit("attached", {});
+    }).onDetach(() => {
+      this.eventEmitter!.emit("detached", {});
+    })
   }
 }
