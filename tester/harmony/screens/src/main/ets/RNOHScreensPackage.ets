@@ -1,4 +1,4 @@
-import { ComponentBuilderContext, RNOHPackage, RNPackageContext } from "@rnoh/react-native-openharmony";
+import { ComponentBuilderContext, RNPackage, RNPackageContext } from "@rnoh/react-native-openharmony";
 import type { UITurboModule, UITurboModuleContext } from "@rnoh/react-native-openharmony/ts";
 import { RNSScreen } from './components/RNSScreen';
 import { RNSFullWindowOverlay } from './components/RNSFullWindowOverlay';
@@ -62,7 +62,7 @@ export function componentBuilder(ctx: ComponentBuilderContext) {
   }
 }
 
-export default class RNOHScreensPackage extends RNOHPackage {
+export default class RNOHScreensPackage extends RNPackage {
   private isRNScreensDevModeEnabled: boolean
 
   constructor(ctx: RNPackageContext, isRNScreensDevModeEnabled: boolean = false) {

@@ -4,26 +4,28 @@
   "private": true,
   "scripts": {
     "i": "cd ../react-native-harmony-screens && npm i && npm run pack:prod && cd ../tester && npm i",
-    "start": "npm run install:pkg && npm run codegen && hdc rport tcp:8081 tcp:8081 && react-native start",
+    "start": "hdc rport tcp:8081 tcp:8081 && react-native start",
     "codegen": "react-native codegen-harmony --rnoh-module-path ./harmony/oh_modules/@rnoh/react-native-openharmony",
     "pack:pkg": "cd ../react-native-harmony-screens && npm run pack:prod && cd ../tester",
     "install:pkg": "npm uninstall react-native-harmony-screens && npm run pack:pkg && npm i react-native-harmony-screens@file:../react-native-harmony-screens/rnoh-react-native-harmony-screens-3.34.0-rc.0.tgz",
     "dev:fast": "react-native bundle-harmony",
+    "dev": "npm run codegen && react-native bundle-harmony --dev --minify=false",
     "android": "react-native run-android",
     "format:cpp": "zsh -c 'clang-format -i ./harmony/screens/src/main/cpp/**/*.h ./harmony/screens/src/main/cpp/**/*.cpp ./harmony/entry/**/*.h ./harmony/entry/**/*.cpp --style=file:./harmony/.clang-format'"
   },
   "dependencies": {
+    "@react-native-oh-tpl/react-native-gesture-handler": "file:react-native-oh-tpl-react-native-gesture-handler-2.14.14.tgz",
+    "@react-native-oh-tpl/react-native-safe-area-context": "npm:@react-native-oh-tpl/react-native-safe-area-context@^4.7.4-0.2.0",
+    "@react-native-oh-tpl/stack": "^6.4.0-0.0.4",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
-    "@rnoh/testerino": "^0.0.9",
+    "deprecated-react-native-prop-types": "^5.0.0",
     "react": "18.3.1",
-    "react-native": "0.75.4",
+    "react-native": "0.72.5",
     "react-native-gesture-handler": "^2.20.2",
-    "react-native-harmony": "npm:@rnoh/react-native-harmony@^0.75.2",
-    "react-native-harmony-gesture-handler": "npm:@rnoh/react-native-harmony-gesture-handler@2.20.1",
-    "react-native-harmony-safe-area-context": "npm:@rnoh/react-native-harmony-safe-area-context@^4.14.1",
-    "react-native-harmony-screens": "file:../react-native-harmony-screens/rnoh-react-native-harmony-screens-3.34.0.tgz",
+    "react-native-harmony": "npm:@react-native-oh/react-native-harmony@^0.72.48",
+    "react-native-harmony-screens": "file:../react-native-harmony-screens/rnoh-react-native-harmony-screens-3.34.0-rc.0.tgz",
     "react-native-restart": "^0.0.27",
     "react-native-screens": "3.34.0"
   },
@@ -34,6 +36,7 @@
     "@react-native-community/eslint-config": "^3.2.0",
     "@react-native/metro-config": "0.75.4",
     "@react-native/typescript-config": "0.75.4",
+    "@rnoh/react-native-harmony-cli": "npm:@react-native-oh/react-native-harmony-cli@^0.0.27",
     "@types/chai": "^4.3.5",
     "@types/jest": "^29.5.5",
     "@types/react": "^18.2.6",
@@ -44,6 +47,11 @@
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
     "typescript": "5.5.4"
+  },
+  "overrides": {
+    "@rnoh/react-native-harmony-cli": "npm:@react-native-oh/react-native-harmony-cli@^0.0.27",
+    "@react-native-community/cli": "11.3.6",
+    "@react-native/codegen": "0.74.0"
   },
   "jest": {
     "preset": "react-native"

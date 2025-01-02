@@ -1,5 +1,4 @@
 node_modules
-*.tgz
 .vscode
 /**/.vscode
 bundle.harmony.js

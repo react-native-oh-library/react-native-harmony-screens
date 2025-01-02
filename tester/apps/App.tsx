@@ -12,7 +12,7 @@ export default function App() {
 
 // import {Button, Text, View} from 'react-native';
 // import {NavigationContainer} from '@react-navigation/native';
-// import {createNativeStackNavigator} from '@react-navigation/native-stack';
+// import {createNativeStackNavigator} from '@react-navigation/stack';
 
 // const Stack = createNativeStackNavigator();
 
@@ -47,7 +47,9 @@ export default function App() {
 //   );
 // }
 
+
 // export default function App() {
+//   // return <DetailsScreen />
 //   return (
 //     <NavigationContainer>
 //       <Stack.Navigator initialRouteName="Home">
