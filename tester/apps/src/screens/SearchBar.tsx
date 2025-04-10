@@ -21,7 +21,8 @@ type StackParamList = {
   Search: undefined;
 };
 
-type BarTintColor = 'lightcoral' | 'orange' | 'white' | 'darkslategray';
+// type BarTintColor = 'lightcoral' | 'orange' | 'white' | 'darkslategray';
+type BarTintColor = '#FF7F50' | '#FFA500' | '#FFFFFF' | '#2F4F4F';
 
 type AutoCapitalize = Exclude<SearchBarProps['autoCapitalize'], undefined>;
 type InputType = Exclude<SearchBarProps['inputType'], undefined>;
@@ -35,10 +36,10 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
 
   const [search, setSearch] = useState('');
   const [placeholder, setPlaceholder] = useState('Search for something...');
-  const [barTintColor, setBarTintColor] = useState<BarTintColor>('white');
-  const [hintTextColor, setHintTextColor] = useState<BarTintColor>('orange');
+  const [barTintColor, setBarTintColor] = useState<BarTintColor>('#FFFFFF'); // 'white'
+  const [hintTextColor, setHintTextColor] = useState<BarTintColor>('#FFA500'); // 'orange'
   const [headerIconColor, setHeaderIconColor] =
-    useState<BarTintColor>('orange');
+    useState<BarTintColor>('#FFA500'); // 'orange'
   const [shouldShowHintSearchIcon, setShouldShowHintSearchIcon] =
     useState(true);
   const [hideWhenScrolling, setHideWhenScrolling] = useState(false);
@@ -48,6 +49,10 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
     useState<AutoCapitalize>('sentences');
   const [inputType, setInputType] = useState<InputType>('text');
   const searchBarRef = useRef<SearchBarCommands>(null);
+  const [textColor, setTextColor] = useState<BarTintColor>('#FFA500'); // 'white'
+  const [cancelButtonText, setCancelButtonText] = useState('cancel');   
+  const [methodText, setMethodText] = useState('');  
+  let log = '' 
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -63,37 +68,64 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         autoCapitalize,
         placeholder,
         inputType,
-        onChangeText: event => setSearch(event.nativeEvent.text),
-        onCancelButtonPress: () =>
-          toast.push({
-            message: '[iOS] Cancel button pressed',
-            backgroundColor: 'orange',
-          }),
-        onClose: () =>
-          toast.push({
-            message: '[Android] Closing',
-            backgroundColor: 'orange',
-          }),
-        onOpen: () =>
-          toast.push({
-            message: '[Android] Opening',
-            backgroundColor: 'tomato',
-          }),
-        onSearchButtonPress: () =>
-          toast.push({
-            message: search,
-            backgroundColor: 'forestgreen',
-          }),
-        onFocus: () =>
-          toast.push({
-            message: 'Search bar pressed',
-            backgroundColor: 'dodgerblue',
-          }),
-        onBlur: () =>
-          toast.push({
-            message: 'Lost focus on search bar',
-            backgroundColor: 'purple',
-          }),
+        textColor,
+        cancelButtonText,
+        onChangeText: event => {
+          console.info('test screen searchBar onChangeText text:'+event.nativeEvent.text)
+          setMethodText('screen searchBar onChangeText '+event.nativeEvent.text)
+          setSearch(event.nativeEvent.text)
+        },
+        onCancelButtonPress: () => {
+          console.info('test screen searchBar onCancelButtonPress')
+          setMethodText('screen searchBar onCancelButtonPress')
+        },
+          // toast.push({
+          //   message: '[iOS] Cancel button pressed',
+          //   backgroundColor: 'orange',
+          // }),
+        onClose: () => {
+          console.info('test screen searchBar onClose')
+          setMethodText('screen searchBar onClose')
+        },
+          // toast.push({
+          //   message: '[Android] Closing',
+          //   backgroundColor: 'orange',
+          // }),
+        onOpen: () => {
+          console.info('test screen searchBar onOpen')
+          setMethodText('screen searchBar onOpen')
+        },
+          // toast.push({
+          //   message: '[Android] Opening',
+          //   backgroundColor: 'tomato',
+          // }),
+        onSearchButtonPress: () => {
+          console.info('test screen searchBar onSearchButtonPress')
+          log = 'onSearchButtonPress'
+          setMethodText('screen searchBar onSearchButtonPress')
+        },
+          // toast.push({
+          //   message: search,
+          //   backgroundColor: 'forestgreen',
+          // }),
+        onFocus: () => {
+          log = '';
+          console.info('test screen searchBar onFocus')          
+          setMethodText('screen searchBar onFocus')
+        },
+          // toast.push({
+          //   message: 'Search bar pressed',
+          //   backgroundColor: 'dodgerblue',
+          // }),
+        onBlur: () => {
+          console.info('test screen searchBar onSearchBlur')
+          log += ' onBlur'
+          setMethodText('screen searchBar '+log)
+        },
+          // toast.push({
+          //   message: 'Lost focus on search bar',
+          //   backgroundColor: 'purple',
+          // }),
       },
     });
   }, [
@@ -109,13 +141,15 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
     hideNavigationBar,
     autoCapitalize,
     inputType,
+    textColor, 
+    cancelButtonText
   ]);
 
   return (
     <ScrollView
       style={styles.container}
       contentInsetAdjustmentBehavior="automatic"
-      keyboardDismissMode="on-drag">
+      keyboardDismissMode="on-drag">      
       <SettingsInput
         label="Placeholder"
         value={placeholder}
@@ -125,8 +159,9 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         label="Bar Tint Color"
         value={barTintColor}
         onValueChange={setBarTintColor}
-        items={['lightcoral', 'orange', 'darkslategray', 'white']}
+        items={['#FF7F50', '#FFA500', '#2F4F4F', '#FFFFFF']}
       />
+      {/* items={['lightcoral', 'orange', 'darkslategray', 'white']} */}
       <SettingsPicker<AutoCapitalize>
         label="Auto capitalize"
         value={autoCapitalize}
@@ -160,20 +195,23 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         label="Text hint color"
         value={hintTextColor}
         onValueChange={setHintTextColor}
-        items={['lightcoral', 'orange', 'darkslategray', 'white']}
+        items={['#FF7F50', '#FFA500', '#2F4F4F', '#FFFFFF']}
       />
+      {/* items={['lightcoral', 'orange', 'darkslategray', 'white']} */}
       <SettingsPicker<BarTintColor>
         label="Header icon color"
         value={headerIconColor}
         onValueChange={setHeaderIconColor}
-        items={['lightcoral', 'orange', 'darkslategray', 'white']}
+        items={['#FF7F50', '#FFA500', '#2F4F4F', '#FFFFFF']}
       />
+      {/* items={['lightcoral', 'orange', 'darkslategray', 'white']} */}
       <SettingsSwitch
         label="Show search hint icon"
         value={shouldShowHintSearchIcon}
         onValueChange={setShouldShowHintSearchIcon}
       />
       <ThemedText style={styles.heading}>Imperative actions</ThemedText>
+      <ThemedText style={styles.heading}>{methodText}</ThemedText>
       <Button onPress={() => searchBarRef.current?.blur()} title="Blur" />
       <Button onPress={() => searchBarRef.current?.focus()} title="Focus" />
       <Button
@@ -192,6 +230,17 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         // @ts-ignore: `cancelSearch` is not implemented yet in react-navigation
         onPress={() => searchBarRef.current?.cancelSearch()}
         title="Cancel search"
+      />
+      <SettingsPicker<BarTintColor>
+        label="Bar textColor"
+        value={textColor}
+        onValueChange={setTextColor}
+        items={['#FF7F50', '#FFA500', '#2F4F4F', '#FFFFFF']}
+      />
+      <SettingsInput
+        label="cancelButtonText"
+        value={cancelButtonText}
+        onValueChange={setCancelButtonText}
       />
       <ThemedText style={styles.heading}>Other</ThemedText>
       <Button

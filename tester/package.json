@@ -9,30 +9,34 @@
     "pack:pkg": "cd ../react-native-harmony-screens && npm run pack:prod && cd ../tester",
     "install:pkg": "npm uninstall react-native-harmony-screens && npm run pack:pkg && npm i react-native-harmony-screens@file:../react-native-harmony-screens/rnoh-react-native-harmony-screens-3.34.0-rc.0.tgz",
     "dev:fast": "react-native bundle-harmony",
+    "dev": "npm run codegen && react-native bundle-harmony --dev --minify=false",
     "android": "react-native run-android",
     "format:cpp": "zsh -c 'clang-format -i ./harmony/screens/src/main/cpp/**/*.h ./harmony/screens/src/main/cpp/**/*.cpp ./harmony/entry/**/*.h ./harmony/entry/**/*.cpp --style=file:./harmony/.clang-format'"
   },
   "dependencies": {
+    "@react-native-oh-tpl/react-native-gesture-handler": "^2.14.1-2.14.15",
+    "@react-native-oh-tpl/react-native-safe-area-context": "^4.7.4-0.2.0",
+    "@react-native-oh-tpl/react-native-screens": "file:../react-native-harmony-screens/react-native-oh-tpl-react-native-screens-3.34.0-rc.0.tgz",
+    "@react-native/babel-preset": "^0.76.5",
     "@react-navigation/bottom-tabs": "^6.6.1",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
-    "@rnoh/testerino": "^0.0.9",
+    "@rnoh/react-native-harmony": "npm:@react-native-oh/react-native-harmony@0.72.58",
+    "@rnoh/testerino": "file:./testerino/rnoh-testerino-0.0.9.tgz",
+    "deprecated-react-native-prop-types": "^5.0.0",
     "react": "18.3.1",
-    "react-native": "0.75.4",
+    "react-native": "0.72.5",
     "react-native-gesture-handler": "^2.20.2",
-    "react-native-harmony": "npm:@rnoh/react-native-harmony@^0.75.2",
-    "react-native-harmony-gesture-handler": "npm:@rnoh/react-native-harmony-gesture-handler@2.20.1",
-    "react-native-harmony-safe-area-context": "npm:@rnoh/react-native-harmony-safe-area-context@^4.14.1",
-    "react-native-harmony-screens": "file:../react-native-harmony-screens/rnoh-react-native-harmony-screens-3.34.0.tgz",
-    "react-native-restart": "^0.0.27",
-    "react-native-screens": "3.34.0"
+    "react-native-harmony": "npm:@react-native-oh/react-native-harmony@0.72.58",    
+    "react-native-reanimated": "^3.9.0-nightly-20240402-12717cdb5",
+    "react-native-restart": "^0.0.27"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/preset-env": "^7.20.0",
     "@babel/runtime": "^7.20.0",
     "@react-native-community/eslint-config": "^3.2.0",
-    "@react-native/metro-config": "0.75.4",
+    "@react-native/metro-config": "0.72.9",
     "@react-native/typescript-config": "0.75.4",
     "@types/chai": "^4.3.5",
     "@types/jest": "^29.5.5",
@@ -41,9 +45,14 @@
     "babel-jest": "^29.2.1",
     "eslint": "^8.19.0",
     "jest": "^29.2.1",
+    "metro-config": "^0.76.3",
+    "metro-react-native-babel-preset": "0.73.9",
     "prettier": "^2.4.1",
     "react-test-renderer": "18.2.0",
     "typescript": "5.5.4"
+  },
+  "overrides": {
+    "@react-native/codegen": "0.74.0"
   },
   "jest": {
     "preset": "react-native"

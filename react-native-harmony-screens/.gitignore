@@ -1,5 +1,3 @@
 lib/*
 *.tar.gz
-*.tgz
-harmony
 .DS_Store

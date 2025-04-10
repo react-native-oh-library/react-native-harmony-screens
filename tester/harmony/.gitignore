@@ -12,4 +12,3 @@ rnoh_modules/
 .cxx
 /.clangd
 /.clang-tidy
-/build-profile.json5

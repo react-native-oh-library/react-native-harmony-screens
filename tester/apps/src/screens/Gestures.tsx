@@ -27,14 +27,14 @@ interface MainScreenProps {
 
 const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => (
   <View style={{...styles.container, backgroundColor: 'lavenderblush'}}>
-    {Platform.OS === 'ios' ? (
+    {(Platform.OS === 'ios' || Platform.OS === 'harmony') ? (
       <Button
         title="Go to detail"
         onPress={() => navigation.navigate('Details')}
       />
     ) : (
       <Text style={styles.text}>
-        Gesture features are only supported on iOS
+        Gesture features are supported on iOS and harmony
       </Text>
     )}
     <Button onPress={() => navigation.pop()} title="🔙 Back to Examples" />
@@ -107,10 +107,10 @@ const DetailsScreen = ({navigation}: DetailsScreenProps): React.JSX.Element => {
           </Text>
         ) : (
           <Text style={styles.text}>
-            Go back using swipe to dismiss gesture from the
-            {I18nManager.isRTL ? ' right' : ' left'} edge
+            Go back using swipe to dismiss gesture from the edge
           </Text>
         )}
+        {/* {I18nManager.isRTL ? ' right' : ' left'} edge */} 
       </View>
       <SettingsSwitch
         label="Full screen swipe enabled"

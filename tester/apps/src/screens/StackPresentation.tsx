@@ -199,11 +199,12 @@ const App = (): React.JSX.Element => (
     <Stack.Screen
       name="FormSheet"
       component={FormScreen}
-      options={{ presentation: 'formSheet', sheetAllowedDetents: [0.5, 0.85] }}
+      options={{ presentation: 'formSheet', sheetAllowedDetents: 'all' }}
       initialParams={{
         usesFormSheetPresentation: true
       }}
     />
+    {/* options={{ presentation: 'formSheet', sheetAllowedDetents: [0.5, 0.85] }} */}
   </Stack.Navigator>
 );
 

@@ -34,7 +34,7 @@ const FirstScreen = ({ navigation }: FirstScreenProps): React.JSX.Element => {
 
   return (
     <SafeAreaView style={{ ...styles.container, backgroundColor: 'aliceblue' }}>
-      <ScrollView>
+      {/* <ScrollView> */}
         <SettingsPicker<ScreenOrientation>
           style={styles.margin}
           label="Screen orientation"
@@ -56,7 +56,7 @@ const FirstScreen = ({ navigation }: FirstScreenProps): React.JSX.Element => {
           onPress={() => navigation.navigate('Second')}
         />
         <Button onPress={() => navigation.pop()} title="🔙 Back to Examples" />
-      </ScrollView>
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };

@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "react-native-screens",
+        "License": "MIT License",
+        "License File": "LICENSE",
+        "Version Number": "3.34.0",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/software-mansion/react-native-screens",
+        "Description": "This project aims to expose native navigation container components to React Native."
+    }
+]
