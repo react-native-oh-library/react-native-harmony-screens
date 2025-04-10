@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (C) 2025 Huawei Device Co., Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC } from "@rnoh/react-native-openharmony/generated"
 import { RNSSearchBar } from './RNSSearchBar';
@@ -15,7 +39,8 @@ export struct RNSScreenStackHeaderSubview {
   private cleanUpCallbacks: (() => void)[] = []
   @State alignment: HorizontalAlign = HorizontalAlign.Center
   @State isSearchBar: boolean = false
-  @State searchBarTag: number = -1
+  @State searchBarTag: number | undefined = -1
+  @State subviewType: string | undefined = undefined
 
   aboutToAppear() {
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderSubviewDescriptor>(this.tag)
@@ -32,6 +57,7 @@ export struct RNSScreenStackHeaderSubview {
     if (!this.descriptor) {
       return;
     }
+    this.subviewType = this.descriptor.rawProps["type"];
     this.alignment = this.horizontalAlignFromString(this.descriptor.rawProps["type"])
     this.isSearchBar = this.descriptor.childrenTags.some((childTag) => {
       const tmpDesc = this.ctx.descriptorRegistry.getDescriptor<Descriptor>(childTag)
@@ -65,13 +91,13 @@ export struct RNSScreenStackHeaderSubview {
   }
 
   build() {
-    if (this.isSearchBar) {
+    if (this.subviewType && this.subviewType === 'searchBar') {
       RNSSearchBar({
         ctx: this.ctx,
         tag: this.searchBarTag,
         isFirstScreenInStack: this.isFirstScreenInStack
       })
-    } else {
+    } else if (this.subviewType !== 'searchBar') {
       Column() {
         Stack() {
           ContentSlot(this.ctx.getContentForTag(this.tag))
@@ -81,10 +107,6 @@ export struct RNSScreenStackHeaderSubview {
       .height("100%")
       .justifyContent(FlexAlign.Center)
       .alignItems(this.alignment)
-      .margin({
-        left: this.alignment === HorizontalAlign.Start ? NATIVE_BUTTON_OFFSET : 0,
-        right: this.alignment === HorizontalAlign.End ? NATIVE_BUTTON_OFFSET : 0,
-      })
     }
   }
 }

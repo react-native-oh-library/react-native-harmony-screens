@@ -1,3 +1,27 @@
+/**
+ * MIT License
+ *
+ * Copyright (C) 2025 Huawei Device Co., Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 import fadeFromBottom from './FadeFromBottomAnimation';
 import slideFromBottom from './SlideFromBottomAnimation';
 import slideFromLeft from './SlideFromLeftAnimation';
@@ -51,6 +75,12 @@ function getAnimationConfigurationObject(animationType: string): AnimationConfig
       return noneAnimation;
     case 'fade':
       return fade;
+    case 'default':
+      return slideFromRight;
+    case 'flip':
+      return slideFromRight;
+    case 'simple_push':
+      return slideFromRight;
   }
 
   // TODO: create/import from specs the type for animationType variable
@@ -68,7 +98,7 @@ export function getNewAnimationState(animationType: string, animationEvent: Anim
     case AnimationHandlerEvent.ATTACH_START:
       return animationConfig.attachAnimationStartState;
     case AnimationHandlerEvent.ATTACH_END:
-      return animationConfig.detachAnimationStartState;
+      return animationConfig.attachAnimationEndState;
     case AnimationHandlerEvent.DETACH_START:
       return animationConfig.detachAnimationStartState;
     case AnimationHandlerEvent.DETACH_END:

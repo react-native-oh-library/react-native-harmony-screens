@@ -1,6 +1,6 @@
 {
   "modelVersion": "5.0.0",
   "dependencies": {
-    "@rnoh/hvigor-plugin": "../../node_modules/react-native-harmony/harmony/rnoh-hvigor-plugin-0.75.0.tgz", // <PROJECT_ROOT>/node_modules/<RNOH>/harmony/rnoh-hvigor-plugin-X.X.X.tgz
-  }
+  },
+  "properties":{ "ohos.nativeResolver":false }
 }

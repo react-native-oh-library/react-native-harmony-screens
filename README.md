@@ -1,23 +1,9 @@
-# React Native Harmony Screens
+# @react-native-oh-tpl/react-native-screens
+This project is based on  [react-native-screens](https://github.com/software-mansion/react-native-screens)
+## Documentation
+[中文](https://gitee.com/react-native-oh-library/usage-docs/blob/master/zh-cn/react-native-screens.md)
 
-Native navigation primitives for your React Native app.
+[English](https://gitee.com/react-native-oh-library/usage-docs/blob/master/en/react-native-screens.md)
 
-## Running the `tester` app
-
-### Installing dependencies and preparing development environment
-
-1. Go to `/tester`
-2. Run `npm run i`
-3. Open `tester/harmony` in DevEco Studio
-
-### Generate signing config
-
-1. Open `File -> Project Structure -> Signing Configs`
-2. Log in to your Huawei developer account and proceed with provided instructions
-
-### Running the app
-
-1. Go to `/tester`
-2. Run `npm run start`
-3. Open `tester/harmony` in DevEco Studio
-4. Build and run `entry` module
+## License
+This library is licensed under [The MIT License (MIT)](https://github.com/react-native-oh-library/react-native-harmony-screens/blob/sig/LICENSE).

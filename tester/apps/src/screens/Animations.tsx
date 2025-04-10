@@ -52,8 +52,7 @@ const MainScreen = ({
           'slide_from_bottom',
           'slide_from_right',
           'slide_from_left',
-          'ios_from_right',
-          'ios_from_left',
+          'ios',
           'none',
         ]}
       />
@@ -114,7 +113,8 @@ const NavigateScreen = ({
 
   return (
     <View style={{ ...styles.container, backgroundColor: 'pink' }}>
-      <Button title="Go back" onPress={() => navigation.popTo('Main')} />
+      {/* <Button title="Go back" onPress={() => navigation.popTo('Main')} /> */}
+      <Button title="Go back" onPress={() => navigation.pop()} />
     </View>
   );
 };

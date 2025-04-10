@@ -32,10 +32,11 @@ import SearchBar from './src/screens/SearchBar';
 import Events from './src/screens/Events';
 import Gestures from './src/screens/Gestures';
 
-import {enableFreeze} from 'react-native-screens';
+import {enableFreeze, enableScreens} from 'react-native-screens';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 enableFreeze();
+enableScreens(true);
 
 const SCREENS: Record<
   string,
@@ -144,15 +145,19 @@ interface MainScreenProps {
 const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
   const {toggleTheme} = useContext(ThemeToggle);
   const isDark = useTheme().dark;
+  const [isRTL, setIsRTL] = useState(I18nManager.isRTL);
 
   return (
     <ScrollView testID="root-screen-examples-scrollview">
       <SettingsSwitch
         style={styles.switch}
         label="Right to left"
-        value={I18nManager.isRTL}
+        value={isRTL}
         onValueChange={() => {
-          I18nManager.forceRTL(!I18nManager.isRTL);
+          I18nManager.forceRTL(!I18nManager.isRTL);          
+          setTimeout(()=>{
+            setIsRTL(I18nManager.isRTL);
+          }, 50);
         }}
       />
       <SettingsSwitch
@@ -202,13 +207,16 @@ const ExampleApp = (): React.JSX.Element => {
       <ThemeToggle.Provider value={{toggleTheme}}>
         <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
           <Stack.Navigator
-            screenOptions={{statusBarStyle: isDark ? 'light' : 'dark'}}>
+            screenOptions={{
+              statusBarStyle: isDark ? 'light' : 'dark',              
+            }}>
             <Stack.Screen
               name="Main"
               options={{
                 title: `${
                   Platform.isTV ? '📺' : '📱'
                 } React Native Screens Examples`,
+                headerShown: false,
               }}
               component={MainScreen}
             />

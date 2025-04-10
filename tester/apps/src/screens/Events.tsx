@@ -36,12 +36,12 @@ const MainScreen = ({
     const unsubscribe = navigation.addListener(
       'transitionStart',
       ({ data }) => {
-        toast.push({
-          message: `Main | transitionStart | ${
-            data.closing ? 'closing' : 'opening'
-          }`,
-          backgroundColor: 'orange',
-        });
+        // toast.push({
+        //   message: `Main | transitionStart | ${
+        //     data.closing ? 'closing' : 'opening'
+        //   }`,
+        //   backgroundColor: 'orange',
+        // });
       },
     );
 
@@ -50,12 +50,12 @@ const MainScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('transitionEnd', ({ data }) => {
-      toast.push({
-        message: `Main | transitionEnd | ${
-          data.closing ? 'closing' : 'opening'
-        }`,
-        backgroundColor: 'dodgerblue',
-      });
+      // toast.push({
+      //   message: `Main | transitionEnd | ${
+      //     data.closing ? 'closing' : 'opening'
+      //   }`,
+      //   backgroundColor: 'dodgerblue',
+      // });
     });
 
     return unsubscribe;
@@ -83,8 +83,7 @@ const MainScreen = ({
           'slide_from_bottom',
           'slide_from_right',
           'slide_from_left',
-          'ios_from_right',
-          'ios_from_left',
+          'ios',
           'none',
         ]}
       />
@@ -111,10 +110,10 @@ const ChatsScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
-      toast.push({
-        message: `Chats | beforeRemove`,
-        backgroundColor: 'red',
-      });
+      // toast.push({
+      //   message: `Chats | beforeRemove`,
+      //   backgroundColor: 'red',
+      // });
     });
 
     return unsubscribe;
@@ -124,12 +123,12 @@ const ChatsScreen = ({
     const unsubscribe = navigation.addListener(
       'transitionStart',
       ({ data }) => {
-        toast.push({
-          message: `Chats | transitionStart | ${
-            data.closing ? 'closing' : 'opening'
-          }`,
-          backgroundColor: 'orange',
-        });
+        // toast.push({
+        //   message: `Chats | transitionStart | ${
+        //     data.closing ? 'closing' : 'opening'
+        //   }`,
+        //   backgroundColor: 'orange',
+        // });
       },
     );
 
@@ -138,12 +137,12 @@ const ChatsScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('transitionEnd', ({ data }) => {
-      toast.push({
-        message: `Chats | transitionEnd | ${
-          data.closing ? 'closing' : 'opening'
-        }`,
-        backgroundColor: 'dodgerblue',
-      });
+      // toast.push({
+      //   message: `Chats | transitionEnd | ${
+      //     data.closing ? 'closing' : 'opening'
+      //   }`,
+      //   backgroundColor: 'dodgerblue',
+      // });
     });
 
     return unsubscribe;
@@ -178,10 +177,10 @@ const PrivacyScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
-      toast.push({
-        message: `Privacy | beforeRemove`,
-        backgroundColor: 'red',
-      });
+      // toast.push({
+      //   message: `Privacy | beforeRemove`,
+      //   backgroundColor: 'red',
+      // });
     });
 
     return unsubscribe;
@@ -191,12 +190,12 @@ const PrivacyScreen = ({
     const unsubscribe = navigation.addListener(
       'transitionStart',
       ({ data }) => {
-        toast.push({
-          message: `Privacy | transitionStart | ${
-            data.closing ? 'closing' : 'opening'
-          }`,
-          backgroundColor: 'orange',
-        });
+        // toast.push({
+        //   message: `Privacy | transitionStart | ${
+        //     data.closing ? 'closing' : 'opening'
+        //   }`,
+        //   backgroundColor: 'orange',
+        // });
       },
     );
 
@@ -205,12 +204,12 @@ const PrivacyScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('transitionEnd', ({ data }) => {
-      toast.push({
-        message: `Privacy | transitionEnd | ${
-          data.closing ? 'closing' : 'opening'
-        }`,
-        backgroundColor: 'dodgerblue',
-      });
+      // toast.push({
+      //   message: `Privacy | transitionEnd | ${
+      //     data.closing ? 'closing' : 'opening'
+      //   }`,
+      //   backgroundColor: 'dodgerblue',
+      // });
     });
 
     return unsubscribe;
@@ -238,10 +237,10 @@ const OptionsScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', () => {
-      toast.push({
-        message: `Options | beforeRemove`,
-        backgroundColor: 'red',
-      });
+      // toast.push({
+      //   message: `Options | beforeRemove`,
+      //   backgroundColor: 'red',
+      // });
     });
 
     return unsubscribe;
@@ -251,12 +250,12 @@ const OptionsScreen = ({
     const unsubscribe = navigation.addListener(
       'transitionStart',
       ({ data }) => {
-        toast.push({
-          message: `Options | transitionStart | ${
-            data.closing ? 'closing' : 'opening'
-          }`,
-          backgroundColor: 'orange',
-        });
+        // toast.push({
+        //   message: `Options | transitionStart | ${
+        //     data.closing ? 'closing' : 'opening'
+        //   }`,
+        //   backgroundColor: 'orange',
+        // });
       },
     );
 
@@ -265,12 +264,12 @@ const OptionsScreen = ({
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('transitionEnd', ({ data }) => {
-      toast.push({
-        message: `Options | transitionEnd | ${
-          data.closing ? 'closing' : 'opening'
-        }`,
-        backgroundColor: 'dodgerblue',
-      });
+      // toast.push({
+      //   message: `Options | transitionEnd | ${
+      //     data.closing ? 'closing' : 'opening'
+      //   }`,
+      //   backgroundColor: 'dodgerblue',
+      // });
     });
 
     return unsubscribe;
