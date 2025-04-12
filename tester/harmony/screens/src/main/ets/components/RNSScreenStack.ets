@@ -52,6 +52,11 @@ export struct RNSScreenStack {
   static RECORD_PRESENTATION: string = "push";
   static ROOT_TAG: number = 0;
   static STATUS_BAR_HEIGHT: number = 0;
+  @State isReset: boolean = false;
+  
+  arrayContainsArray(source: number[], target: number[]): boolean {
+    return target.every(item => source.includes(item));
+  }
 
   updateStack(newChildren: number[]) {
     if (!newChildren || this.stack.length === 0) {
@@ -75,8 +80,19 @@ export struct RNSScreenStack {
       return;
     }
 
-    if (newChildren.length < this.stack.length) {
+    if (newChildren.length < this.stack.length && this.arrayContainsArray(this.stack,newChildren)) {
       this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
+    }
+
+    if(differentElementIndex === 0){
+      this.stackController.clear();
+
+      for (let i = differentElementIndex; i < newChildren.length; i++) {
+        console.info('test zyx stack update reset path name:' + newChildren[i].toString());
+        this.stackController.pushPathByName(newChildren[i].toString(), null)
+      }
+      this.isReset = true;
+      return;
     }
 
     if (differentElementIndex !== -1) {
@@ -198,9 +214,16 @@ export struct RNSScreenStack {
             enteringScreenAnimation = toParam.showAnimation;
             animationType = fromParam.getAnimationType();
           } else {
-            exitingScreenAnimation = fromParam.hideAnimation;
-            enteringScreenAnimation = toParam.attachAnimation;
-            animationType = toParam.getAnimationType();
+            if(this.isReset){
+              exitingScreenAnimation = fromParam.detachAnimation;
+              enteringScreenAnimation = toParam.showAnimation;
+              animationType = fromParam.getAnimationType();
+              this.isReset = false;
+            } else {
+              exitingScreenAnimation = fromParam.hideAnimation;
+              enteringScreenAnimation = toParam.attachAnimation;
+              animationType = toParam.getAnimationType();
+            }
           }
         } else if (operation == NavigationOperation.PUSH && this.replaceAnimation === 'push') {
           RNSScreenStack.RECORD_PRESENTATION = this.presentation;
