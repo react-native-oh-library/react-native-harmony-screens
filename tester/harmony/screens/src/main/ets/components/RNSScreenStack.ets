@@ -54,10 +54,6 @@ export struct RNSScreenStack {
   static STATUS_BAR_HEIGHT: number = 0;
   @State isReset: boolean = false;
   
-  arrayContainsArray(source: number[], target: number[]): boolean {
-    return target.every(item => source.includes(item));
-  }
-
   updateStack(newChildren: number[]) {
     if (!newChildren || this.stack.length === 0) {
       for (let i = 0; i < newChildren.length; i++) {
@@ -80,7 +76,7 @@ export struct RNSScreenStack {
       return;
     }
 
-    if (newChildren.length < this.stack.length && this.arrayContainsArray(this.stack,newChildren)) {
+    if (newChildren.length === this.stack.length-1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, this.stack.length-1))) {
       this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
     }
 
@@ -88,7 +84,6 @@ export struct RNSScreenStack {
       this.stackController.clear();
 
       for (let i = differentElementIndex; i < newChildren.length; i++) {
-        console.info('test zyx stack update reset path name:' + newChildren[i].toString());
         this.stackController.pushPathByName(newChildren[i].toString(), null)
       }
       this.isReset = true;
@@ -96,8 +91,16 @@ export struct RNSScreenStack {
     }
 
     if (differentElementIndex !== -1) {
-      for (let i = differentElementIndex; i < newChildren.length; i++) {
-        this.stackController.pushPathByName(newChildren[i].toString(), null)
+      if (newChildren.length -1 === this.stack.length && JSON.stringify(this.stack) === JSON.stringify(newChildren.slice(0, newChildren.length-1))) {
+        for (let i = differentElementIndex; i < newChildren.length; i++) {
+          this.stackController.pushPathByName(newChildren[i].toString(), null)
+        }
+      } else {
+        this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
+        for (let i = differentElementIndex; i < newChildren.length; i++) {
+          this.stackController.pushPathByName(newChildren[i].toString(), null)
+        }
+        this.isReset = true;
       }
     }
   }
