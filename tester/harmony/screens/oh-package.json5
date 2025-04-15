@@ -6,6 +6,6 @@
   description: '',
   main: "index.ets",
   type: 'module',
-  version: '3.34.0-rc.1',
+  version: '3.34.0-rc.2',
   dependencies: {},
 }
