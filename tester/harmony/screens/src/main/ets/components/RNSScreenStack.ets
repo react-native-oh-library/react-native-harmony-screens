@@ -53,6 +53,7 @@ export struct RNSScreenStack {
   static ROOT_TAG: number = 0;
   static STATUS_BAR_HEIGHT: number = 0;
   @State isReset: boolean = false;
+  @State isResetAnimationPush: boolean = true;
   
   updateStack(newChildren: number[]) {
     if (!newChildren || this.stack.length === 0) {
@@ -76,7 +77,7 @@ export struct RNSScreenStack {
       return;
     }
 
-    if (newChildren.length === this.stack.length-1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, this.stack.length-1))) {
+    if (newChildren.length !== -1 && newChildren.length === this.stack.length-1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, this.stack.length-1))) {
       this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
     }
 
@@ -101,6 +102,14 @@ export struct RNSScreenStack {
           this.stackController.pushPathByName(newChildren[i].toString(), null)
         }
         this.isReset = true;
+
+        if (this.stackController.getAllPathName().length === 1) {
+          if (JSON.stringify(newChildren[0]) === JSON.stringify(this.stack[0])) {
+            this.isResetAnimationPush = false;
+          } else {
+            this.isResetAnimationPush = true;
+          }
+        }
       }
     }
   }
@@ -218,9 +227,15 @@ export struct RNSScreenStack {
             animationType = fromParam.getAnimationType();
           } else {
             if(this.isReset){
-              exitingScreenAnimation = fromParam.detachAnimation;
-              enteringScreenAnimation = toParam.showAnimation;
-              animationType = fromParam.getAnimationType();
+              if (this.isResetAnimationPush) {
+                exitingScreenAnimation = fromParam.detachAnimation;
+                enteringScreenAnimation = toParam.showAnimation;
+                animationType = fromParam.getAnimationType();
+              } else {
+                exitingScreenAnimation = fromParam.hideAnimation;
+                enteringScreenAnimation = toParam.attachAnimation;
+                animationType = toParam.getAnimationType();
+              }
               this.isReset = false;
             } else {
               exitingScreenAnimation = fromParam.hideAnimation;
