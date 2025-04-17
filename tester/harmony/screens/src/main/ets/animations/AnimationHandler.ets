@@ -70,7 +70,7 @@ function getAnimationConfigurationObject(animationType: string): AnimationConfig
     case 'fade_from_bottom':
       return fadeFromBottom;
     case 'ios':
-      return iosAnimation;
+      return slideFromRight;
     case 'none':
       return noneAnimation;
     case 'fade':
