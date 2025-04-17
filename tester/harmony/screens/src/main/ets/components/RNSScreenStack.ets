@@ -54,7 +54,7 @@ export struct RNSScreenStack {
   static STATUS_BAR_HEIGHT: number = 0;
   @State isReset: boolean = false;
   @State isResetAnimationPush: boolean = true;
-  
+
   updateStack(newChildren: number[]) {
     if (!newChildren || this.stack.length === 0) {
       for (let i = 0; i < newChildren.length; i++) {
@@ -196,9 +196,9 @@ export struct RNSScreenStack {
       return undefined;
     }
 
-//    if (this.shouldFallbackToDefaultAnimation(operation, from, to)) {
-//      return undefined;
-//    }
+    //    if (this.shouldFallbackToDefaultAnimation(operation, from, to)) {
+    //      return undefined;
+    //    }
 
     this.customTransitionCoordinator.operation = operation;
     return {
@@ -211,70 +211,58 @@ export struct RNSScreenStack {
         // Obtain the corresponding transition animation callback from the customTransitionCoordinator class based on the sequence of subpages.
         let fromParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(from.navDestinationId);
         let toParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(to.navDestinationId);
-        let exitingScreenAnimation: AnimationDefinition;
-        let enteringScreenAnimation: AnimationDefinition;
+        let currentAnimation: AnimationDefinition;
         let animationType: string
 
         if (operation == NavigationOperation.PUSH && this.replaceAnimation === 'pop') {
-          exitingScreenAnimation = fromParam.detachAnimation;
-          enteringScreenAnimation = toParam.showAnimation;
+          currentAnimation = toParam.detachAnimation;
           animationType = fromParam.getAnimationType();
         } else if (operation == NavigationOperation.POP && this.replaceAnimation === 'push') {
           if ((RNSScreenStack.RECORD_PRESENTATION === 'transparentModal' || RNSScreenStack.RECORD_PRESENTATION === 'containedTransparentModal' || RNSScreenStack.RECORD_PRESENTATION === 'formSheet') && RNSScreenStack.RECORD_PRESENTATION !== this.presentation) {
             RNSScreenStack.RECORD_PRESENTATION = this.presentation
-            exitingScreenAnimation = fromParam.detachAnimation;
-            enteringScreenAnimation = toParam.showAnimation;
+            currentAnimation = toParam.showAnimation;
             animationType = fromParam.getAnimationType();
           } else {
             if(this.isReset){
               if (this.isResetAnimationPush) {
-                exitingScreenAnimation = fromParam.detachAnimation;
-                enteringScreenAnimation = toParam.showAnimation;
+                currentAnimation = toParam.showAnimation;
                 animationType = fromParam.getAnimationType();
               } else {
-                exitingScreenAnimation = fromParam.hideAnimation;
-                enteringScreenAnimation = toParam.attachAnimation;
+                currentAnimation = fromParam.hideAnimation;
                 animationType = toParam.getAnimationType();
               }
               this.isReset = false;
             } else {
-              exitingScreenAnimation = fromParam.hideAnimation;
-              enteringScreenAnimation = toParam.attachAnimation;
+              currentAnimation = fromParam.hideAnimation;
               animationType = toParam.getAnimationType();
             }
           }
         } else if (operation == NavigationOperation.PUSH && this.replaceAnimation === 'push') {
           RNSScreenStack.RECORD_PRESENTATION = this.presentation;
           if (this.presentation === 'transparentModal' || this.presentation === 'containedTransparentModal' || this.presentation === 'formSheet') {
-            exitingScreenAnimation = fromParam.hideAnimation;
-            enteringScreenAnimation = toParam.attachAnimation;
+            currentAnimation = fromParam.hideAnimation;
             animationType = toParam.getAnimationType();
           } else {
-            exitingScreenAnimation = fromParam.detachAnimation;
-            enteringScreenAnimation = toParam.showAnimation;
+            currentAnimation = toParam.showAnimation;
             animationType = fromParam.getAnimationType();
           }
         } else if (operation == NavigationOperation.POP && this.replaceAnimation === 'pop') {
-          exitingScreenAnimation = fromParam.hideAnimation;
-          enteringScreenAnimation = toParam.attachAnimation;
+          currentAnimation = fromParam.hideAnimation;
           animationType = toParam.getAnimationType();
         } else if (operation == NavigationOperation.REPLACE && this.replaceAnimation === 'push'){
-          exitingScreenAnimation = fromParam.detachAnimation;
-          enteringScreenAnimation = toParam.showAnimation;
+          currentAnimation = toParam.showAnimation;
           animationType = fromParam.getAnimationType();
         } else if (operation == NavigationOperation.REPLACE && this.replaceAnimation === 'pop'){
-          exitingScreenAnimation = fromParam.hideAnimation;
-          enteringScreenAnimation = toParam.attachAnimation;
+          currentAnimation = toParam.attachAnimation;
           animationType = fromParam.getAnimationType();
         } else {
-          exitingScreenAnimation = fromParam.detachAnimation;
-          enteringScreenAnimation = toParam.showAnimation;
+          currentAnimation = toParam.showAnimation;
           animationType = fromParam.getAnimationType();
         }
 
         const animationOptions = getAnimationConfig(animationType);
 
-        enteringScreenAnimation.start(animationType);
+        currentAnimation.start(animationType);
         animateTo({
           duration: animationOptions.duration,
           curve: animationOptions.curve,
@@ -284,19 +272,7 @@ export struct RNSScreenStack {
             this.eventEmitter!.emit("finishTransitioning", {})
           }
         }, () => {
-          enteringScreenAnimation.end(animationType);
-        })
-
-        exitingScreenAnimation.start(animationType);
-        animateTo({
-          duration: animationOptions.duration,
-          curve: animationOptions.curve,
-          tempo: animationOptions.tempo,
-          onFinish: () => {
-            transitionProxy.finishTransition();
-          }
-        }, () => {
-          exitingScreenAnimation.end(animationType);
+          currentAnimation.end(animationType);
         })
       }
     } as NavigationAnimatedTransition;
