@@ -77,7 +77,7 @@ export struct RNSScreenStack {
       return;
     }
 
-    if (newChildren.length !== -1 && newChildren.length === this.stack.length-1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, this.stack.length-1))) {
+    if (newChildren.length !== -1 && differentElementIndex === -1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, newChildren.length))) {
       this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
     }
 
