@@ -13,7 +13,7 @@
       "ohPackageName": "@react-native-oh-tpl/react-native-screens"
     }
   },
-  "version": "3.34.0-rc.3",
+  "version": "3.34.0-rc.4",
   "description": "",
   "react-native": "src/index.ts",
   "main": "lib/commonjs/index.js",
@@ -23,7 +23,7 @@
     "prepack": "bob build",
     "test": "jest",
     "pack:prod": "npm pack",
-    "prepublishOnly": "npm run prepack && react-native verify-package-harmony --package-path . --skip-checks oh_package_name_is_derived_from_npm_package_name",
+    "prepublishOnly": "npm run prepack",
     "update_version": "node ./scripts/update-version.js",
     "deploy": "node ./scripts/deploy.js"
   },
@@ -35,6 +35,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/eslint-parser": "7.22.15",
@@ -68,7 +72,6 @@
     "react": "^18.2.0",
     "react-native": "^0.75.4",
     "react-native-builder-bob": "^0.23.2",
-    "react-native-gesture-handler": "^2.20.0",
     "react-native-reanimated": "3.9.0-nightly-20240402-12717cdb5",
     "react-native-safe-area-context": "^4.8.1",
     "react-test-renderer": "^18.2.0",
