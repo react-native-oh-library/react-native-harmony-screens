@@ -201,6 +201,25 @@ export struct RNSScreenStack {
     //    }
 
     this.customTransitionCoordinator.operation = operation;
+    if (this.customTransitionCoordinator.interactive) {
+      let customAnimation: NavigationAnimatedTransition = {
+        onTransitionEnd: (isSuccess: boolean) => {
+          this.customTransitionCoordinator.proxy = undefined;
+          this.customTransitionCoordinator.interactive = false;
+        },
+        transition: (transitionProxy: NavigationTransitionProxy) => {
+          this.customTransitionCoordinator.proxy = transitionProxy;
+          let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
+            (to.navDestinationId) : (from.navDestinationId);
+          if (targetIndex) {
+            this.customTransitionCoordinator.fireInteractiveAnimation(targetIndex, operation);
+          }
+        },
+        isInteractive: this.customTransitionCoordinator.interactive
+      }
+      return customAnimation;
+    }
+
     return {
       timeout: 2000, // The limit duration of the transition animation
       transition: (transitionProxy: NavigationTransitionProxy) => {
