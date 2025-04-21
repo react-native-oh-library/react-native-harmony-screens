@@ -132,7 +132,7 @@ export struct RNSScreenTitleHeader {
   }
 
   build() {
-    Column() {
+    RelativeContainer() {
       Stack() {
         Row() {
           if (!this.isFirstScreenInStack) {
@@ -188,6 +188,17 @@ export struct RNSScreenTitleHeader {
       .layoutWeight(1)
       .padding({ left: 10, right: 10 })
       .backgroundColor(this.titleBarTranslucent?Color.Transparent:this.backgroundColorValue)
+
+      Text('')
+        .width("100%")
+        .height("1")
+        .backgroundColor('#d3d3d3')
+        .visibility(this.hideShadow ? Visibility.None : Visibility.Visible)
+        .alignRules({
+          start: { anchor: "__container__", align: HorizontalAlign.Start },
+          top: { anchor: "__container__", align: VerticalAlign.Bottom }
+        })
+
     }
     .width("100%")
     .height(56)

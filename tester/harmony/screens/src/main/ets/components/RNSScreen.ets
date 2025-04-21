@@ -37,8 +37,8 @@ import { AnimationHandlerEvent, getNewAnimationState } from '../animations/Anima
 import { RNSScreenTitleHeader } from "./RNSScreenTitleHeader"
 import { TITLEBAR_HEIGHT } from '../Constants';
 import common from '@ohos.app.ability.common';
-import i18n from '@ohos.i18n';
 import { RNSScreenStack } from './RNSScreenStack'
+import { I18nManagerTurboModule } from '@rnoh/react-native-openharmony/src/main/ets/RNOHCorePackage/turboModules/index'
 
 export type RNSScreenDescriptor = Descriptor<"RNSScreen", RNC.RNSScreen.Props>
 
@@ -387,6 +387,11 @@ export struct RNSScreen {
       (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.SHOW_END),
       (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.HIDE_START),
       (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.HIDE_END),
+      (operation: NavigationOperation) => {
+        if (operation == NavigationOperation.PUSH) {
+        } else {
+        }
+      }
     )
   }
   private setScreenOrientation() {
@@ -425,14 +430,8 @@ export struct RNSScreen {
   
   private isRtl() {
     let flag: boolean = false;
-    if (this.directions) {
-      if (this.directions === 'rtl') {
-        flag = true;
-      } else if (this.directions === 'ltr') {
-        flag = false;
-      }
-    }
-    return flag;
+    const isRTL = this.ctx.rnInstance.getTurboModule<I18nManagerTurboModule>('I18nManager').getConstants() .isRTL;
+    return isRTL;
   }
   
   private isInGestureResponseDistance(event: GestureEvent): boolean {
@@ -465,7 +464,7 @@ export struct RNSScreen {
     {
       let isRTL = this.isRtl();
       let isSlideFromLeft: boolean = this.stackAnimation === "slide_from_left";
-      let isCorrectEdge: boolean = (isRTL && event.offsetX < 0 ) || (!isRTL && isSlideFromLeft && event.offsetX < 0) || (isRTL && isSlideFromLeft && event.offsetX > 0) || (!isRTL && event.offsetX > 0)
+      let isCorrectEdge: boolean = (isRTL && !isSlideFromLeft && event.offsetX < 0 ) || (!isRTL && isSlideFromLeft && event.offsetX < 0) || (isRTL && isSlideFromLeft && event.offsetX > 0) || (!isRTL && !isSlideFromLeft && event.offsetX > 0)
       if (isCorrectEdge) {
         flag = true
         return flag;
@@ -489,20 +488,30 @@ export struct RNSScreen {
       this.velocity = event.offsetX;
       this.distance= event.target.area.width as number;
       let isRTL = this.isRtl();
+      let isSlideFromLeft: boolean = this.stackAnimation === "slide_from_left";
       if (isRTL) {
         this.translation = -this.translation;
         this.velocity = -this.velocity;
         this.offsetX = this.positionX + event.offsetX;
+        if (!isSlideFromLeft){
+          this.translateXValue = this.offsetX.toString();
+        } else {
+          this.translateXValue = (-this.offsetX).toString();
+        }
       } else  {
         this.offsetX = this.positionX + event.offsetX;
+        if (!isSlideFromLeft){
+          this.translateXValue = this.offsetX.toString();
+        } else {
+          this.translateXValue = (-this.offsetX).toString();
+        }
       }
-      this.translateXValue = this.offsetX.toString();
     }
 
     let isInverted: boolean = this.stackAnimation === "slide_from_left";
     let transitionProgress: number = (this.translation / this.distance);
     transitionProgress = isInverted ? transitionProgress * -1 : transitionProgress;
-    this.eventEmitter!.emit("transitionProgress", {progress: transitionProgress, closing: true ? 1 : 0, goingForward: false ? 1 : 0})
+    this.eventEmitter!.emit("transitionProgress", {progress: transitionProgress, closing: 0, goingForward: 0})
     this.customTransitionCoordinator.updateProgress(transitionProgress);
   }
 
@@ -603,6 +612,10 @@ export struct RNSScreen {
           this.couldSwipe = this.gestureRecognizerShouldBegin(event)
           if (this.couldSwipe) {
             this.isInverted = this.stackAnimation === "slide_from_left";
+            this.customTransitionCoordinator.interactive = true;
+            if (Math.abs(event.offsetX) > 0) {
+              this.stackController?.pop()
+            }
           }
         })
         .onActionUpdate((event: GestureEvent) => {
@@ -613,7 +626,13 @@ export struct RNSScreen {
         .onActionCancel(() => {
           this.couldSwipe = false;
           this.eventEmitter!.emit("gestureCancel", {})
-          this.customTransitionCoordinator.cancelTransition();
+          if (this.customTransitionCoordinator.interactive) {
+            this.customTransitionCoordinator.interactive = false;
+            this.customTransitionCoordinator.cancelTransition();
+            this.eventEmitter!.emit("nativeDismissCancelled", {
+              dismissCount: 0
+            })
+          }
         })
         .onActionEnd((event: GestureEvent) => {
           if (this.couldSwipe) {
@@ -634,6 +653,9 @@ export struct RNSScreen {
               this.translateYValue = '0';
               this.customTransitionCoordinator.cancelTransition();
               this.eventEmitter!.emit("gestureCancel", {})
+              this.eventEmitter!.emit("nativeDismissCancelled", {
+                dismissCount: 0
+              })
             }
           }
           this.offsetY = 0;

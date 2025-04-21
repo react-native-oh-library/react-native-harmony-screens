@@ -37,12 +37,14 @@ export interface AnimateCallback {
   detachAnimation: AnimationDefinition,
   hideAnimation: AnimationDefinition,
   showAnimation: AnimationDefinition,
+  interactive: ((operation: NavigationOperation) => void | undefined) | undefined;
 }
 
 export class CustomTransitionCoordinator {
   proxy: NavigationTransitionProxy | undefined = undefined;
   operation: NavigationOperation = NavigationOperation.PUSH
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
+  interactive: boolean = false;
 
   // Passing the callbacks in the object breaks animateTo
   registerNavParam(name: string,
@@ -55,6 +57,7 @@ export class CustomTransitionCoordinator {
     showAnimationEndCallback: AnimationCallback,
     hideAnimationStartCallback: AnimationCallback,
     hideAnimationEndCallback: AnimationCallback,
+    interactiveCallback: (operation: NavigationOperation) => void,
   ): void {
     let paramToStore: AnimateCallback = {
       getAnimationType,
@@ -73,7 +76,8 @@ export class CustomTransitionCoordinator {
       hideAnimation: {
         start: hideAnimationStartCallback,
         end: hideAnimationEndCallback,
-      }
+      },
+      interactive: interactiveCallback
     }
     if (this.customTransitionMap.has(name)) {
       let param = this.customTransitionMap.get(name);
@@ -109,5 +113,13 @@ export class CustomTransitionCoordinator {
 
   getAnimateParam(name: string): AnimateCallback {
     return this.customTransitionMap.get(name)!;
+  }
+
+  fireInteractiveAnimation(name: string, operation: NavigationOperation) {
+    let animation = this.customTransitionMap.get(name)?.interactive;
+    if (!animation) {
+      return;
+    }
+    animation(operation);
   }
 }
