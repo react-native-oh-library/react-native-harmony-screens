@@ -143,6 +143,7 @@ export struct RNSSearchBar {
   cancelSearch() {
     this.eventEmitter!.emit("cancelButtonPress", {})
     this.showTextInput = false;
+    this.eventEmitter!.emit("close", {})
   }
 
   build() {
