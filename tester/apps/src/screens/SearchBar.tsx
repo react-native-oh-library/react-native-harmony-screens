@@ -77,7 +77,10 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         },
         onCancelButtonPress: () => {
           console.info('test screen searchBar onCancelButtonPress')
-          setMethodText('screen searchBar onCancelButtonPress')
+	  if (!log.includes('onCancelButtonPress')) {
+            log = ' onCancelButtonPress'
+          }
+          setMethodText('screen searchBar '+log)
         },
           // toast.push({
           //   message: '[iOS] Cancel button pressed',
@@ -85,7 +88,10 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
           // }),
         onClose: () => {
           console.info('test screen searchBar onClose')
-          setMethodText('screen searchBar onClose')
+          if (!log.includes('onClose')) {
+            log += ' onClose'
+          }
+          setMethodText('screen searchBar '+log)
         },
           // toast.push({
           //   message: '[Android] Closing',
@@ -93,6 +99,7 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
           // }),
         onOpen: () => {
           console.info('test screen searchBar onOpen')
+	  log = ''
           setMethodText('screen searchBar onOpen')
         },
           // toast.push({
