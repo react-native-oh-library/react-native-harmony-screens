@@ -13,7 +13,7 @@
       "ohPackageName": "@react-native-oh-tpl/react-native-screens"
     }
   },
-  "version": "3.34.0-rc.5",
+  "version": "3.34.0-rc.6",
   "description": "",
   "react-native": "src/index.ts",
   "main": "lib/commonjs/index.js",
