@@ -67,7 +67,7 @@ function ScreenStackItem(
 
   const content = (
     <>
-      <DebugContainer
+      {/* <DebugContainer
         style={[
           stackPresentation === 'formSheet'
             ? Platform.OS === 'ios'
@@ -78,7 +78,18 @@ function ScreenStackItem(
         ]}
         stackPresentation={stackPresentation ?? 'push'}>
         {children}        
-      </DebugContainer>
+      </DebugContainer> */}
+      <View
+       style={[
+        stackPresentation === 'formSheet'
+          ? Platform.OS === 'ios'
+            ? styles.absolute
+            : null
+          : styles.container, 
+        contentStyle,
+      ]}>
+        {children}
+      </View>
 
       {/**
        * `HeaderConfig` needs to be the direct child of `Screen` without any intermediate `View`

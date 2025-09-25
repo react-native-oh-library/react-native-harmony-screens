@@ -24,42 +24,34 @@
 
 import { AnimationConfiguration } from "./AnimationHandler";
 
-const fadeFromBottom: AnimationConfiguration = {
+const slideFromLeft: AnimationConfiguration = {
   animationConfiguration: {
-    duration: 250
+    duration: 350
   },
   attachAnimationStartState: {
-    translateYValue: '-100%',
-    opacityValue: 0
+    translateXValue: '100%'
   },
   attachAnimationEndState: {
-    translateYValue: '0',
-    opacityValue: 1
+    translateXValue: '0'
   },
   detachAnimationStartState: {
-    translateYValue: '0',
-    opacityValue: 1
+    translateXValue: '0'
   },
   detachAnimationEndState: {
-    translateYValue: '-100%',
-    opacityValue: 0
+    translateXValue: '100%'
   },
   showAnimationStartState: {
-    translateYValue: '0',
-    opacityValue: 1
+    translateXValue: '-100%'
   },
   showAnimationEndState: {
-    translateYValue: '0',
-    opacityValue: 1
+    translateXValue: '0'
   },
   hideAnimationStartState: {
-    translateYValue: '0',
-    opacityValue: 1
+    translateXValue: '0'
   },
   hideAnimationEndState: {
-    translateYValue: '0',
-    opacityValue: 1
+    translateXValue: '-100%'
   }
 }
 
-export default fadeFromBottom
+export default slideFromLeft
