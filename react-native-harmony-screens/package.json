@@ -2,18 +2,13 @@
   "name": "@react-native-oh-tpl/react-native-screens",
   "harmony": {
     "alias": "react-native-screens",
-    "codegenConfig": {
-      "specPaths": [
-        "./src/specs"
-      ]
-    },
     "redirectInternalImports": true,
     "autolinking": {
       "cmakeLibraryTargetName": "rnoh_screens",
       "ohPackageName": "@react-native-oh-tpl/react-native-screens"
     }
   },
-  "version": "3.34.0-0.0.1",
+  "version": "4.8.1-rc.1",
   "description": "",
   "react-native": "src/index.ts",
   "main": "lib/commonjs/index.js",
