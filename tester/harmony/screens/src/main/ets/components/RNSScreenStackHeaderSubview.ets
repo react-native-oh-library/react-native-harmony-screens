@@ -23,7 +23,7 @@
  */
 
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
-import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { RNC }  from '../generated/ts';
 import { RNSSearchBar } from './RNSSearchBar';
 import { NATIVE_BUTTON_OFFSET } from '../Constants'
 

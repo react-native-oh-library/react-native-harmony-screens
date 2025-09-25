@@ -29,7 +29,7 @@ import {
   RNComponentContext,
   RNViewBase,
 } from '@rnoh/react-native-openharmony';
-import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { RNC }  from '../generated/ts';
 import { CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { RNSScreenStackHeaderConfigDescriptor } from './RNSScreenStackHeaderConfig';
 import { window } from '@kit.ArkUI';

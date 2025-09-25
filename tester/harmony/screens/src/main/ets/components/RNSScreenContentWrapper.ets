@@ -23,23 +23,24 @@
  */
 
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
+// import { RNC } from "@rnoh/react-native-openharmony/generated" // todo del
 import { RNC }  from '../generated/ts';
 
-export type RNSFullWindowOverlayDescriptor = Descriptor<"RNSFullWindowOverlay", RNC.RNSFullWindowOverlay.Props>
+export type RNSScreenContentWrapperDescriptor = Descriptor<"RNSScreenContentWrapper", RNC.RNSScreenContentWrapper.Props>
 
 @Component
-export struct RNSFullWindowOverlay {
-  public static readonly NAME = RNC.RNSFullWindowOverlay.NAME
+export struct RNSScreenContentWrapper {
+  public static readonly NAME = RNC.RNSScreenContentWrapper.NAME
   public ctx!: RNComponentContext
   public tag: number = 0
-  @State descriptor: RNSFullWindowOverlayDescriptor = {} as RNSFullWindowOverlayDescriptor
+  @State descriptor: RNSScreenContentWrapperDescriptor = {} as RNSScreenContentWrapperDescriptor
   private cleanUpCallbacks: (() => void)[] = []
 
   aboutToAppear() {
-    this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSFullWindowOverlayDescriptor>(this.tag)
+    this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenContentWrapperDescriptor>(this.tag)
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
-        this.descriptor = (newDescriptor as RNSFullWindowOverlayDescriptor)
+        this.descriptor = (newDescriptor as RNSScreenContentWrapperDescriptor)
       }
     ))
   }
@@ -49,8 +50,8 @@ export struct RNSFullWindowOverlay {
   }
 
   build() {
-    Stack() {
+    Column({}){
       ContentSlot(this.ctx.getContentForTag(this.tag))
-    }.width("100%").height("100%").zIndex(999)
+    }
   }
 }
