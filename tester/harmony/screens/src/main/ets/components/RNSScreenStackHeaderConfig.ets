@@ -23,7 +23,7 @@
  */
 
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
-import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { RNC }  from '../generated/ts';
 
 export type RNSScreenStackHeaderConfigDescriptor = Descriptor<"RNSScreenStackHeaderConfig", RNC.RNSScreenStackHeaderConfig.Props>
 

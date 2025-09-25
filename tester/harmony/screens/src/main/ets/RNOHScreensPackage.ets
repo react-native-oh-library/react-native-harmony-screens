@@ -33,6 +33,7 @@ import { RNSScreenStack } from './components/RNSScreenStack';
 import { RNSScreenStackHeaderSubview } from './components/RNSScreenStackHeaderSubview';
 import { RNSScreenStackHeaderConfig } from './components/RNSScreenStackHeaderConfig'
 import { RNSSearchBar } from './components/RNSSearchBar';
+import { RNSScreenContentWrapper } from "./components/RNSScreenContentWrapper";
 
 import { RNSModule } from './modules/RNSModule'
 
@@ -80,6 +81,11 @@ export function componentBuilder(ctx: ComponentBuilderContext) {
     })
   } else if (ctx.componentName == RNSScreenStackHeaderConfig.NAME) {
     RNSScreenStackHeaderConfig({
+      ctx: ctx.rnComponentContext,
+      tag: ctx.tag,
+    })
+  } else if (ctx.componentName == RNSScreenContentWrapper.NAME) {
+    RNSScreenContentWrapper({
       ctx: ctx.rnComponentContext,
       tag: ctx.tag,
     })

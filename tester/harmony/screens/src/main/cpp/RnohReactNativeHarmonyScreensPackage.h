@@ -24,16 +24,12 @@
 
 #pragma once
 #include "RNOH/Package.h"
+#include "generated/RNOH/generated/BaseReactNativeScreensPackage.h"
 
 namespace rnoh {
-class RnohReactNativeHarmonyScreensPackage : public Package {
+class RnohReactNativeHarmonyScreensPackage : public BaseReactNativeScreensPackage {    
 public:
-    RnohReactNativeHarmonyScreensPackage(Package::Context ctx) : Package(ctx) {}
-
-    EventEmitRequestHandlers createEventEmitRequestHandlers();
-
-    ComponentInstanceFactoryDelegate::Shared createComponentInstanceFactoryDelegate();
-
-    std::vector<ArkTSMessageHandler::Shared> createArkTSMessageHandlers() override;
+	using Super = BaseReactNativeScreensPackage;
+    using Super::Super;
 };
 } // namespace rnoh
