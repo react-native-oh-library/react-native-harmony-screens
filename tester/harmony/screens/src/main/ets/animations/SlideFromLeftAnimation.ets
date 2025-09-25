@@ -26,7 +26,7 @@ import { AnimationConfiguration } from "./AnimationHandler";
 
 const slideFromLeft: AnimationConfiguration = {
   animationConfiguration: {
-    duration: 400
+    duration: 500
   },
   attachAnimationStartState: {
     translateXValue: '100%'

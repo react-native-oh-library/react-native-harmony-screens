@@ -120,6 +120,11 @@ export struct RNSScreen {
   @State opacityValue: number = 1;
   @State screenOrientation: string = 'default';
 
+  @State sheetAllowedDetents: number[] = []; // todo mark
+  @State sheetLargestUndimmedDetent: number = 0; // todo mark
+  @State sheetInitialDetent: number = 0; // todo mark
+  @State sheetElevation: number = 0; // todo mark
+
   @State offsetX: number = 0;
   @State offsetY: number = 0;
   @State positionX: number = 0;
@@ -224,7 +229,7 @@ export struct RNSScreen {
       }
     }
 
-    if (presentation.includes("transparent") && this.backgroundColorValue !== 'rgba(0,0,0,0)') {
+    if (presentation && presentation.includes("transparent") && this.backgroundColorValue !== 'rgba(0,0,0,0)') {
       this.backgroundColorValue = 'rgba(0,0,0,0)'
     }
 
@@ -376,6 +381,7 @@ export struct RNSScreen {
   }
 
   registerAnimation() {
+    if(this.customTransitionCoordinator)
     // Passing the callbacks wrapped in the object breaks animateTo
     this.customTransitionCoordinator.registerNavParam(this.pageId,
       () => this.stackAnimation,
@@ -586,21 +592,24 @@ export struct RNSScreen {
     .onAppear(() => {
       this.eventEmitter!.emit("appear", {})
     })
-    .onShown(() => {
+    .onShown(async() => {
       RNSScreen.TOP_PAGEID = this.pageId;
-      this.updateState(true)
-      this.updateHeaderConfigState()
+      await this.updateState(true);
+      await this.updateHeaderConfigState();
       this.setScreenOrientation()
     })
     .onWillDisappear(() => {
       this.eventEmitter!.emit("willDisappear", {})
     })
     .onDisAppear(() => {
-      this.customTransitionCoordinator.unregisterNavParam(this.pageId);
+      this.customTransitionCoordinator?.unregisterNavParam(this.pageId);
       this.eventEmitter!.emit("disappear", {})
     })
     .onBackPressed(() => {
       this.backPressed();
+      if(this.preventNativeDismiss){
+        return true;
+      }
       return false;
     })
     .backgroundColor(this.backgroundColorValue)

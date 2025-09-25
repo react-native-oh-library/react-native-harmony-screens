@@ -30,7 +30,7 @@ import { TITLEBAR_HEIGHT, NATIVE_BUTTON_VERTICAL_EDGE_MARGIN, NATIVE_BUTTON_OFFS
 @Component
 export struct RNSScreenTitleHeader {
   public ctx!: RNComponentContext
-  public isFirstScreenInStack!: boolean
+  @State isFirstScreenInStack: boolean  = true;
   public screenStackHeaderConfigTag!: number
   @State descriptor: RNSScreenStackHeaderConfigDescriptor | undefined = undefined
   @State nativeTitleText: string = "";
@@ -48,11 +48,15 @@ export struct RNSScreenTitleHeader {
   @State hideBackButton: boolean | undefined = undefined;
   @State backButtonInCustomView: boolean | undefined = undefined;
   @State titleBarTranslucent: boolean = false;
+  @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none'; // todo mark
   private cleanUpCallbacks: (() => void)[] = []
   public backBtnPressed: () => void = () => {
   }
 
   aboutToAppear(): void {
+    if(!!!this.screenStackHeaderConfigTag) {
+      return;
+    }
     this.descriptor =
       this.ctx.descriptorRegistry.getDescriptor<RNSScreenStackHeaderConfigDescriptor>(this.screenStackHeaderConfigTag)
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.screenStackHeaderConfigTag,
@@ -129,16 +133,20 @@ export struct RNSScreenTitleHeader {
     if (this.titleBarTranslucent !== this.descriptor.rawProps["translucent"]) {
       this.titleBarTranslucent = this.descriptor.rawProps["translucent"];
     }
+
+    if (this.blurEffect !== this.descriptor.rawProps["blurEffect"]) {
+      this.blurEffect = this.descriptor.rawProps["blurEffect"];
+    }
   }
 
   build() {
     RelativeContainer() {
+      if(this.screenStackHeaderConfigTag){
       Stack() {
         Row() {
-          if (!this.isFirstScreenInStack) {
+            if (!this.isFirstScreenInStack && !this.hideBackButton) {
             Row() {
               SymbolGlyph($r('sys.symbol.arrow_left')).fontSize(26).fontColor([this.titleColorValue])
-                .visibility(this.hideBackButton ? Visibility.None : Visibility.Visible)
 
               if (this.backTitleVisible) {
                 Text(this.backTitle ? this.backTitle : '')
@@ -198,7 +206,7 @@ export struct RNSScreenTitleHeader {
           start: { anchor: "__container__", align: HorizontalAlign.Start },
           top: { anchor: "__container__", align: VerticalAlign.Bottom }
         })
-
+      }
     }
     .width("100%")
     .height(56)

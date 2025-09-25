@@ -29,6 +29,8 @@ import slideFromRight from './SlideFromRightAnimation';
 import iosAnimation from './IOSAnimation'
 import noneAnimation from './NoneAnimation'
 import fade from './FadeAnimation';
+import iosFromRight from './IosFromRightAnimation';
+import iosFromLeft from './IosFromLeftAnimation';
 
 export enum AnimationHandlerEvent {
   ATTACH_START,
@@ -69,8 +71,6 @@ function getAnimationConfigurationObject(animationType: string): AnimationConfig
       return slideFromBottom;
     case 'fade_from_bottom':
       return fadeFromBottom;
-    case 'ios':
-      return slideFromRight;
     case 'none':
       return noneAnimation;
     case 'fade':
@@ -81,6 +81,10 @@ function getAnimationConfigurationObject(animationType: string): AnimationConfig
       return slideFromRight;
     case 'simple_push':
       return slideFromRight;
+    case 'ios_from_left':
+      return iosFromLeft;
+    case 'ios_from_right':
+      return iosFromRight;
   }
 
   // TODO: create/import from specs the type for animationType variable
