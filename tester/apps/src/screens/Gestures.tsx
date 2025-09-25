@@ -204,8 +204,8 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     position: 'absolute',
     backgroundColor: 'tomato',
-    alignItems: 'center',
-    justifyContent: 'center',
+    // alignItems: 'center', // 77 mark
+    // justifyContent: 'center', // 77 mark
   },
 });
 

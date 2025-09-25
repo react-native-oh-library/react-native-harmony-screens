@@ -20,6 +20,12 @@ type StackAnimation = Exclude<
   undefined
 >;
 
+// 77 mark
+type StackAnimationTypeForReplace =  Exclude<
+NativeStackNavigationOptions['animationTypeForReplace'],
+undefined
+>;
+
 interface MainScreenProps {
   navigation: NativeStackNavigationProp<StackParamList, 'Main'>;
   stackAnimation: StackAnimation;
@@ -78,17 +84,20 @@ const MainScreen = ({
 interface ReplaceScreenProps {
   navigation: NativeStackNavigationProp<StackParamList>;
   stackAnimation: StackAnimation;
+  animationTypeForReplace?: StackAnimationTypeForReplace; // 77 mark
 }
 
 const ReplaceScreen = ({
   navigation,
   stackAnimation,
+  animationTypeForReplace, // 77 mark
 }: ReplaceScreenProps): React.JSX.Element => {
   useLayoutEffect(() => {
     navigation.setOptions({
       animation: stackAnimation,
+      animationTypeForReplace: animationTypeForReplace, // 77 mark
     });
-  }, [navigation, stackAnimation]);
+  }, [navigation, stackAnimation, animationTypeForReplace]); // 77 mark
 
   return (
     <View style={{ ...styles.container, backgroundColor: 'wheat' }}>
@@ -114,8 +123,7 @@ const NavigateScreen = ({
 
   return (
     <View style={{ ...styles.container, backgroundColor: 'pink' }}>
-      {/* <Button title="Go back" onPress={() => navigation.popTo('Main')} /> */}
-      <Button title="Go back" onPress={() => navigation.pop()} />
+      <Button title="Go back" onPress={() => navigation.popTo('Main')} />
     </View>
   );
 };
@@ -155,11 +163,13 @@ const App = (): React.JSX.Element => {
         name="Pop"
         options={{
           animationTypeForReplace: 'pop',
+          animation: `${stackAnimation}`, // 77 mark
         }}>
         {({ navigation }) => (
           <ReplaceScreen
             navigation={navigation}
             stackAnimation={stackAnimation}
+            animationTypeForReplace={'pop'} // 77 mark
           />
         )}
       </Stack.Screen>
