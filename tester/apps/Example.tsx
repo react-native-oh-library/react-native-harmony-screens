@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -13,10 +13,10 @@ import {
   NavigationContainer,
   useTheme,
 } from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import {ListItem, SettingsSwitch, ThemedText} from './src/shared';
+import { ListItem, SettingsSwitch, ThemedText } from './src/shared';
 
 import SimpleNativeStack from './src/screens/SimpleNativeStack';
 import SwipeBackAnimation from './src/screens/SwipeBackAnimation';
@@ -32,11 +32,11 @@ import SearchBar from './src/screens/SearchBar';
 import Events from './src/screens/Events';
 import Gestures from './src/screens/Gestures';
 
-import {enableFreeze, enableScreens} from 'react-native-screens';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { enableFreeze } from 'react-native-screens';
+import { GestureDetectorProvider } from 'react-native-screens';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-enableFreeze();
-enableScreens(true);
+enableFreeze(true);
 
 const SCREENS: Record<
   string,
@@ -133,8 +133,8 @@ const playgrounds = screens.filter(name => SCREENS[name].type === 'playground');
 type RootStackParamList = {
   Main: undefined;
 } & {
-  [P in keyof typeof SCREENS]: undefined;
-};
+    [P in keyof typeof SCREENS]: undefined;
+  };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -142,8 +142,8 @@ interface MainScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Main'>;
 }
 
-const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
-  const {toggleTheme} = useContext(ThemeToggle);
+const MainScreen = ({ navigation }: MainScreenProps): React.JSX.Element => {
+  const { toggleTheme } = useContext(ThemeToggle);
   const isDark = useTheme().dark;
   const [isRTL, setIsRTL] = useState(I18nManager.isRTL);
 
@@ -154,8 +154,8 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         label="Right to left"
         value={isRTL}
         onValueChange={() => {
-          I18nManager.forceRTL(!I18nManager.isRTL);          
-          setTimeout(()=>{
+          I18nManager.forceRTL(!I18nManager.isRTL);
+          setTimeout(() => {
             setIsRTL(I18nManager.isRTL);
           }, 50);
         }}
@@ -192,7 +192,7 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
   );
 };
 
-const ThemeToggle = createContext<{toggleTheme: () => void}>(null!);
+const ThemeToggle = createContext<{ toggleTheme: () => void }>(null!);
 
 const ExampleApp = (): React.JSX.Element => {
   const scheme = useColorScheme();
@@ -203,34 +203,35 @@ const ExampleApp = (): React.JSX.Element => {
   const toggleTheme = () => setIsDark(prev => !prev);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <ThemeToggle.Provider value={{toggleTheme}}>
-        <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
-          <Stack.Navigator
-            screenOptions={{
-              statusBarStyle: isDark ? 'light' : 'dark',              
-            }}>
-            <Stack.Screen
-              name="Main"
-              options={{
-                title: `${
-                  Platform.isTV ? '📺' : '📱'
-                } React Native Screens Examples`,
-                headerShown: false,
-              }}
-              component={MainScreen}
-            />
-            {Object.keys(SCREENS).map(name => (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureDetectorProvider>
+        <ThemeToggle.Provider value={{ toggleTheme }}>
+          <NavigationContainer theme={isDark ? DarkTheme : DefaultTheme}>
+            <Stack.Navigator
+              screenOptions={{
+                statusBarStyle: isDark ? 'light' : 'dark',
+              }}>
               <Stack.Screen
-                key={name}
-                name={name}
-                getComponent={() => SCREENS[name].component}
-                options={{headerShown: false}}
+                name="Main"
+                options={{
+                  title: `${Platform.isTV ? '📺' : '📱'
+                    } React Native Screens Examples`,
+                  headerShown: false,
+                }}
+                component={MainScreen}
               />
-            ))}
-          </Stack.Navigator>
-        </NavigationContainer>
-      </ThemeToggle.Provider>
+              {Object.keys(SCREENS).map(name => (
+                <Stack.Screen
+                  key={name}
+                  name={name}
+                  getComponent={() => SCREENS[name].component}
+                  options={{ headerShown: false }}
+                />
+              ))}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ThemeToggle.Provider>
+      </GestureDetectorProvider>
     </GestureHandlerRootView>
   );
 };
