@@ -30,7 +30,7 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-screens": "3.34.0"
+    "react-native-screens": "4.8.0"
   },
   "keywords": [],
   "author": "",
