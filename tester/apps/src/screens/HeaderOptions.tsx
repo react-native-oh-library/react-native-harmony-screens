@@ -80,7 +80,7 @@ const SettingsScreen = ({
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackVisible: backButtonVisible,
-      headerBackTitleVisible: backButtonVisible|| headerBackTitleVisible, // iOS
+      headerBackTitleVisible: headerBackTitleVisible, // iOS
       headerLargeTitle, // iOS
       headerBackTitle, // iOS
       headerShown,
@@ -169,7 +169,6 @@ const SettingsScreen = ({
             //   backgroundColor: 'orange',
             // });
             setBackButtonVisible(false);
-            setHeaderBackTitleVisible(false)
           }
           if (
             item === 'center' &&
@@ -285,6 +284,22 @@ const App = (): React.JSX.Element => (
         component={SettingsScreen}
         options={{
           headerTintColor: '#FF69B4',
+          // 77 mark
+          headerBackVisible:  true,
+          headerLargeTitle: true,
+          headerBackTitle: 'Back',
+          headerShadowVisible: false,
+          headerTransparent: false,
+          headerBlurEffect: 'extraLight',
+          headerStyle: {
+            backgroundColor: '#0000ff',
+          },
+          headerTitleStyle:{
+            fontSize: 18,                       
+          },
+          headerBackTitleStyle: {
+            fontSize: 18
+          }
         }}
       />      
     </Stack.Navigator>
