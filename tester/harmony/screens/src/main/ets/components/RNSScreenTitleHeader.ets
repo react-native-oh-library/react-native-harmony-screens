@@ -49,6 +49,7 @@ export struct RNSScreenTitleHeader {
   @State backButtonInCustomView: boolean | undefined = undefined;
   @State titleBarTranslucent: boolean = false;
   @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none'; // todo mark
+  @State blueStyle: BlurStyle = BlurStyle.NONE;
   private cleanUpCallbacks: (() => void)[] = []
   public backBtnPressed: () => void = () => {
   }
@@ -71,6 +72,45 @@ export struct RNSScreenTitleHeader {
     this.cleanUpCallbacks.forEach(cb => cb())
   }
 
+  blurEffectConvert(){
+    if(this.blurEffect){
+      switch(this.blurEffect) {
+        case 'none':
+          this.blueStyle = BlurStyle.NONE;
+          break;
+        case 'extraLight':
+          this.blueStyle = BlurStyle.BACKGROUND_THIN;
+          break;
+        case 'light':
+          this.blueStyle = BlurStyle.BACKGROUND_THICK;
+          break;
+        case 'dark':
+          this.blueStyle = BlurStyle.BACKGROUND_ULTRA_THICK;
+          break;
+        case 'regular':
+          this.blueStyle = BlurStyle.BACKGROUND_REGULAR;
+          break;
+        case 'prominent':
+        case 'systemMaterial':
+        case 'systemMaterialLight':
+        case 'systemMaterialDark':
+        case 'systemUltraThinMaterial':
+        case 'systemUltraThinMaterialLight':
+        case 'systemUltraThinMaterialDark':
+        case 'systemThinMaterial':
+        case 'systemThinMaterialLight':
+        case 'systemThinMaterialDark':
+        case 'systemThickMaterial':
+        case 'systemThickMaterialLight':
+        case 'systemThickMaterialDark':
+        case 'systemChromeMaterial':
+        case 'systemChromeMaterialLight':
+        case 'systemChromeMaterialDark':
+          this.ctx.logger.error('RNSScreenStackHeaderConfig', this.blurEffect+" not support")
+          break;
+      }
+    }
+  }
   updateState() {
     if (!this.descriptor) {
       return
@@ -137,6 +177,8 @@ export struct RNSScreenTitleHeader {
     if (this.blurEffect !== this.descriptor.rawProps["blurEffect"]) {
       this.blurEffect = this.descriptor.rawProps["blurEffect"];
     }
+
+    this.blurEffectConvert();
   }
 
   build() {
@@ -196,6 +238,7 @@ export struct RNSScreenTitleHeader {
       .layoutWeight(1)
       .padding({ left: 10, right: 10 })
       .backgroundColor(this.titleBarTranslucent?Color.Transparent:this.backgroundColorValue)
+      .backgroundBlurStyle(this.blueStyle)
 
       Text('')
         .width("100%")

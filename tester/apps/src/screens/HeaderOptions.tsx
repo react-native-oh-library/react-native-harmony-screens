@@ -66,7 +66,7 @@ const SettingsScreen = ({
   const [headerShadowVisible, setHeaderShadowVisible] = useState(false);
   const [headerTransparent, setHeaderTransparent] = useState(false);
   const [headerBlurEffect, setHeaderBlurEffect] =
-    useState<BlurEffectTypes>('extraLight');
+    useState<BlurEffectTypes>('none');
 
   const [backgroundColor, setBackgroundColor] = useState('#0000ff');  
   const [color, setColor] = useState('#FF69B4');
@@ -236,6 +236,7 @@ const SettingsScreen = ({
         label="Header blur effect"
         value={headerBlurEffect}
         items={[
+          'none',
           'extraLight',
           'light',
           'dark',
@@ -290,7 +291,7 @@ const App = (): React.JSX.Element => (
           headerBackTitle: 'Back',
           headerShadowVisible: false,
           headerTransparent: false,
-          headerBlurEffect: 'extraLight',
+          headerBlurEffect: 'none',
           headerStyle: {
             backgroundColor: '#0000ff',
           },
