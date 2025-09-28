@@ -124,6 +124,8 @@ export struct RNSScreen {
   @State sheetLargestUndimmedDetent: number = 0; // todo mark
   @State sheetInitialDetent: number = 0; // todo mark
   @State sheetElevation: number = 0; // todo mark
+  @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none'; // todo mark
+  @State blueStyle: BlurStyle = BlurStyle.NONE;
 
   @State offsetX: number = 0;
   @State offsetY: number = 0;
@@ -329,6 +331,11 @@ export struct RNSScreen {
       this.titleBarBgColor = this.titleBarTranslucent?"#00000000":(this.titleBarBackgroundColor?this.titleBarBackgroundColor:"#00000000");
     }
 
+    if (this.blurEffect !== this.screenStackHeaderConfigDescriptor.rawProps["blurEffect"]) {
+      this.blurEffect = this.screenStackHeaderConfigDescriptor.rawProps["blurEffect"];
+    }
+
+    this.blurEffectConvert();
     this.updateNativeHeaderHeight();
   }
 
@@ -525,6 +532,45 @@ export struct RNSScreen {
     this.backPressed();
   }
 
+  blurEffectConvert(){
+    if(this.blurEffect){
+      switch(this.blurEffect) {
+        case 'none':
+          this.blueStyle = BlurStyle.NONE;
+          break;
+        case 'extraLight':
+          this.blueStyle = BlurStyle.BACKGROUND_THIN;
+          break;
+        case 'light':
+          this.blueStyle = BlurStyle.BACKGROUND_THICK;
+          break;
+        case 'dark':
+          this.blueStyle = BlurStyle.BACKGROUND_ULTRA_THICK;
+          break;
+        case 'regular':
+          this.blueStyle = BlurStyle.BACKGROUND_REGULAR;
+          break;
+        case 'prominent':
+        case 'systemMaterial':
+        case 'systemMaterialLight':
+        case 'systemMaterialDark':
+        case 'systemUltraThinMaterial':
+        case 'systemUltraThinMaterialLight':
+        case 'systemUltraThinMaterialDark':
+        case 'systemThinMaterial':
+        case 'systemThinMaterialLight':
+        case 'systemThinMaterialDark':
+        case 'systemThickMaterial':
+        case 'systemThickMaterialLight':
+        case 'systemThickMaterialDark':
+        case 'systemChromeMaterial':
+        case 'systemChromeMaterialLight':
+        case 'systemChromeMaterialDark':
+          this.ctx.logger.error('RNSScreenStackHeaderConfig', this.blurEffect+" not support")
+          break;
+      }
+    }
+  }
   @Builder
   screenTitleBuilder() {
     RNSScreenTitleHeader({
@@ -563,7 +609,7 @@ export struct RNSScreen {
       RNViewBase({ ctx: this.ctx, tag: this.tag }) {
         Stack() {
           if(this.isStatusBarShow) {
-            Text('').height(this.statusBarHeight).width('100%').backgroundColor(this.titleBarBgColor).position({x:0, y:0})
+            Text('').height(this.statusBarHeight).width('100%').backgroundColor(this.titleBarBgColor).position({x:0, y:0}).backgroundBlurStyle(this.blueStyle)
           }
 
           Stack(){
