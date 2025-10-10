@@ -22,7 +22,7 @@ export const DefaultEvent: GestureUpdateEvent<PanGestureHandlerEventPayload> = {
   // and they are required to specify. This should be backward
   // compatible unless they strictly parse the objects, which seems
   // not likely. PointerType is present since 2.16.0, StylusData since 2.20.0
-  pointerType: PointerType.TOUCH, // todo mark
+  pointerType: PointerType.TOUCH,
 };
 
 export const DefaultScreenDimensions = {

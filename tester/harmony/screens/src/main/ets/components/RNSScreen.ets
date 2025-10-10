@@ -120,11 +120,11 @@ export struct RNSScreen {
   @State opacityValue: number = 1;
   @State screenOrientation: string = 'default';
 
-  @State sheetAllowedDetents: number[] = []; // todo mark
-  @State sheetLargestUndimmedDetent: number = 0; // todo mark
-  @State sheetInitialDetent: number = 0; // todo mark
-  @State sheetElevation: number = 0; // todo mark
-  @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none'; // todo mark
+  @State sheetAllowedDetents: number[] = [];
+  @State sheetLargestUndimmedDetent: number = 0;
+  @State sheetInitialDetent: number = 0;
+  @State sheetElevation: number = 0;
+  @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none';
   @State blueStyle: BlurStyle = BlurStyle.NONE;
 
   @State offsetX: number = 0;
@@ -600,6 +600,7 @@ export struct RNSScreen {
         this.eventEmitter!.emit("dismissed", {
           dismissCount: this.dismissCount
         })
+        this.eventEmitter!.emit("headerBackButtonClicked", {});
       }
     }
   }
