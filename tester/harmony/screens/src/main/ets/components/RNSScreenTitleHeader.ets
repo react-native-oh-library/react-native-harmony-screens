@@ -48,8 +48,9 @@ export struct RNSScreenTitleHeader {
   @State hideBackButton: boolean | undefined = undefined;
   @State backButtonInCustomView: boolean | undefined = undefined;
   @State titleBarTranslucent: boolean = false;
-  @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none'; // todo mark
+  @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none';
   @State blueStyle: BlurStyle = BlurStyle.NONE;
+  @State hintColor: string | undefined = undefined;
   private cleanUpCallbacks: (() => void)[] = []
   public backBtnPressed: () => void = () => {
   }
@@ -178,6 +179,10 @@ export struct RNSScreenTitleHeader {
       this.blurEffect = this.descriptor.rawProps["blurEffect"];
     }
 
+    if (this.hintColor !== this.descriptor.rawProps["color"]) {
+      this.hintColor = this.descriptor.rawProps["color"]
+    }
+
     this.blurEffectConvert();
   }
 
@@ -188,13 +193,13 @@ export struct RNSScreenTitleHeader {
         Row() {
             if (!this.isFirstScreenInStack && !this.hideBackButton) {
             Row() {
-              SymbolGlyph($r('sys.symbol.arrow_left')).fontSize(26).fontColor([this.titleColorValue])
+              SymbolGlyph($r('sys.symbol.arrow_left')).fontSize(26).fontColor([this.hintColor]).visibility(this.backButtonInCustomView?Visibility.Visible:Visibility.None)
 
               if (this.backTitleVisible) {
                 Text(this.backTitle ? this.backTitle : '')
                   .fontFamily(this.backTitleFontFamily)
                   .fontSize(this.backTitleFontSize ? this.backTitleFontSize : 18)
-                  .fontColor(this.titleColorValue)
+                  .fontColor(this.hintColor)
                   .margin({ left: this.hideBackButton ? 0 : 5, right: (this.backTitleVisible && this.backTitle) ? 5 : 0 })
               }
             }.height(56)
@@ -209,7 +214,7 @@ export struct RNSScreenTitleHeader {
             .fontFamily(this.fontFamilyValue)
             .fontSize(this.titleFontSizeValue ? this.titleFontSizeValue : 18)
             .fontWeight(this.titleFontWeightValue ? this.titleFontWeightValue : FontWeight.Medium)
-            .fontColor(this.titleColorValue)
+            .fontColor(this.titleColorValue?this.titleColorValue:this.hintColor)
             .textAlign(TextAlign.Start)
         }
         .width("100%")

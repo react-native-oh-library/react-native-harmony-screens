@@ -51,7 +51,8 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
   const searchBarRef = useRef<SearchBarCommands>(null);
   const [textColor, setTextColor] = useState<BarTintColor>('#FFA500'); // 'white'
   const [cancelButtonText, setCancelButtonText] = useState('cancel');   
-  const [methodText, setMethodText] = useState('');  
+  const [methodText, setMethodText] = useState('');
+  const [tintColor, setTintColor] = useState<BarTintColor>('#FFA500'); // 'orange' 
   let log = '' 
 
   useLayoutEffect(() => {
@@ -70,6 +71,7 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         inputType,
         textColor,
         cancelButtonText,
+        tintColor,
         onChangeText: event => {
           console.info('test screen searchBar onChangeText text:'+event.nativeEvent.text)
           setMethodText('screen searchBar onChangeText '+event.nativeEvent.text)
@@ -149,7 +151,8 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
     autoCapitalize,
     inputType,
     textColor, 
-    cancelButtonText
+    cancelButtonText,
+    tintColor
   ]);
 
   return (
@@ -248,6 +251,12 @@ const MainScreen = ({navigation}: MainScreenProps): React.JSX.Element => {
         label="cancelButtonText"
         value={cancelButtonText}
         onValueChange={setCancelButtonText}
+      />
+      <SettingsPicker<BarTintColor>      
+        label="Tint Color"
+        value={tintColor}
+        onValueChange={setTintColor}
+        items={['#FF7F50', '#FFA500', '#2F4F4F']}
       />
       <ThemedText style={styles.heading}>Other</ThemedText>
       <Button

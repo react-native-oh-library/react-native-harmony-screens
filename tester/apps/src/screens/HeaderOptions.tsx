@@ -70,6 +70,7 @@ const SettingsScreen = ({
 
   const [backgroundColor, setBackgroundColor] = useState('#0000ff');  
   const [color, setColor] = useState('#FF69B4');
+  const [titleColor, setTitleColor] = useState('#FF6900');
   const [fontSize, setFontSize] = useState(18);
   const [fontWeight, setFontWeight] = useState<FontWeight>('normal'); 
 
@@ -95,13 +96,14 @@ const SettingsScreen = ({
         backgroundColor,
       },
       headerTitleStyle:{
-        color,
+        color: titleColor,
         fontSize,
         fontWeight, 
       },
       headerBackTitleStyle: {
         fontSize
-      }
+      },
+      headerTintColor: color,
     });
   }, [
     navigation,
@@ -120,6 +122,7 @@ const SettingsScreen = ({
     color,
     fontSize,
     fontWeight,
+    titleColor,
   ]);
 
   return (
@@ -171,8 +174,7 @@ const SettingsScreen = ({
             setBackButtonVisible(false);
           }
           if (
-            item === 'center' &&
-            // Platform.OS === 'android' && // todo edit
+            item === 'center' &&            
             Platform.OS !== 'ios' &&
             headerTitleAlign !== 'center'
           ) {
@@ -195,6 +197,11 @@ const SettingsScreen = ({
       />
       <SettingsInput
         label="Header titleColor"
+        value={titleColor}
+        onValueChange={setTitleColor}
+      />
+      <SettingsInput
+        label="Header color"
         value={color}
         onValueChange={setColor}
       />

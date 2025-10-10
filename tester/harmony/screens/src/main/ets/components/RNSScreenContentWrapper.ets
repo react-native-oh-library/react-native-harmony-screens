@@ -23,7 +23,6 @@
  */
 
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
-// import { RNC } from "@rnoh/react-native-openharmony/generated" // todo del
 import { RNC }  from '../generated/ts';
 
 export type RNSScreenContentWrapperDescriptor = Descriptor<"RNSScreenContentWrapper", RNC.RNSScreenContentWrapper.Props>
