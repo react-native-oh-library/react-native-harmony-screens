@@ -193,7 +193,7 @@ export struct RNSScreenTitleHeader {
         Row() {
             if (!this.isFirstScreenInStack && !this.hideBackButton) {
             Row() {
-              SymbolGlyph($r('sys.symbol.arrow_left')).fontSize(26).fontColor([this.hintColor]).visibility(this.backButtonInCustomView?Visibility.Visible:Visibility.None)
+              SymbolGlyph($r('sys.symbol.arrow_left')).fontSize(26).fontColor([this.hintColor])
 
               if (this.backTitleVisible) {
                 Text(this.backTitle ? this.backTitle : '')
