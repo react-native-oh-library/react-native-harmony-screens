@@ -24,6 +24,10 @@
 
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
 import { RNC }  from '../generated/ts';
+import { AnimateCallback, AnimationDefinition, CustomTransitionCoordinator } from '../animations/CustomTransition';
+import { SafeAreaInsets } from '../utils/SafeAreaInsets';
+import { RNSScreen } from './RNSScreen';
+import { getAnimationConfig } from '../animations/AnimationHandler';
 
 export type RNSScreenContainerDescriptor = Descriptor<"RNSScreenContainer", RNC.RNSScreenContainer.Props>
 
@@ -32,23 +36,257 @@ export struct RNSScreenContainer {
   public static readonly NAME = RNC.RNSScreenContainer.NAME
   public ctx!: RNComponentContext
   public tag: number = 0
-  @State descriptor: RNSScreenContainerDescriptor = {} as RNSScreenContainerDescriptor
+  @Watch("onDescriptorChange") @State descriptor: RNSScreenContainerDescriptor = {} as RNSScreenContainerDescriptor
   private cleanUpCallbacks: (() => void)[] = []
+  public static firstStackPerRNInstance: Map<number, number> = new Map();
+  private safeAreaInsets!: SafeAreaInsets;
+  private stackController: NavPathStack = new NavPathStack()
+  private customTransitionCoordinator: CustomTransitionCoordinator = new CustomTransitionCoordinator()
+  private eventEmitter: RNC.RNSScreenContainer.EventEmitter | undefined = undefined
+  @State private stack: number[] = []
+  @State public topInset: number = 0;
+  private statusBarHeight: number = 0;
+  @State private isFirstNavigator: boolean | undefined = undefined;
+  @State replaceAnimation: string = "push";
+  @State presentation: string = "push";
+  static RECORD_PRESENTATION: string = "push";
+  static ROOT_TAG: number = 0;
+  static STATUS_BAR_HEIGHT: number = 0;
+  @State isReset: boolean = false;
+  @State isResetAnimationPush: boolean = true;
 
-  aboutToAppear() {
+  updateStack(newChildren: number[]) {
+    if (!newChildren || this.stack.length === 0) {
+      for (let i = 0; i < newChildren.length; i++) {
+        this.stackController.pushPathByName(newChildren[i].toString(), null)
+      }
+      return;
+    }
+
+    const differentElementIndex =
+      newChildren.findIndex((value: number, index: number, obj: number[]) => {
+        if (index < this.stack.length) {
+          return this.stack[index] !== newChildren[index]
+        } else {
+          return index
+        }
+      })
+
+    if (newChildren.length === this.stack.length && differentElementIndex === newChildren.length - 1) {
+      this.stackController.replacePathByName(newChildren[differentElementIndex].toString(), null);
+      return;
+    }
+
+    if (newChildren.length !== -1 && differentElementIndex === -1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, newChildren.length))) {
+      this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
+    }
+
+    if(differentElementIndex === 0){
+      this.stackController.clear();
+
+      for (let i = differentElementIndex; i < newChildren.length; i++) {
+        this.stackController.pushPathByName(newChildren[i].toString(), null)
+      }
+      this.isReset = true;
+      return;
+    }
+
+    if (differentElementIndex !== -1) {
+      if (newChildren.length -1 === this.stack.length && JSON.stringify(this.stack) === JSON.stringify(newChildren.slice(0, newChildren.length-1))) {
+        for (let i = differentElementIndex; i < newChildren.length; i++) {
+          this.stackController.pushPathByName(newChildren[i].toString(), null)
+        }
+      } else {
+        this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
+        for (let i = differentElementIndex; i < newChildren.length; i++) {
+          this.stackController.pushPathByName(newChildren[i].toString(), null)
+        }
+        this.isReset = true;
+
+        if (this.stackController.getAllPathName().length === 1) {
+          if (JSON.stringify(newChildren[0]) === JSON.stringify(this.stack[0])) {
+            this.isResetAnimationPush = false;
+          } else {
+            this.isResetAnimationPush = true;
+          }
+        }
+      }
+    }
+  }
+
+  onDescriptorChange() {
+    const newChildren = this.descriptor.childrenTags;
+    this.updateStack(newChildren)
+    this.stack = [...newChildren]
+  }
+
+  async aboutToAppear() {
     this.descriptor = this.ctx.descriptorRegistry.getDescriptor<RNSScreenContainerDescriptor>(this.tag)
+    this.eventEmitter = new RNC.RNSScreenContainer.EventEmitter(this.ctx.rnInstance, this.tag)
     this.cleanUpCallbacks.push(this.ctx.descriptorRegistry.subscribeToDescriptorChanges(this.tag,
       (newDescriptor) => {
         this.descriptor = (newDescriptor as RNSScreenContainerDescriptor)
       }
     ))
+
+    this.safeAreaInsets = new SafeAreaInsets(this.ctx)
+    if (true) {
+      const insets = await this.safeAreaInsets.getSafeAreaInsets()
+      this.statusBarHeight = insets.top;
+      if (RNSScreenContainer.STATUS_BAR_HEIGHT === 0 && insets.top > 0) {
+        RNSScreenContainer.STATUS_BAR_HEIGHT = insets.top;
+      }
+    }
+
+    if (!RNSScreenContainer.firstStackPerRNInstance.get(this.ctx.rnInstance.getId())) {
+      RNSScreenContainer.firstStackPerRNInstance.set(this.ctx.rnInstance.getId(), this.tag);
+    }
+    this.isFirstNavigator = RNSScreenContainer.firstStackPerRNInstance.get(this.ctx.rnInstance.getId()) === this.tag;
+    if (this.isFirstNavigator) {
+      const insets = await this.safeAreaInsets.getSafeAreaInsets()
+      this.topInset = insets.top
+    }
+    this.stackController.pushPathByName(this.stack[0].toString(), null)
+
+  }
+
+  private screenPropsChange(replaceAnimation: string, presentation: string) {
+    this.replaceAnimation = replaceAnimation;
+    this.presentation = presentation;
   }
 
   aboutToDisappear() {
     this.cleanUpCallbacks.forEach(cb => cb())
   }
 
+  @Builder
+  navDestinationBuilder(tag: string) {
+    RNSScreen({
+      ctx: this.ctx,
+      tag: Number(tag),
+      isFirstScreenInStack: this.stack.indexOf(Number(tag)) === 0,
+      customTransitionCoordinator: this.customTransitionCoordinator,
+      topInset: this.topInset,
+      statusBarHeight: this.statusBarHeight,
+      screenPropsChange: this.screenPropsChange.bind(this),
+    })
+  }
+
+  customNavContentTransitionHandler(from: NavContentInfo, to: NavContentInfo, operation: NavigationOperation) {
+    // No custom animation for the home page
+    if (from.index === -1 || to.index === -1) {
+      return undefined;
+    }
+
+    this.customTransitionCoordinator.operation = operation;
+    if (this.customTransitionCoordinator.interactive) {
+      let customAnimation: NavigationAnimatedTransition = {
+        onTransitionEnd: (isSuccess: boolean) => {
+          this.customTransitionCoordinator.proxy = undefined;
+          this.customTransitionCoordinator.interactive = false;
+        },
+        transition: (transitionProxy: NavigationTransitionProxy) => {
+          this.customTransitionCoordinator.proxy = transitionProxy;
+          let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
+            (to.navDestinationId) : (from.navDestinationId);
+          if (targetIndex) {
+            this.customTransitionCoordinator.fireInteractiveAnimation(targetIndex, operation);
+          }
+        },
+        isInteractive: this.customTransitionCoordinator.interactive
+      }
+      return customAnimation;
+    }
+
+    return {
+      timeout: 100, // The limit duration of the transition animation
+      transition: (transitionProxy: NavigationTransitionProxy) => {
+        if (!from.navDestinationId || !to.navDestinationId) {
+          return;
+        }
+
+        // Obtain the corresponding transition animation callback from the customTransitionCoordinator class based on the sequence of subpages.
+        let fromParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(from.navDestinationId);
+        let toParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(to.navDestinationId);
+        let currentAnimation: AnimationDefinition;
+        let animationType: string
+
+        if (operation == NavigationOperation.PUSH && this.replaceAnimation === 'pop') {
+          currentAnimation = toParam.detachAnimation;
+          animationType = fromParam.getAnimationType();
+        } else if (operation == NavigationOperation.POP && this.replaceAnimation === 'push') {
+          if ((RNSScreenContainer.RECORD_PRESENTATION === 'transparentModal' || RNSScreenContainer.RECORD_PRESENTATION === 'containedTransparentModal' || RNSScreenContainer.RECORD_PRESENTATION === 'formSheet') && RNSScreenContainer.RECORD_PRESENTATION !== this.presentation) {
+            RNSScreenContainer.RECORD_PRESENTATION = this.presentation
+            currentAnimation = toParam.showAnimation;
+            animationType = fromParam.getAnimationType();
+          } else {
+            if(this.isReset){
+              if (this.isResetAnimationPush) {
+                currentAnimation = toParam.showAnimation;
+                animationType = fromParam.getAnimationType();
+              } else {
+                currentAnimation = fromParam.hideAnimation;
+                animationType = toParam.getAnimationType();
+              }
+              this.isReset = false;
+            } else {
+              currentAnimation = fromParam.hideAnimation;
+              animationType = toParam.getAnimationType();
+            }
+          }
+        } else if (operation == NavigationOperation.PUSH && this.replaceAnimation === 'push') {
+          RNSScreenContainer.RECORD_PRESENTATION = this.presentation;
+          if (this.presentation === 'transparentModal' || this.presentation === 'containedTransparentModal' || this.presentation === 'formSheet') {
+            currentAnimation = fromParam.hideAnimation;
+            animationType = toParam.getAnimationType();
+          } else {
+            currentAnimation = toParam.showAnimation;
+            animationType = fromParam.getAnimationType();
+          }
+        } else if (operation == NavigationOperation.POP && this.replaceAnimation === 'pop') {
+          currentAnimation = fromParam.hideAnimation;
+          animationType = toParam.getAnimationType();
+        } else if (operation == NavigationOperation.REPLACE && this.replaceAnimation === 'push'){
+          currentAnimation = toParam.showAnimation;
+          animationType = fromParam.getAnimationType();
+        } else if (operation == NavigationOperation.REPLACE && this.replaceAnimation === 'pop'){
+          currentAnimation = toParam.attachAnimation;
+          animationType = fromParam.getAnimationType();
+        } else {
+          currentAnimation = toParam.showAnimation;
+          animationType = fromParam.getAnimationType();
+        }
+
+        const animationOptions = getAnimationConfig(animationType);
+
+        currentAnimation.start(animationType);
+        animateTo({
+          duration: animationOptions.duration,
+          curve: animationOptions.curve,
+          tempo: animationOptions.tempo,
+          onFinish: () => {
+            transitionProxy.finishTransition();
+          }
+        }, () => {
+          currentAnimation.end(animationType);
+        })
+      }
+    } as NavigationAnimatedTransition;
+  }
+
+
   build() {
-    ContentSlot(this.ctx.getContentForTag(this.tag))
+    Stack() {
+      if (!this.isFirstNavigator || this.topInset !== 0) {
+        Navigation(this.stackController)
+          .mode(NavigationMode.Auto)
+          .navDestination(this.navDestinationBuilder)
+          .titleMode(NavigationTitleMode.Mini)
+          .hitTestBehavior(HitTestMode.Transparent)
+          .hideNavBar(true)
+          .customNavContentTransition((from: NavContentInfo, to: NavContentInfo,
+            operation: NavigationOperation) => this.customNavContentTransitionHandler(from, to, operation))
+      }
+    }
   }
 }
