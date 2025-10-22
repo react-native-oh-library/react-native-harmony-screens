@@ -23,7 +23,7 @@
  */
 
 import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
-import { RNC } from "@rnoh/react-native-openharmony/generated"
+import { RNC }  from '../generated/ts';
 import { AnimateCallback, AnimationDefinition, CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { SafeAreaInsets } from '../utils/SafeAreaInsets';
 import { RNSScreen } from './RNSScreen';
