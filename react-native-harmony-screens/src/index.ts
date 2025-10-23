@@ -9,7 +9,7 @@ export {
   screensEnabled,
   freezeEnabled,
   shouldUseActivityState,
-} from "react-native-screens/src/core";
+} from "./core";
 
 /*
  * RNS Components
