@@ -51,6 +51,8 @@ export struct RNSScreenTitleHeader {
   @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none';
   @State blueStyle: BlurStyle = BlurStyle.NONE;
   @State hintColor: string | undefined = undefined;
+  @State isTranslate: boolean = false; // 背景色是否有alpha透明度
+
   private cleanUpCallbacks: (() => void)[] = []
   public backBtnPressed: () => void = () => {
   }
@@ -112,6 +114,7 @@ export struct RNSScreenTitleHeader {
       }
     }
   }
+
   updateState() {
     if (!this.descriptor) {
       return
@@ -139,9 +142,6 @@ export struct RNSScreenTitleHeader {
     }
     if (this.titleFontWeightValue !== this.descriptor.rawProps["titleFontWeight"]) {
       this.titleFontWeightValue = this.descriptor.rawProps["titleFontWeight"]
-    }
-    if (this.titleColorValue !== this.descriptor.rawProps["titleColor"]) {
-      this.titleColorValue = this.descriptor.rawProps["titleColor"]
     }
     if (this.backgroundColorValue !== this.descriptor.rawProps["backgroundColor"]) {
       this.backgroundColorValue = this.descriptor.rawProps["backgroundColor"] || "#ffffff"
@@ -179,10 +179,17 @@ export struct RNSScreenTitleHeader {
       this.blurEffect = this.descriptor.rawProps["blurEffect"];
     }
 
-    if (this.hintColor !== this.descriptor.rawProps["color"]) {
-      this.hintColor = this.descriptor.rawProps["color"]
+    let tmpColor: string | undefined  = this.descriptor.rawProps["color"];
+    if (this.hintColor !== tmpColor) {
+      this.hintColor = tmpColor;
     }
 
+    let tmpTitleColor: string | undefined  = this.descriptor.rawProps["titleColor"];
+    if (this.titleColorValue !== tmpTitleColor) {
+      this.titleColorValue = tmpTitleColor;
+    }
+
+    this.isTranslate = hasTransparency(this.backgroundColorValue);
     this.blurEffectConvert();
   }
 
@@ -243,7 +250,7 @@ export struct RNSScreenTitleHeader {
       .layoutWeight(1)
       .padding({ left: 10, right: 10 })
       .backgroundColor(this.titleBarTranslucent?Color.Transparent:this.backgroundColorValue)
-      .backgroundBlurStyle(this.blueStyle)
+      .backgroundBlurStyle(this.isTranslate?this.blueStyle:BlurStyle.NONE)
 
       Text('')
         .width("100%")
@@ -261,4 +268,45 @@ export struct RNSScreenTitleHeader {
     .layoutWeight(1)
     .hitTestBehavior(HitTestMode.Transparent)
   }
+}
+
+export function hasTransparency(color: string| undefined): boolean {
+  if (!!!color) {
+    return false;
+  }
+  // 移除所有空格并转为小写
+  const normalizedColor = color.replace(/\s/g, '').toLowerCase();
+
+  // 检查 RGBA
+  const rgbaMatch = normalizedColor.match(/rgba\([^)]+,\s*([\d.]+)\)/);
+  if (rgbaMatch) {
+    return parseFloat(rgbaMatch[1]) < 1;
+  }
+
+  // 检查 HSLA
+  const hslaMatch = normalizedColor.match(/hsla\([^)]+,\s*([\d.]+)\)/);
+  if (hslaMatch) {
+    return parseFloat(hslaMatch[1]) < 1;
+  }
+
+  // 检查 8 位 HEX
+  const hexMatch = normalizedColor.match(/^#([a-f0-9]{8})$/);
+  if (hexMatch) {
+    const alphaHex = hexMatch[1].substring(6, 8);
+    return parseInt(alphaHex, 16) < 255;
+  }
+
+  // 检查 4 位 HEX（简写格式）
+  const shortHexMatch = normalizedColor.match(/^#([a-f0-9]{4})$/);
+  if (shortHexMatch) {
+    const alphaHex = shortHexMatch[1].charAt(3) + shortHexMatch[1].charAt(3);
+    return parseInt(alphaHex, 16) < 255;
+  }
+
+  if (normalizedColor === 'translate') {
+    return true;
+  }
+
+  // 没有透明度信息或格式不支持
+  return false;
 }

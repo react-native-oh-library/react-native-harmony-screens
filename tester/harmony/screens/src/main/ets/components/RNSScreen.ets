@@ -34,7 +34,7 @@ import { CustomTransitionCoordinator } from '../animations/CustomTransition';
 import { RNSScreenStackHeaderConfigDescriptor } from './RNSScreenStackHeaderConfig';
 import { window } from '@kit.ArkUI';
 import { AnimationHandlerEvent, getNewAnimationState } from '../animations/AnimationHandler';
-import { RNSScreenTitleHeader } from "./RNSScreenTitleHeader"
+import { RNSScreenTitleHeader, hasTransparency } from "./RNSScreenTitleHeader"
 import { TITLEBAR_HEIGHT } from '../Constants';
 import common from '@ohos.app.ability.common';
 import { RNSScreenStack } from './RNSScreenStack'
@@ -126,6 +126,7 @@ export struct RNSScreen {
   @State sheetElevation: number = 0;
   @State blurEffect: 'none' | 'extraLight' | 'light' | 'dark' | 'regular' | 'prominent' | 'systemUltraThinMaterial' | 'systemThinMaterial' | 'systemMaterial' | 'systemThickMaterial' | 'systemChromeMaterial' | 'systemUltraThinMaterialLight' | 'systemThinMaterialLight' | 'systemMaterialLight' | 'systemThickMaterialLight' | 'systemChromeMaterialLight' | 'systemUltraThinMaterialDark' | 'systemThinMaterialDark' | 'systemMaterialDark' | 'systemThickMaterialDark' | 'systemChromeMaterialDark' = 'none';
   @State blueStyle: BlurStyle = BlurStyle.NONE;
+  @State isTranslate: boolean = false; // 背景色是否有alpha透明度
 
   @State offsetX: number = 0;
   @State offsetY: number = 0;
@@ -335,6 +336,7 @@ export struct RNSScreen {
       this.blurEffect = this.screenStackHeaderConfigDescriptor.rawProps["blurEffect"];
     }
 
+    this.isTranslate = hasTransparency(this.titleBarBgColor);
     this.blurEffectConvert();
     this.updateNativeHeaderHeight();
   }
@@ -610,7 +612,7 @@ export struct RNSScreen {
       RNViewBase({ ctx: this.ctx, tag: this.tag }) {
         Stack() {
           if(this.isStatusBarShow) {
-            Text('').height(this.statusBarHeight).width('100%').backgroundColor(this.titleBarBgColor).position({x:0, y:0}).backgroundBlurStyle(this.blueStyle)
+            Text('').height(this.statusBarHeight).width('100%').backgroundColor(this.titleBarBgColor).position({x:0, y:0}).backgroundBlurStyle(this.isTranslate?this.blueStyle:BlurStyle.NONE)
           }
 
           Stack(){
