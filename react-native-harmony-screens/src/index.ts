@@ -11,7 +11,7 @@ export {
   enableFreeze,
   screensEnabled,
   freezeEnabled,
-} from "react-native-screens/src/core";
+} from "./core";
 
 /*
  * RNS Components
