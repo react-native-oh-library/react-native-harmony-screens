@@ -56,10 +56,17 @@ export struct RNSScreenStack {
   @State isResetAnimationPush: boolean = true;
 
   updateStack(newChildren: number[]) {
-    if (!newChildren || this.stack.length === 0) {
+    if (!newChildren || newChildren.length === 0) {
+      return;
+    }
+    if (this.stack.length === 0) {
       for (let i = 0; i < newChildren.length; i++) {
         this.stackController.pushPathByName(newChildren[i].toString(), null)
       }
+      return;
+    }
+
+    if (JSON.stringify(this.stack) === JSON.stringify(newChildren)) {
       return;
     }
 
@@ -77,8 +84,9 @@ export struct RNSScreenStack {
       return;
     }
 
-    if (newChildren.length !== -1 && differentElementIndex === -1 && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, newChildren.length))) {
-      this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
+    if (differentElementIndex === -1 && newChildren.length < this.stack.length && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, newChildren.length))) {
+      this.stackController.popToIndex(newChildren.length - 1);
+      return;
     }
 
     if(differentElementIndex === 0){
@@ -150,7 +158,11 @@ export struct RNSScreenStack {
       const insets = await this.safeAreaInsets.getSafeAreaInsets()
       this.topInset = insets.top
     }
-    this.stackController.pushPathByName(this.stack[0].toString(), null)
+    const initialChildren = this.descriptor.childrenTags;
+    if (initialChildren && initialChildren.length > 0) {
+      this.stack = [...initialChildren];
+      this.updateStack(initialChildren);
+    }
   }
 
   private screenPropsChange(replaceAnimation: string, presentation: string) {
