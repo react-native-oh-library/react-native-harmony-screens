@@ -33,7 +33,7 @@ export {
 } from "react-native-screens/src/components/ScreenStackHeaderConfig";
 
 export { default as SearchBar } from 'react-native-screens/src/components/SearchBar';
-export { default as ScreenContainer } from 'react-native-screens/src/components/ScreenContainer';
+export { default as ScreenContainer } from './components/ScreenContainer';
 export { default as ScreenStack } from './components/ScreenStack';
 export { default as ScreenStackItem } from './components/ScreenStackItem';
 export { default as FullWindowOverlay } from "react-native-screens/src/components/FullWindowOverlay";

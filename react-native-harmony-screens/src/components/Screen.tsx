@@ -13,6 +13,7 @@ import {
   isNativePlatformSupported,
   screensEnabled,
 } from "../core";
+import { ScreenOrderContext } from "./ScreenContainer";
 
 // Native components
 import ScreenNativeComponent, {
@@ -162,6 +163,15 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
     const innerRef = React.useRef<ViewConfig | null>(null);
     React.useImperativeHandle(ref, () => innerRef.current!, []);
     const prevActivityState = usePrevious(props.activityState);
+    
+    // RNOH patch: Get declaration order for HarmonyOS only
+    const isHarmony = (Platform.OS as string) === "harmony";
+    const screenOrderContext = isHarmony ? React.useContext(ScreenOrderContext) : null;
+    const declarationIndexRef = React.useRef<number | null>(null);
+    // Initialize synchronously to ensure zIndex is set before first render
+    if (isHarmony && screenOrderContext && declarationIndexRef.current === null) {
+      declarationIndexRef.current = screenOrderContext.getNextIndex();
+    }
 
     const setRef = (ref: ViewConfig) => {
       innerRef.current = ref;
@@ -289,6 +299,15 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         freezeOnBlur &&
         (shouldFreeze !== undefined ? shouldFreeze : activityState === 0);
 
+      // RNOH patch: HarmonyOS-specific styles
+      const harmonyStyle = isHarmony && activityState !== undefined ? {
+        position: "absolute" as const,
+        top: 0, left: 0, right: 0, bottom: 0,
+        opacity: activityState === 0 ? 0 : 1,
+        pointerEvents: activityState === 0 ? ("none" as const) : activityState === 1 ? ("none" as const) : ("auto" as const),
+        zIndex: activityState === 0 ? 0 : (declarationIndexRef.current !== null ? declarationIndexRef.current : 1),
+      } : undefined;
+
       return (
         <DelayedFreeze freeze={freeze}> 
           <AnimatedScreen
@@ -313,7 +332,7 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
             // https://github.com/software-mansion/react-native-screens/issues/2345
             // With below change of zIndex, we force RN diffing mechanism to NOT include detaching and attaching mutation in one transaction.
             // Detailed information can be found here https://github.com/software-mansion/react-native-screens/pull/2351
-            style={[style, { zIndex: undefined, paddingTop: headerHeight, }]}
+            style={harmonyStyle ? [style, { paddingTop: headerHeight }, harmonyStyle] : [style, { zIndex: undefined, paddingTop: headerHeight }]}
             activityState={activityState}
             sheetAllowedDetents={resolvedSheetAllowedDetents}
             sheetLargestUndimmedDetent={resolvedSheetLargestUndimmedDetent}
