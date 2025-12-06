@@ -299,16 +299,14 @@ export struct RNSScreenStack {
 
   build() {
     Stack() {
-      if (!this.isFirstNavigator || this.topInset !== 0) {
-        Navigation(this.stackController)
-          .mode(NavigationMode.Stack)
-          .navDestination(this.navDestinationBuilder)
-          .titleMode(NavigationTitleMode.Mini)
-          .hitTestBehavior(HitTestMode.Transparent)
-          .hideNavBar(true)
-          .customNavContentTransition((from: NavContentInfo, to: NavContentInfo,
-            operation: NavigationOperation) => this.customNavContentTransitionHandler(from, to, operation))
-      }
+      Navigation(this.stackController)
+        .mode(NavigationMode.Stack)
+        .navDestination(this.navDestinationBuilder)
+        .titleMode(NavigationTitleMode.Mini)
+        .hitTestBehavior(HitTestMode.Transparent)
+        .hideNavBar(true)
+        .customNavContentTransition((from: NavContentInfo, to: NavContentInfo,
+          operation: NavigationOperation) => this.customNavContentTransitionHandler(from, to, operation))
     }
   }
 }
