@@ -28,6 +28,7 @@ import {
   Descriptor,
   RNComponentContext,
   RNViewBase,
+  RNOHLogger
 } from '@rnoh/react-native-openharmony';
 import { RNC }  from '../generated/ts';
 import { CustomTransitionCoordinator } from '../animations/CustomTransition';
@@ -77,6 +78,7 @@ export struct RNSScreen {
   private screenStackHeaderConfigTag!: number | undefined
   @State stackPresentationMode: string = '';
   private cleanupCommandCallback?: () => void = undefined;
+  private logger!: RNOHLogger;
   static ROOT_TAG: number = 0;
 
   @State public topInset: number = 0;
@@ -155,6 +157,7 @@ export struct RNSScreen {
     top: undefined
   }
   async aboutToAppear() {
+    this.logger = this.ctx!.logger.clone("RNSScreen")
     if (RNSScreen.ROOT_TAG === 0) {
       RNSScreen.ROOT_TAG = this.tag;
     }
@@ -391,6 +394,7 @@ export struct RNSScreen {
 
   registerAnimation() {
     if(this.customTransitionCoordinator)
+      this.logger.debug('registerAnimation ' + this.pageId + ' , screenId: ' + this.descriptor.rawProps["screenId"])
     // Passing the callbacks wrapped in the object breaks animateTo
     this.customTransitionCoordinator.registerNavParam(this.pageId,
       () => this.stackAnimation,
@@ -403,6 +407,7 @@ export struct RNSScreen {
       (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.HIDE_START),
       (animationType) => this.handleAnimation(animationType, AnimationHandlerEvent.HIDE_END),
       (operation: NavigationOperation) => {
+        this.logger.debug('interactiveCallback operation: ' + operation + ' , screenId: ' + this.descriptor.rawProps["screenId"])
         if (operation == NavigationOperation.PUSH) {
         } else {
         }
@@ -651,6 +656,7 @@ export struct RNSScreen {
       this.eventEmitter!.emit("willDisappear", {})
     })
     .onDisAppear(() => {
+      this.logger.debug('onDisAppear ' + this.pageId + ' , screenId: ' + this.descriptor.rawProps["screenId"])
       this.customTransitionCoordinator?.unregisterNavParam(this.pageId);
       this.eventEmitter!.emit("disappear", {})
     })

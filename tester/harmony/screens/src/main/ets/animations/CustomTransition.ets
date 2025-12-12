@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import { JSON } from "@kit.ArkTS";
 
 // Custom API to save the transition animation callback and parameters related to a page.
 
@@ -45,6 +46,15 @@ export class CustomTransitionCoordinator {
   operation: NavigationOperation = NavigationOperation.PUSH
   private customTransitionMap: Map<string, AnimateCallback> = new Map();
   interactive: boolean = false;
+
+  logMap():void {
+    let entriesIter = this.customTransitionMap.entries()
+    console.debug(`RNSScreen customTransitionMap logger-------------`)
+    for(const entry of entriesIter){
+      console.debug(`RNSScreen customTransitionMap key: ${entry[0]}  value: ${JSON.stringify(entry[1])}`)
+    }
+    console.debug(`RNSScreen customTransitionMap logger-------------`)
+  }
 
   // Passing the callbacks in the object breaks animateTo
   registerNavParam(name: string,
@@ -79,7 +89,9 @@ export class CustomTransitionCoordinator {
       },
       interactive: interactiveCallback
     }
+    console.debug(`RNSScreen CustomTransitionCoordinator registerNavParam pageId: ${name}`)
     if (this.customTransitionMap.has(name)) {
+      console.debug(`RNSScreen CustomTransitionCoordinator has(name): ${this.customTransitionMap.has(name)}`)
       let param = this.customTransitionMap.get(name);
       if (param != undefined) {
         param = paramToStore
@@ -87,10 +99,16 @@ export class CustomTransitionCoordinator {
       }
     }
     this.customTransitionMap.set(name, paramToStore);
+
+    this.logMap()
+
   }
 
   unregisterNavParam(name: string): void {
+    console.debug(`RNSScreen CustomTransitionCoordinator unregisterNavParam pageId: ${name}`)
     this.customTransitionMap.delete(name);
+
+    this.logMap()
   }
 
   finishTransition() {
@@ -112,11 +130,14 @@ export class CustomTransitionCoordinator {
   }
 
   getAnimateParam(name: string): AnimateCallback {
+    console.debug(`RNSScreen CustomTransitionCoordinator getAnimateParam pageId: ${name} value: ${JSON.stringify(this.customTransitionMap.get(name)!)}`)
     return this.customTransitionMap.get(name)!;
   }
 
   fireInteractiveAnimation(name: string, operation: NavigationOperation) {
     let animation = this.customTransitionMap.get(name)?.interactive;
+    console.debug(`RNSScreen CustomTransitionCoordinator getAnimateParam animation: ${!!animation}`)
+
     if (!animation) {
       return;
     }

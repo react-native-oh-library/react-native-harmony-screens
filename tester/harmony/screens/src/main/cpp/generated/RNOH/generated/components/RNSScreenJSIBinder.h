@@ -61,6 +61,7 @@ class RNSScreenJSIBinder : public ViewComponentJSIBinder {
         object.setProperty(rt, "swipeDirection", true);
         object.setProperty(rt, "hideKeyboardOnSwipe", true);
         object.setProperty(rt, "activityState", true);
+        object.setProperty(rt, "screenId", true);
         object.setProperty(rt, "navigationBarColor", true);
         object.setProperty(rt, "navigationBarTranslucent", true);
         object.setProperty(rt, "navigationBarHidden", true);
