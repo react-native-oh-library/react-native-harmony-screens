@@ -44,7 +44,7 @@ export struct RNSScreenStack {
   private eventEmitter: RNC.RNSScreenStack.EventEmitter | undefined = undefined
   @State private stack: number[] = []
   @State public topInset: number = 0;
-  private statusBarHeight: number = 0;
+  @State statusBarHeight: number = 0;
   @State private isFirstNavigator: boolean | undefined = undefined;
   @Watch("onDescriptorChange") @State descriptor: RNSScreenStackDescriptor = {} as RNSScreenStackDescriptor
   @State replaceAnimation: string = "push";
@@ -131,7 +131,9 @@ export struct RNSScreenStack {
         this.descriptor = (newDescriptor as RNSScreenStackDescriptor)
       }
     ))
-    this.safeAreaInsets = new SafeAreaInsets(this.ctx)
+    const uiContext = this.getUIContext();
+    this.safeAreaInsets = new SafeAreaInsets(this.ctx,uiContext)
+    // this.safeAreaInsets = new SafeAreaInsets(this.ctx)
     if (true) {
       const insets = await this.safeAreaInsets.getSafeAreaInsets()
       this.statusBarHeight = insets.top;
