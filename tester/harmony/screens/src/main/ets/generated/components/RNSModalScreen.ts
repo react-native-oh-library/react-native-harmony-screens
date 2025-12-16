@@ -71,6 +71,7 @@ export namespace RNSModalScreen {
     swipeDirection?: 'vertical' | 'horizontal';
     hideKeyboardOnSwipe?: boolean;
     activityState?: number;
+    screenId?: string;
     navigationBarColor?: ColorValue;
     navigationBarTranslucent?: boolean;
     navigationBarHidden?: boolean;
@@ -186,6 +187,9 @@ export namespace RNSModalScreen {
     
     get activityState() {
       return this.rawProps.activityState ?? -1;
+    }
+    get screenId() {
+      return this.rawProps.screenId ?? "";
     }
     
     get navigationBarTranslucent() {

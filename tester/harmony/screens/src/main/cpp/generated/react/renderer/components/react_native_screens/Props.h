@@ -203,6 +203,7 @@ class RNSModalScreenProps final : public ViewProps {
   RNSModalScreenSwipeDirection swipeDirection{RNSModalScreenSwipeDirection::Horizontal};
   bool hideKeyboardOnSwipe{false};
   Float activityState{-1.0};
+  std::string screenId{};
   SharedColor navigationBarColor{};
   bool navigationBarTranslucent{false};
   bool navigationBarHidden{false};
@@ -392,6 +393,7 @@ class RNSScreenProps final : public ViewProps {
   RNSScreenSwipeDirection swipeDirection{RNSScreenSwipeDirection::Horizontal};
   bool hideKeyboardOnSwipe{false};
   Float activityState{-1.0};
+  std::string screenId{};
   SharedColor navigationBarColor{};
   bool navigationBarTranslucent{false};
   bool navigationBarHidden{false};

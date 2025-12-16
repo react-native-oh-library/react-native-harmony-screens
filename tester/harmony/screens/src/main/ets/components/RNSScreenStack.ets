@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-import { Descriptor, RNComponentContext, } from '@rnoh/react-native-openharmony';
+import { Descriptor, RNComponentContext,RNOHLogger } from '@rnoh/react-native-openharmony';
 import { RNC }  from '../generated/ts';
 import { getAnimationConfig } from '../animations/AnimationHandler';
 import { AnimateCallback, AnimationDefinition, CustomTransitionCoordinator } from '../animations/CustomTransition';
@@ -54,6 +54,7 @@ export struct RNSScreenStack {
   static STATUS_BAR_HEIGHT: number = 0;
   @State isReset: boolean = false;
   @State isResetAnimationPush: boolean = true;
+  private logger!: RNOHLogger;
 
   updateStack(newChildren: number[]) {
     if (!newChildren || newChildren.length === 0) {
@@ -129,6 +130,7 @@ export struct RNSScreenStack {
   }
 
   async aboutToAppear() {
+    this.logger = this.ctx!.logger.clone("RNSScreenStack")
     if (RNSScreenStack.ROOT_TAG == 0) {
       RNSScreenStack.ROOT_TAG = this.tag;
     }
@@ -223,6 +225,7 @@ export struct RNSScreenStack {
           this.customTransitionCoordinator.proxy = transitionProxy;
           let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
             (to.navDestinationId) : (from.navDestinationId);
+          this.logger.debug('registerAnimation interactive from: ' + from.navDestinationId + ' to: ' + to.navDestinationId + ' targetIndex: ' + targetIndex )
           if (targetIndex) {
             this.customTransitionCoordinator.fireInteractiveAnimation(targetIndex, operation);
           }
@@ -238,10 +241,17 @@ export struct RNSScreenStack {
         if (!from.navDestinationId || !to.navDestinationId) {
           return;
         }
+        this.logger.debug('registerAnimation noInteractive transition from: ' + from.navDestinationId + ' to: ' + to.navDestinationId )
 
         // Obtain the corresponding transition animation callback from the customTransitionCoordinator class based on the sequence of subpages.
         let fromParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(from.navDestinationId);
         let toParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(to.navDestinationId);
+        this.logger.debug('registerAnimation fromParam: ' + !!fromParam + ' toParam: ' + !!toParam );
+
+        if(!fromParam || !toParam){
+          return
+        }
+
         let currentAnimation: AnimationDefinition;
         let animationType: string
 
