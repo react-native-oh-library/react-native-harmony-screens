@@ -97,6 +97,12 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
         gestureResponseDistance,
         onGestureCancel,
         onHeaderHeightChange,
+        onDismissed,
+        onAppear,
+        onWillDisappear,
+        onDisappear,
+        onWillAppear,
+        onNativeDismissCancelled,
         ...props
       } = rest;
 
@@ -184,6 +190,36 @@ export const InnerScreen = React.forwardRef<View, ScreenProps>(
                 // for internal use
               })
             }
+            onDismissed={
+              onDismissed ??
+              (() => {
+                // for internal use
+              })
+            } 
+            onWillAppear={
+              onWillAppear ??
+              (() => {
+                // for internal use
+              })
+            }
+            onWillDisappear={
+              onWillDisappear ??
+              (() => {
+                // for internal use
+              })
+            }
+            onDisappear={
+              onDisappear ??
+              (() => {
+                // for internal use
+              })
+            } 
+            onNativeDismissCancelled={
+              onNativeDismissCancelled ??
+              (() => {
+                // for internal use
+              })
+            }            
           >
             {!isNativeStack ? ( // see comment of this prop in types.tsx for information why it is needed
               children
