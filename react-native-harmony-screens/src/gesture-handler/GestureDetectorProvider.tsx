@@ -1,5 +1,5 @@
 import React from 'react';
-import { GestureProviderProps } from 'react-native-screens/src/types';
+import { GestureProviderProps } from '../types';
 import { GHContext } from 'react-native-screens/src/contexts';
 import ScreenGestureDetector from './ScreenGestureDetector';
 

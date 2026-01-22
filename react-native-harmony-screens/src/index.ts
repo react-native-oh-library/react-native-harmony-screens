@@ -1,7 +1,7 @@
 // Side effects import declaration to ensure our TurboModule
 // is loaded.
 import 'react-native-screens/src/fabric/NativeScreensModule';
-export * from "react-native-screens/src/types";
+export * from "./types";
 
 /*
  * Core
