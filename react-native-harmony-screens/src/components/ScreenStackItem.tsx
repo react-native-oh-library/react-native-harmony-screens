@@ -141,7 +141,7 @@ function ScreenStackItem(
           currentRefs[screenId] = { current: node };
         }
       }}
-      screenId={screenId}
+      {...({ screenId } as any)}
       enabled
       isNativeStack
       activityState={activityState}
