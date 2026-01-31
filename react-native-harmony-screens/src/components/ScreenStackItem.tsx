@@ -9,7 +9,7 @@ import {
 import warnOnce from 'warn-once';
 
 import DebugContainer from 'react-native-screens/src/components/DebugContainer';
-import { ScreenProps, ScreenStackHeaderConfigProps } from 'react-native-screens/src/types';
+import { ScreenProps, ScreenStackHeaderConfigProps } from '../types';
 import { ScreenStackHeaderConfig } from 'react-native-screens/src/components/ScreenStackHeaderConfig';
 import Screen from './Screen';
 import ScreenStack from './ScreenStack';

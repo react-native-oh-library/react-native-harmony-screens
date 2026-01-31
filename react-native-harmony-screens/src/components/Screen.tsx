@@ -6,7 +6,7 @@ import DelayedFreeze from "react-native-screens/src/components/helpers/DelayedFr
 import {
   HeaderHeightChangeEventType,
   ScreenProps,
-} from "react-native-screens/src/types";
+} from "../types";
 
 import {
   freezeEnabled,

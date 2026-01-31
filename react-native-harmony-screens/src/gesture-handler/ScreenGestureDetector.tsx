@@ -22,7 +22,7 @@ import {
   checkIfTransitionCancelled,
   getAnimationForTransition,
 } from './constraints';
-import { GestureProviderProps } from 'react-native-screens/src/types';
+import { GestureProviderProps } from '../types';
 
 const EmptyGestureHandler = Gesture.Fling();
 
