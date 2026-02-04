@@ -55,6 +55,7 @@ export struct RNSScreenStack {
   @State isReset: boolean = false;
   @State isResetAnimationPush: boolean = true;
   private logger!: RNOHLogger;
+  private transitionDuration: number | undefined = undefined;
 
   updateStack(newChildren: number[]) {
     if (!newChildren || newChildren.length === 0) {
@@ -85,12 +86,13 @@ export struct RNSScreenStack {
       return;
     }
 
-    if (differentElementIndex === -1 && newChildren.length < this.stack.length && JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, newChildren.length))) {
+    if (differentElementIndex === -1 && newChildren.length < this.stack.length &&
+      JSON.stringify(newChildren) === JSON.stringify(this.stack.slice(0, newChildren.length))) {
       this.stackController.popToIndex(newChildren.length - 1);
       return;
     }
 
-    if(differentElementIndex === 0){
+    if (differentElementIndex === 0) {
       this.stackController.clear();
 
       for (let i = differentElementIndex; i < newChildren.length; i++) {
@@ -101,12 +103,14 @@ export struct RNSScreenStack {
     }
 
     if (differentElementIndex !== -1) {
-      if (newChildren.length -1 === this.stack.length && JSON.stringify(this.stack) === JSON.stringify(newChildren.slice(0, newChildren.length-1))) {
+      if (newChildren.length - 1 === this.stack.length &&
+        JSON.stringify(this.stack) === JSON.stringify(newChildren.slice(0, newChildren.length - 1))) {
         for (let i = differentElementIndex; i < newChildren.length; i++) {
           this.stackController.pushPathByName(newChildren[i].toString(), null)
         }
       } else {
-        this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 : differentElementIndex - 1)
+        this.stackController.popToIndex(differentElementIndex === -1 ? newChildren.length - 1 :
+          differentElementIndex - 1)
         for (let i = differentElementIndex; i < newChildren.length; i++) {
           this.stackController.pushPathByName(newChildren[i].toString(), null)
         }
@@ -167,9 +171,10 @@ export struct RNSScreenStack {
     }
   }
 
-  private screenPropsChange(replaceAnimation: string, presentation: string) {
+  private screenPropsChange(replaceAnimation: string, presentation: string, transitionDuration: number | undefined) {
     this.replaceAnimation = replaceAnimation;
     this.presentation = presentation;
+    this.transitionDuration = transitionDuration;
   }
 
   aboutToDisappear() {
@@ -225,7 +230,8 @@ export struct RNSScreenStack {
           this.customTransitionCoordinator.proxy = transitionProxy;
           let targetIndex: string | undefined = operation == NavigationOperation.PUSH ?
             (to.navDestinationId) : (from.navDestinationId);
-          this.logger.debug('registerAnimation interactive from: ' + from.navDestinationId + ' to: ' + to.navDestinationId + ' targetIndex: ' + targetIndex )
+          this.logger.debug('registerAnimation interactive from: ' + from.navDestinationId + ' to: ' +
+          to.navDestinationId + ' targetIndex: ' + targetIndex)
           if (targetIndex) {
             this.customTransitionCoordinator.fireInteractiveAnimation(targetIndex, operation);
           }
@@ -241,7 +247,8 @@ export struct RNSScreenStack {
         if (!from.navDestinationId || !to.navDestinationId) {
           return;
         }
-        this.logger.debug('registerAnimation noInteractive transition from: ' + from.navDestinationId + ' to: ' + to.navDestinationId )
+        this.logger.debug('registerAnimation noInteractive transition from: ' + from.navDestinationId + ' to: ' +
+        to.navDestinationId)
 
         // Obtain the corresponding transition animation callback from the customTransitionCoordinator class based on the sequence of subpages.
         let fromParam: AnimateCallback = this.customTransitionCoordinator.getAnimateParam(from.navDestinationId);
@@ -259,12 +266,19 @@ export struct RNSScreenStack {
           currentAnimation = toParam.detachAnimation;
           animationType = fromParam.getAnimationType();
         } else if (operation == NavigationOperation.POP && this.replaceAnimation === 'push') {
-          if ((RNSScreenStack.RECORD_PRESENTATION === 'transparentModal' || RNSScreenStack.RECORD_PRESENTATION === 'containedTransparentModal' || RNSScreenStack.RECORD_PRESENTATION === 'formSheet') && RNSScreenStack.RECORD_PRESENTATION !== this.presentation) {
+
+          if ((RNSScreenStack.RECORD_PRESENTATION === 'transparentModal' ||
+            RNSScreenStack.RECORD_PRESENTATION === 'containedModal' ||
+            RNSScreenStack.RECORD_PRESENTATION === 'fullScreenModal') &&
+            RNSScreenStack.RECORD_PRESENTATION !== this.presentation) {
+
             RNSScreenStack.RECORD_PRESENTATION = this.presentation
-            currentAnimation = toParam.showAnimation;
+            currentAnimation = fromParam.hideAnimation;
             animationType = fromParam.getAnimationType();
-          } else {
-            if(this.isReset){
+
+          }
+          else {
+            if (this.isReset) {
               if (this.isResetAnimationPush) {
                 currentAnimation = toParam.showAnimation;
                 animationType = fromParam.getAnimationType();
@@ -280,8 +294,10 @@ export struct RNSScreenStack {
           }
         } else if (operation == NavigationOperation.PUSH && this.replaceAnimation === 'push') {
           RNSScreenStack.RECORD_PRESENTATION = this.presentation;
-          if (this.presentation === 'transparentModal' || this.presentation === 'containedTransparentModal' || this.presentation === 'formSheet') {
-            currentAnimation = fromParam.hideAnimation;
+          if (this.presentation === 'transparentModal' || this.presentation === 'containedModal' ||
+            this.presentation === 'containedTransparentModal' || this.presentation === 'fullScreenModal' ||
+            this.presentation === 'formSheet') {
+            currentAnimation = toParam.showAnimation;
             animationType = toParam.getAnimationType();
           } else {
             currentAnimation = toParam.showAnimation;
@@ -304,8 +320,22 @@ export struct RNSScreenStack {
         const animationOptions = getAnimationConfig(animationType);
 
         currentAnimation.start(animationType);
+        switch (animationType) {
+          case 'slide_from_bottom':
+          case 'fade_from_bottom':
+          case 'simple_push':
+          case 'fade':
+            if (this.transitionDuration === undefined) {
+              this.transitionDuration = animationOptions.duration;
+            }
+            break
+          default:
+            this.transitionDuration = animationOptions.duration;
+            break
+        }
+
         animateTo({
-          duration: animationOptions.duration,
+          duration: this.transitionDuration,
           curve: animationOptions.curve,
           tempo: animationOptions.tempo,
           onFinish: () => {

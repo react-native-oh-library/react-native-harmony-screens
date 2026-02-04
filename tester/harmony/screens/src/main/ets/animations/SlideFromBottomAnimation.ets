@@ -26,7 +26,7 @@ import { AnimationConfiguration } from "./AnimationHandler";
 
 const slideFromBottom: AnimationConfiguration = {
   animationConfiguration: {
-    duration: 500
+    duration: 350
   },
   attachAnimationStartState: {
     translateYValue: '-100%'
