@@ -41,7 +41,7 @@ const fade: AnimationConfiguration = {
     opacityValue: 0
   },
   showAnimationStartState: {
-    opacityValue: 1
+    opacityValue: 0
   },
   showAnimationEndState: {
     opacityValue: 1
@@ -50,7 +50,7 @@ const fade: AnimationConfiguration = {
     opacityValue: 1
   },
   hideAnimationEndState: {
-    opacityValue: 1
+    opacityValue: 0
   }
 }
 
