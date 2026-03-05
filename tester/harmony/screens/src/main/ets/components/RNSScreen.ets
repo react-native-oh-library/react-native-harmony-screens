@@ -154,6 +154,18 @@ export struct RNSScreen {
     top: undefined
   }
 
+  private currentOffset: Position = {
+    x: 0,
+    y: 0
+  }
+  private navigationPosition: Position = {
+    x: 0,
+    y: 0
+  }
+
+  getCurrentOffset(): Position {
+    return this.currentOffset
+  }
   async aboutToAppear() {
     this.logger = this.ctx!.logger.clone("RNSScreen")
     if (RNSScreen.ROOT_TAG === 0) {
@@ -186,6 +198,11 @@ export struct RNSScreen {
     }
     await this.updateState()
     this.setScreenOrientation();
+    if (this.ctx && 'setArkTSComponentDelegateForTag' in this.ctx && typeof this.ctx.setArkTSComponentDelegateForTag === "function") {
+      this.ctx.setArkTSComponentDelegateForTag(this.tag, {
+        "getCurrentOffset": this.getCurrentOffset.bind(this)
+      });
+    }
   }
 
   aboutToDisappear() {
@@ -650,9 +667,19 @@ export struct RNSScreen {
             this.screenTitleBuilder()
           }
         }
+        .onAreaChange((oldValue, newValue) => {
+          const origin = this.navigationPosition;
+          this.currentOffset = {
+            x: (origin.x as number) - (newValue.globalPosition.x as number),
+            y: (origin.y as number) - (newValue.globalPosition.y as number),
+          }
+        })
       }
 
     }
+    .onAreaChange((oldValue, newValue) => {
+      this.navigationPosition = newValue.globalPosition
+    })
     .hideTitleBar(true)
     .mode(this.presentationMode)
     .onReady((context: NavDestinationContext) => {
