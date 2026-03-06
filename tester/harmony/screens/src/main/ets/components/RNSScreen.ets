@@ -198,11 +198,9 @@ export struct RNSScreen {
     }
     await this.updateState()
     this.setScreenOrientation();
-    if (this.ctx && 'setArkTSComponentDelegateForTag' in this.ctx && typeof this.ctx.setArkTSComponentDelegateForTag === "function") {
-      this.ctx.setArkTSComponentDelegateForTag(this.tag, {
-        "getCurrentOffset": this.getCurrentOffset.bind(this)
-      });
-    }
+    this.ctx.setArkTSComponentDelegateForTag(this.tag, {
+      "getCurrentOffset": this.getCurrentOffset.bind(this)
+    });
   }
 
   aboutToDisappear() {
