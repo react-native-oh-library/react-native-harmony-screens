@@ -8,7 +8,7 @@
       "ohPackageName": "@react-native-oh-tpl/react-native-screens"
     }
   },
-  "version": "4.8.2-rc.1",
+  "version": "4.8.2-rc.2",
   "description": "",
   "react-native": "src/index.ts",
   "main": "lib/commonjs/index.js",
