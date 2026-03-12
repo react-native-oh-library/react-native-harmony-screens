@@ -6,7 +6,7 @@
   description: '',
   main: "index.ets",
   type: 'module',
-  version: '4.8.2-rc.2',
+  version: '4.8.2-rc.3',
   dependencies: {
     "@rnoh/react-native-openharmony": "0.72.32"
   },
