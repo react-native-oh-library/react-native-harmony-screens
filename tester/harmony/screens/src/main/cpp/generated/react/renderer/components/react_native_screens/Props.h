@@ -576,7 +576,7 @@ class RNSScreenStackProps final : public ViewProps {
 
 #pragma mark - Props
 
-  
+  bool isPreventKeyboardPopUp{false};
 };
 
 enum class RNSSearchBarAutoCapitalize { None, Words, Sentences, Characters };
