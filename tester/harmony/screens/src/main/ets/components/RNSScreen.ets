@@ -153,6 +153,7 @@ export struct RNSScreen {
     bottom: undefined,
     top: undefined
   }
+  private isPreventKeyboardPopUp: boolean = false;
 
   async aboutToAppear() {
     this.logger = this.ctx!.logger.clone("RNSScreen")
@@ -653,6 +654,7 @@ export struct RNSScreen {
       }
 
     }
+    .expandSafeArea([SafeAreaType.SYSTEM, SafeAreaType.CUTOUT, ...(this.isPreventKeyboardPopUp ? [SafeAreaType.KEYBOARD] : [])], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM, SafeAreaEdge.START, SafeAreaEdge.END])
     .hideTitleBar(true)
     .mode(this.presentationMode)
     .onReady((context: NavDestinationContext) => {

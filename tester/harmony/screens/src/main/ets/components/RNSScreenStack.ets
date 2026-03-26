@@ -56,6 +56,7 @@ export struct RNSScreenStack {
   @State isResetAnimationPush: boolean = true;
   private logger!: RNOHLogger;
   private transitionDuration: number | undefined = undefined;
+  @State isPreventKeyboardPopUp: boolean = false;
 
   updateStack(newChildren: number[]) {
     if (!newChildren || newChildren.length === 0) {
@@ -169,6 +170,7 @@ export struct RNSScreenStack {
       this.stack = [...initialChildren];
       this.updateStack(initialChildren);
     }
+    this.isPreventKeyboardPopUp = this.descriptor.rawProps["isPreventKeyboardPopUp"];
   }
 
   private screenPropsChange(replaceAnimation: string, presentation: string, transitionDuration: number | undefined) {
@@ -191,6 +193,7 @@ export struct RNSScreenStack {
       topInset: this.topInset,
       statusBarHeight: this.statusBarHeight,
       screenPropsChange: this.screenPropsChange.bind(this),
+      isPreventKeyboardPopUp: this.isPreventKeyboardPopUp,
     })
   }
 
