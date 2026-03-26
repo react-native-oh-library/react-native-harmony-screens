@@ -162,6 +162,7 @@ export struct RNSScreen {
     x: 0,
     y: 0
   }
+  private isPreventKeyboardPopUp: boolean = false;
 
   getCurrentOffset(): Position {
     return this.currentOffset
@@ -678,6 +679,7 @@ export struct RNSScreen {
     .onAreaChange((oldValue, newValue) => {
       this.navigationPosition = newValue.globalPosition
     })
+    .expandSafeArea([SafeAreaType.SYSTEM, SafeAreaType.CUTOUT, ...(this.isPreventKeyboardPopUp ? [SafeAreaType.KEYBOARD] : [])], [SafeAreaEdge.TOP, SafeAreaEdge.BOTTOM, SafeAreaEdge.START, SafeAreaEdge.END])
     .hideTitleBar(true)
     .mode(this.presentationMode)
     .onReady((context: NavDestinationContext) => {
