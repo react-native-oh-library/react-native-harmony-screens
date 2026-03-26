@@ -34,6 +34,7 @@ class RNSScreenStackJSIBinder : public ViewComponentJSIBinder {
   protected:
     facebook::jsi::Object createNativeProps(facebook::jsi::Runtime &rt) override {
         auto object = ViewComponentJSIBinder::createNativeProps(rt);
+        object.setProperty(rt, "isPreventKeyboardPopUp", true);
         return object;
     }
 

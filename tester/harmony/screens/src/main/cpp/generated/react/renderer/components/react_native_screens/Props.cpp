@@ -194,7 +194,7 @@ RNSScreenStackProps::RNSScreenStackProps(
     const RNSScreenStackProps &sourceProps,
     const RawProps &rawProps): ViewProps(context, sourceProps, rawProps)
 
-    
+    isPreventKeyboardPopUp(convertRawProp(context, rawProps, "isPreventKeyboardPopUp", sourceProps.isPreventKeyboardPopUp, {false}))
       {}
 RNSSearchBarProps::RNSSearchBarProps(
     const PropsParserContext &context,

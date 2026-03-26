@@ -9,6 +9,7 @@ type FinishTransitioningEvent = Readonly<{}>;
 
 export interface NativeProps extends ViewProps {
   onFinishTransitioning?: DirectEventHandler<FinishTransitioningEvent>;
+  isPreventKeyboardPopUp: boolean
 }
 
 export default codegenNativeComponent<NativeProps>("RNSScreenStack", {});
