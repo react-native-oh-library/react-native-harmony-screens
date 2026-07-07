@@ -35,9 +35,11 @@ interface EdgeInsets {
 export class SafeAreaInsets {
   protected windowInstance: window.Window | null = null;
   protected ctx: RNComponentContext;
+  protected uiContext:UIContext;
 
-  constructor(ctx: RNComponentContext) {
+  constructor(ctx: RNComponentContext,uiContext:UIContext) {
     this.ctx = ctx;
+    this.uiContext = uiContext
   }
 
   getSafeAreaInsets(): Promise<EdgeInsets> {
@@ -47,7 +49,7 @@ export class SafeAreaInsets {
           this.ctx.uiAbilityContext,
         );
         const windowInfo = windowInstance.getWindowProperties();
-        if (!windowInfo.isLayoutFullScreen) {
+        if (windowInfo.isLayoutFullScreen) {
           const insets: EdgeInsets = {
             top: 0,
             right: 0,
@@ -62,10 +64,10 @@ export class SafeAreaInsets {
             window.AvoidAreaType.TYPE_NAVIGATION_INDICATOR,
           );
           const insets: EdgeInsets = {
-            top: px2vp(avoidArea.topRect.height),
-            right: px2vp(avoidArea.rightRect.height),
-            bottom: px2vp(avoidAreaBottom?.bottomRect.height),
-            left: px2vp(avoidArea.leftRect.height),
+            top: this.uiContext.px2vp(avoidArea.topRect.height),
+            right: this.uiContext.px2vp(avoidArea.rightRect.height),
+            bottom: this.uiContext.px2vp(avoidAreaBottom?.bottomRect.height),
+            left: this.uiContext.px2vp(avoidArea.leftRect.height),
           };
           resolve(insets);
         }

@@ -251,9 +251,9 @@ export struct RNSScreen {
     }
     let statusBarTranslucentTmp: boolean = this.descriptor.rawProps["statusBarTranslucent"];
     if (statusBarTranslucentTmp) {
-      newStatusBarConfiguration.statusBarColor = "#00000000"
+      this.titleBarBgColor = "#00000000"
     } else {
-      newStatusBarConfiguration.statusBarColor = statusBarColor;
+      this.titleBarBgColor= this.titleBarBackgroundColor || "#ffffff";
     }
     this.stackPresentationMode = presentation;
 
@@ -526,8 +526,8 @@ export struct RNSScreen {
       screenStackHeaderConfigTag: this.screenStackHeaderConfigTag,
       isFirstScreenInStack: this.isFirstScreenInStack,
       backBtnPressed: this.backBtnPressed.bind(this),
-    }).position({ x:0, y: (!this.shouldHideTitleBar?(this.isStatusBarShow?(this.stackPresentationMode===''?0:(this.topInsetEnabled?this.statusBarHeight:0)):0):0) })
-  }
+    }).position({ x:0, y: 0 })
+}
 
   private isComponentOfType(childTag: number, componentType: string): boolean {
     const descriptor = this.ctx.descriptorRegistry.getDescriptor<Descriptor>(childTag)
@@ -557,7 +557,7 @@ export struct RNSScreen {
       RNViewBase({ ctx: this.ctx, tag: this.tag }) {
         Stack() {
           if(this.isStatusBarShow) {
-            Text('').height(this.statusBarHeight).width('100%').backgroundColor(this.titleBarBgColor).position({x:0, y:0})
+            Text('').height(this.statusBarHeight).width('100%').backgroundColor(this.titleBarBgColor).position({x:0, y:-this.statusBarHeight})
           }
 
           Stack(){
